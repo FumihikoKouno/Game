@@ -50,7 +50,7 @@ class MainPanel extends JPanel{
 			time = System.currentTimeMillis();
 			update();
 			time = System.currentTimeMillis() - time;
-			if(time > mspf) Data.debugPrint("slowdown");
+			//if(time > mspf) Data.debugPrint("slowdown");
 			try{
 				if(time < mspf) Thread.sleep(mspf-time);
 			}catch(InterruptedException e){
