@@ -150,8 +150,23 @@ public class Field{
 	}
 	
 	protected void createNewLine(){
+		int tmp;
+		int count;
 		for(int i = 0; i < Data.COL; i++){
-			newLine[i] = new Panel(random.nextInt(Data.PANEL_NUMBER));
+			while(true){
+				count = 1;
+				tmp = random.nextInt(Data.PANEL_NUMBER);
+				for(int j = i-1; j >= 0; j--){
+					if(tmp == newLine[j].getKind()) count++;
+					else break;
+				}
+				for(int j = Data.ROW-1; j >= 0; j--){
+					if(panel[j][i] != null && panel[j][i].getKind() == tmp) count++;
+					else break;
+				}
+				if(count < 3) break;
+			}
+			newLine[i] = new Panel(tmp);
 		}
 	}
 	

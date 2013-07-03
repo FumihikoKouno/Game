@@ -69,7 +69,6 @@ public class StageClear extends Field{
 		clearLine = -1;
 		Data.keyCansel = false;
 		Data.mouseCansel = false;
-		createNewLine();
 		startFrame = Data.frame + Data.fps * 3;
 		for(int i = Data.ROW-1; i >= 0; i--){
 			for(int j = 0; j < Data.COL; j++){
@@ -81,6 +80,7 @@ public class StageClear extends Field{
 				}
 			}
 		}
+		createNewLine();
 	}
 	
 	public void draw(Graphics g){

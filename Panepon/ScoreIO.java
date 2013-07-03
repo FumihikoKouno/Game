@@ -183,7 +183,7 @@ class ScoreIO{
 		}
 		JFrame frame = new JFrame();
 		String name = JOptionPane.showInputDialog(frame, "–¼‘O‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢");
-		if(name != null){
+		if(name != null && !name.equals("")){
 			name += ".score";
 			if(new File("./Score/"+name).exists()){
 				readFile(name);
