@@ -12,7 +12,9 @@ public class Data{
 	public static int gravity = 1;
 	public static int CHIP_SIZE = 32;
 	
-	public static int CD_DIFF = 2;
+	public static final int CD_DIFF = 2;
+	
+	public static final int SCREEN_OUT = 32;
 	
 	public static int gameStatus = PLAYING;
 	

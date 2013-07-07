@@ -334,6 +334,8 @@ public class Map{
 		// 壁・プレイヤー・武器との衝突判定を行う
 		for(int i = 0; i < mapData.spriteList.size(); i++){
 			Sprite tmp = mapData.spriteList.get(i);
+			// 画面外のスプライトについての計算は行わない
+			if(tmp.x < x - Data.SCREEN_OUT || tmp.x > x + Data.WIDTH + Data.SCREEN_OUT || tmp.y < y - Data.SCREEN_OUT || tmp.y > y + Data.WIDTH + Data.SCREEN_OUT) continue;
 			tmp.update(mapData);
 			spriteAndSpriteHit(player,tmp);
 			if(player.weapon != null){

@@ -163,18 +163,23 @@ public class Player extends Sprite{
 			if(weapon == null){
 				if(jumpCount == 0 && attackReleased){
 					attackReleased = false;
+					// Ç±Ç±Ç≈switch(equipment){ case Data.SWORD: break; case Data.ARROW: break }Ç›ÇΩÇ¢Ç…èÍçáï™ÇØó\íË
 					switch(direction){
 					case UP:
-						weapon = new Sword(x, y, Weapon.UP);
+						weapon = new Arrow(x,y,Weapon.UP);
+//						weapon = new Sword(x, y, Weapon.UP);
 						break;
 					case DOWN:
-						weapon = new Sword(x, y+height, Weapon.DOWN);
+						weapon = new Arrow(x,y+height,Weapon.DOWN);
+//						weapon = new Sword(x, y+height, Weapon.DOWN);
 						break;
 					case LEFT:
-						weapon = new Sword(x, y, Weapon.LEFT);
+						weapon = new Arrow(x,y,Weapon.LEFT);
+//						weapon = new Sword(x, y, Weapon.LEFT);
 						break;
 					case RIGHT:
-						weapon = new Sword(x+width, y, Weapon.RIGHT);
+						weapon = new Arrow(x+width,y,Weapon.RIGHT);
+//						weapon = new Sword(x+width, y, Weapon.RIGHT);
 						break;
 					}
 				}

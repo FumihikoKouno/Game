@@ -9,19 +9,19 @@ import Game.MapData.MapData;
 
 import java.awt.Graphics;
 
-public class Sword extends Weapon{
+public class Arrow extends Weapon{
 	public int frame;
 	
-	public Sword(){super(0,0);}
-	public Sword(int x, int y, int d){
+	public Arrow(){super(0,0);}
+	public Arrow(int x, int y, int d){
 		super(x,y);
 		direction = d;
 		if(direction <= DOWN){
-			width = 20;
-			height = 30;
+			width = 15;
+			height = 50;
 		}else{
-			width = 30;
-			height = 20;
+			width = 50;
+			height = 15;
 		}
 		power = 1;
 		frame = Data.frame;
@@ -35,30 +35,48 @@ public class Sword extends Weapon{
 			break;
 		case LEFT:
 			this.x -= width;
+			vx = -12;
 			this.y += 6;
 			break;
 		case RIGHT:
 			this.y += 6;
+			vx = 12;
+			break;
+		}
+	}
+	
+	// 引数はどの方向に当たったかとその寸前の位置
+	public void mapHit(int dir, int dest){
+		frame = Data.frame - 7;
+		switch(dir){
+		case UP:
+		case DOWN:
+			vy = dest - y;
+			break;
+		case LEFT:
+		case RIGHT:
+			vx = dest - x;
 			break;
 		}
 	}
 	// 武器の状態のupdate(矢は飛ぶし、剣でも何フレーム出てるかとか)
 	public void update(MapData mapData){
-		if(Data.frame - frame >= 5) end = true;
+		move();
+		if(Data.frame - frame >= 10) end = true;
 	}
 	// 描画処理
 	public void draw(Graphics g, int screenX, int screenY){
 		int sx, sy;
 		if(direction <= DOWN){
-			sx = (Data.frame-frame)*width;
+			sx = 0;
 			sy = direction * height;
 		}else{
-			sx = (Data.frame-frame)*width;
+			sx = 0;
 			sy = width*2 + (direction-LEFT) * height;
 		}
 		int dx = x - screenX;
 		int dy = y - screenY;
-		g.drawImage(Data.image.swordImage,
+		g.drawImage(Data.image.arrowImage,
 			dx, dy,
 			dx + width, dy + height,
 			sx, sy, sx + width, sy + height,
