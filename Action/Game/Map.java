@@ -125,7 +125,7 @@ public class Map{
 		for(int i = from; i <= to; i++){
 			int newChipY = py/Data.CHIP_SIZE;
 			if(py < 0) return 0;
-			if(mapData.data[newChipY][i] == 1){
+			if(mapData.pass[newChipY][i] == 1){
 				return newChipY*Data.CHIP_SIZE + Data.CHIP_SIZE;
 			}
 		}
@@ -137,7 +137,7 @@ public class Map{
 		for(int i = from; i <= to; i++){
 			int newChipY = (py+height)/Data.CHIP_SIZE;
 			if(newChipY >= mapData.row) return mapData.row * Data.CHIP_SIZE - height;
-			if(mapData.data[newChipY][i] == 1){
+			if(mapData.pass[newChipY][i] == 1){
 				return newChipY*Data.CHIP_SIZE - height;
 			}
 		}
@@ -149,7 +149,7 @@ public class Map{
 		for(int i = from; i <= to; i++){
 			int newChipX = px/Data.CHIP_SIZE;
 			if(px < 0) return 0;
-			if(mapData.data[i][newChipX] == 1){
+			if(mapData.pass[i][newChipX] == 1){
 				return newChipX*Data.CHIP_SIZE + Data.CHIP_SIZE;
 			}
 		}
@@ -161,7 +161,7 @@ public class Map{
 		for(int i = from; i <= to; i++){
 			int newChipX = (px+width)/Data.CHIP_SIZE;
 			if(newChipX >= mapData.col) return mapData.col * Data.CHIP_SIZE - width;
-			if(mapData.data[i][newChipX] == 1){
+			if(mapData.pass[i][newChipX] == 1){
 				return newChipX*Data.CHIP_SIZE - width;
 			}
 		}

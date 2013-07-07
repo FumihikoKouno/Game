@@ -4,104 +4,113 @@ import Game.Sprite.*;
 import Game.Sprite.Enemy.*;
 import Game.Common.Data;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Toolkit;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
 public class MapData{
-	private int mapId;
-	/**
-	 * マップの高さとか横とか
-	 * 適当に定義して
-	 * dataもそのサイズで宣言してるけど
-	 * マップ切り替えでサイズが変わるから(変えないって手もあるかもだけど)
-	 * row、colは外部ファイルから取ってきて
-	 * dataは動的配列にするのが望ましい気がする
-	 */
-	public int col = 40;
-	public int row = 40;
+	public int col;
+	public int row;
 	public ArrayList<Sprite> spriteList = new ArrayList<Sprite>();
-	public int data[][] = 
-	{
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,0,0,0},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,1}
-	};
+	public int[][] pass;
+	public int[][] data;
 	/**
 	 * コンストラクタ
-	 * 変数data、row、col、spriteListにmapID番目のマップのデータをロードする予定
+	 * mapIDのIDを持つマップデータの読み込み
 	 */
 	public MapData(int mapID){
-		spriteList.add(new Coin(6*Data.CHIP_SIZE,15*Data.CHIP_SIZE));
-		spriteList.add(new Coin(7*Data.CHIP_SIZE,16*Data.CHIP_SIZE));
-		spriteList.add(new Coin(5*Data.CHIP_SIZE,16*Data.CHIP_SIZE));
-		spriteList.add(new Coin(7*Data.CHIP_SIZE,17*Data.CHIP_SIZE));
-		spriteList.add(new Coin(5*Data.CHIP_SIZE,17*Data.CHIP_SIZE));
-		spriteList.add(new Coin(8*Data.CHIP_SIZE,18*Data.CHIP_SIZE));
-		spriteList.add(new Coin(7*Data.CHIP_SIZE,18*Data.CHIP_SIZE));
-		spriteList.add(new Coin(6*Data.CHIP_SIZE,18*Data.CHIP_SIZE));
-		spriteList.add(new Coin(5*Data.CHIP_SIZE,18*Data.CHIP_SIZE));
-		spriteList.add(new Coin(4*Data.CHIP_SIZE,18*Data.CHIP_SIZE));
-		spriteList.add(new Coin(8*Data.CHIP_SIZE,19*Data.CHIP_SIZE));
-		spriteList.add(new Coin(4*Data.CHIP_SIZE,19*Data.CHIP_SIZE));
-		spriteList.add(new Coin(8*Data.CHIP_SIZE,20*Data.CHIP_SIZE));
-		spriteList.add(new Coin(4*Data.CHIP_SIZE,20*Data.CHIP_SIZE));
-		spriteList.add(new Coin(8*Data.CHIP_SIZE,21*Data.CHIP_SIZE));
-		spriteList.add(new Coin(4*Data.CHIP_SIZE,21*Data.CHIP_SIZE));
-		spriteList.add(new Enemy1(15*Data.CHIP_SIZE,20*Data.CHIP_SIZE));
-		spriteList.add(new Enemy1(3*Data.CHIP_SIZE,20*Data.CHIP_SIZE));
-		spriteList.add(new Enemy1(5*Data.CHIP_SIZE,20*Data.CHIP_SIZE));
-		spriteList.add(new Enemy1(20*Data.CHIP_SIZE,20*Data.CHIP_SIZE));
-		spriteList.add(new Enemy1(30*Data.CHIP_SIZE,20*Data.CHIP_SIZE));
-		spriteList.add(new Enemy1(35*Data.CHIP_SIZE,20*Data.CHIP_SIZE));
+		load(mapID);
 	}
-	public void loadMapData(int id){
-		/**
-		 * この関数でidに応じたデータを
-		 * 外部ファイルから取ってくる予定
-		 * 今はめんどいの直に打つ
-		 */
+	/**
+	 * データ読み込み用関数
+	 * Map"id".dat("id"は具体的な数字)を読み込む
+	 */
+	public void load(int id){
+		// 新たなマップに移動するのでspriteListはクリア
+		spriteList.clear();
+		// ファイル名の指定
+		String fileName = "./Game/MapData/Map" + id + ".dat";
+		String s;
+		try{
+			// ファイルを開く
+			BufferedReader file = new BufferedReader(new FileReader(new File(fileName)));
+			// 一行目(背景画像の読み込み)
+			s = file.readLine();
+			Data.image.backgroundImage = new ImageIcon(getClass().getResource("../Image/Picture/" + s)).getImage();
+			// 二行目は読み飛ばす
+			file.readLine();
+			// 三行目は重力の設定
+			s = file.readLine();
+			Data.gravity = Integer.parseInt(s);
+			// 四行目は読み飛ばす
+			file.readLine();
+			{
+				// 五行目でマップのサイズを読み込む
+				s = file.readLine();
+				String[] tmp = s.split(" ");
+				col = Integer.parseInt(tmp[0]);
+				row = Integer.parseInt(tmp[1]);
+			}
+			// 読み込んだサイズの配列を設定
+			pass = new int[row][col];
+			data = new int[row][col];
+			// 六行目は読み飛ばす
+			file.readLine();
+			// チップの種類の読み込み
+			for(int i = 0; i < row; i++){
+				s = file.readLine();
+				String[] tmp = s.split(" ");
+				for(int j = 0; j < col; j++){
+					data[i][j] = Integer.parseInt(tmp[j]);
+				}
+			}
+			// 一行読み飛ばす
+			file.readLine();
+			// 通過性の読み込み
+			for(int i = 0; i < row; i++){
+				s = file.readLine();
+				String[] tmp = s.split(" ");
+				for(int j = 0; j < col; j++){
+					pass[i][j] = Integer.parseInt(tmp[j]);
+				}
+			}
+			// 一行読み飛ばす
+			file.readLine();
+			// ファイルをすべて読み終わるまで、スプライトの読み込み
+			while((s = file.readLine()) != null){
+				String[] tmp = s.split(" ");
+				if(tmp[0].equals("Coin")){
+					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
+					spriteList.add(new Coin(x,y));
+				}
+				if(tmp[0].equals("Enemy1")){
+					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
+					spriteList.add(new Enemy1(x,y));
+				}
+				if(tmp[0].equals("MapChange")){
+					int newMapID = Integer.parseInt(tmp[1]);
+					int px = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
+					int py = Integer.parseInt(tmp[3]) * Data.CHIP_SIZE;
+					int x = Integer.parseInt(tmp[4]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[5]) * Data.CHIP_SIZE;
+					spriteList.add(new MapChange(newMapID,px,py,x,y));
+				}
+			}
+		}catch(FileNotFoundException e){
+			e.printStackTrace();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 }

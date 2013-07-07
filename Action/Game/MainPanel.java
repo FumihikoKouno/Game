@@ -77,7 +77,19 @@ class MainPanel extends JPanel{
 	 * ƒvƒƒOƒ‰ƒ€‘S‘Ì‚Ìupdate
 	 */
 	public void update() {
+		/*
+		if(dbImage == null){
+			dbImage = createImage(WIDTH,HEIGHT);
+			if(dbImage == null){
+				System.out.println("dbImage is null 2");
+				return;
+			}else{
+				dbg = dbImage.getGraphics();
+			}
+		}
+		*/
 		dbg.setColor(Color.WHITE);
+		dbg.fillRect(0,0,WIDTH,HEIGHT);
 		switch(Data.gameStatus){
 		case Data.TITLE:
 			/**

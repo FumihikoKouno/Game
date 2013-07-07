@@ -21,7 +21,7 @@ public class Data{
 	
 	public static void debugPrint(String s){
 		debugCount++;
-		System.out.println("debug" + debugCount + " : " + s);
+		System.out.println("frame " + frame + " : " + s);
 	}
 	
 }

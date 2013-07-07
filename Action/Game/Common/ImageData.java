@@ -17,7 +17,7 @@ public class ImageData{
 	public final Image playerImage = new ImageIcon(getClass().getResource("../Image/Player/player.gif")).getImage();
 	public final Image swordImage = new ImageIcon(getClass().getResource("../Image/Weapon/sword.gif")).getImage();
 	public final Image enemyImage = new ImageIcon(getClass().getResource("../Image/Sprite/enemy1.gif")).getImage();
-	public final Image backgroundImage = new ImageIcon(getClass().getResource("../Image/Picture/background.jpg")).getImage();
+	public Image backgroundImage = new ImageIcon(getClass().getResource("../Image/Picture/background.jpg")).getImage();
 	public final Image coinImage = new ImageIcon(getClass().getResource("../Image/Sprite/coin.gif")).getImage();
 	public final Image menuImage = new ImageIcon(getClass().getResource("../Image/Picture/menu.gif")).getImage();
 }
