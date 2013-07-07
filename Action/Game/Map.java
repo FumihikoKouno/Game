@@ -120,52 +120,52 @@ public class Map{
 	 * マップとの衝突判定をいじる場合はこれらをいじる
 	 */
 	public int mapHitUp(int px, int py, int width, int height){
-		int from = px/Data.CHIP_SIZE;
-		int to = (px+width-1)/Data.CHIP_SIZE;
+		int from = (px+Data.CD_DIFF)/Data.CHIP_SIZE;
+		int to = (px+width-1-Data.CD_DIFF)/Data.CHIP_SIZE;
 		for(int i = from; i <= to; i++){
-			int newChipY = py/Data.CHIP_SIZE;
-			if(py < 0) return 0;
+			if(py+Data.CD_DIFF < 0) return -Data.CD_DIFF;
+			int newChipY = (py+Data.CD_DIFF)/Data.CHIP_SIZE;
 			if(mapData.pass[newChipY][i] == 1){
-				return newChipY*Data.CHIP_SIZE + Data.CHIP_SIZE;
+				return newChipY*Data.CHIP_SIZE + Data.CHIP_SIZE - Data.CD_DIFF;
 			}
 		}
-		return -1;
+		return Integer.MIN_VALUE;
 	}
 	public int mapHitDown(int px, int py, int width, int height){
-		int from = px/Data.CHIP_SIZE;
-		int to = (px+width-1)/Data.CHIP_SIZE;
+		int from = (px+Data.CD_DIFF)/Data.CHIP_SIZE;
+		int to = (px+width-1-Data.CD_DIFF)/Data.CHIP_SIZE;
 		for(int i = from; i <= to; i++){
-			int newChipY = (py+height)/Data.CHIP_SIZE;
-			if(newChipY >= mapData.row) return mapData.row * Data.CHIP_SIZE - height;
+			int newChipY = (py+height-Data.CD_DIFF)/Data.CHIP_SIZE;
+			if(newChipY >= mapData.row) return mapData.row * Data.CHIP_SIZE - height + Data.CD_DIFF;
 			if(mapData.pass[newChipY][i] == 1){
-				return newChipY*Data.CHIP_SIZE - height;
+				return newChipY*Data.CHIP_SIZE - height + Data.CD_DIFF;
 			}
 		}
-		return -1;
+		return Integer.MIN_VALUE;
 	}
 	public int mapHitLeft(int px, int py, int width, int height){
-		int from = py/Data.CHIP_SIZE;
-		int to = (py+height-1)/Data.CHIP_SIZE;
+		int from = (py+Data.CD_DIFF)/Data.CHIP_SIZE;
+		int to = (py+height-1-Data.CD_DIFF)/Data.CHIP_SIZE;
 		for(int i = from; i <= to; i++){
-			int newChipX = px/Data.CHIP_SIZE;
-			if(px < 0) return 0;
+			if(px+Data.CD_DIFF < 0) return -Data.CD_DIFF;
+			int newChipX = (px+Data.CD_DIFF)/Data.CHIP_SIZE;
 			if(mapData.pass[i][newChipX] == 1){
-				return newChipX*Data.CHIP_SIZE + Data.CHIP_SIZE;
+				return newChipX*Data.CHIP_SIZE + Data.CHIP_SIZE - Data.CD_DIFF;
 			}
 		}
-		return -1;
+		return Integer.MIN_VALUE;
 	}
 	public int mapHitRight(int px, int py, int width, int height){
-		int from = py/Data.CHIP_SIZE;
-		int to = (py+height-1)/Data.CHIP_SIZE;
+		int from = (py+Data.CD_DIFF)/Data.CHIP_SIZE;
+		int to = (py+height-1-Data.CD_DIFF)/Data.CHIP_SIZE;
 		for(int i = from; i <= to; i++){
-			int newChipX = (px+width)/Data.CHIP_SIZE;
-			if(newChipX >= mapData.col) return mapData.col * Data.CHIP_SIZE - width;
+			int newChipX = (px+width-Data.CD_DIFF)/Data.CHIP_SIZE;
+			if(newChipX >= mapData.col) return mapData.col * Data.CHIP_SIZE - width + Data.CD_DIFF;
 			if(mapData.pass[i][newChipX] == 1){
-				return newChipX*Data.CHIP_SIZE - width;
+				return newChipX*Data.CHIP_SIZE - width + Data.CD_DIFF;
 			}
 		}
-		return -1;
+		return Integer.MIN_VALUE;
 	}
 	/**
 	 * スプライトとマップの衝突判定
@@ -179,14 +179,14 @@ public class Map{
 		boolean ret = false;
 		if(tmp.vy < 0){
 			int d = mapHitUp(tmp.x,tmp.y+tmp.vy,tmp.width,tmp.height);
-			if(d >= 0){
+			if(d != Integer.MIN_VALUE){
 				tmp.mapHit(Sprite.UP,d);
 				ret = true;
 			}
 		}
 		if(tmp.vy > 0){
 			int d = mapHitDown(tmp.x,tmp.y+tmp.vy,tmp.width,tmp.height);
-			if(d >= 0){
+			if(d != Integer.MIN_VALUE){
 				tmp.mapHit(Sprite.DOWN,d);
 				ret = true;
 			}else{
@@ -201,14 +201,14 @@ public class Map{
 		}
 		if(tmp.vx < 0){
 			int d = mapHitLeft(tmp.x+tmp.vx,tmp.y+tmp.vy,tmp.width,tmp.height);
-			if(d >= 0){
+			if(d != Integer.MIN_VALUE){
 				tmp.mapHit(Sprite.LEFT,d);
 				ret = true;
 			}
 		}
 		if(tmp.vx > 0){
 			int d = mapHitRight(tmp.x+tmp.vx,tmp.y+tmp.vy,tmp.width,tmp.height);
-			if(d >= 0){
+			if(d != Integer.MIN_VALUE){
 				tmp.mapHit(Sprite.RIGHT,d);
 				ret = true;
 			}
@@ -223,32 +223,32 @@ public class Map{
 	 * "1が上に当たる"がhitUp
 	 */
 	public int hitUp(int px1, int py1, int width1, int height1, int px2, int py2, int width2, int height2){
-		if(px1 > px2+width2-1 || px1+width1-1 < px2) return -1;
-		if(py1 <= py2+height2-1 && py1+height1-1 > py2+height2-1){
-			return py2+height2;
+		if(px1+Data.CD_DIFF > px2+width2-1-Data.CD_DIFF || px1+width1-1-Data.CD_DIFF < px2+Data.CD_DIFF) return Integer.MIN_VALUE;
+		if(py1+Data.CD_DIFF <= py2+height2-1-Data.CD_DIFF && py1+height1-1 > py2+height2-1){
+			return py2+height2-Data.CD_DIFF;
 		}
-		return -1;
+		return Integer.MIN_VALUE;
 	}
 	public int hitDown(int px1, int py1, int width1, int height1, int px2, int py2, int width2, int height2){
-		if(px1 > px2+width2-1 || px1+width1-1 < px2) return -1;
-		if(py1 < py2 && py1+height1-1 >= py2){
-			return py2-height1;
+		if(px1+Data.CD_DIFF > px2+width2-1-Data.CD_DIFF || px1+width1-1-Data.CD_DIFF < px2+Data.CD_DIFF) return Integer.MIN_VALUE;
+		if(py1 < py2 && py1+height1-1-Data.CD_DIFF >= py2+Data.CD_DIFF){
+			return py2-height1+2*Data.CD_DIFF;
 		}
-		return -1;
+		return Integer.MIN_VALUE;
 	}
 	public int hitLeft(int px1, int py1, int width1, int height1, int px2, int py2, int width2, int height2){
-		if(py1 > py2+height2-1 || py1+height1-1 < py2) return -1;
-		if(px1 <= px2+width2-1 && px1+width1-1 > px2+width2-1){
-			return px2+width2;
+		if(py1+Data.CD_DIFF > py2+height2-1-Data.CD_DIFF || py1+height1-1-Data.CD_DIFF < py2+Data.CD_DIFF) return Integer.MIN_VALUE;
+		if(px1+Data.CD_DIFF <= px2+width2-1-Data.CD_DIFF && px1+width1-1 > px2+width2-1){
+			return px2+width2-Data.CD_DIFF;
 		}
-		return -1;
+		return Integer.MIN_VALUE;
 	}
 	public int hitRight(int px1, int py1, int width1, int height1, int px2, int py2, int width2, int height2){
-		if(py1 > py2+height2-1 || py1+height1-1 < py2) return -1;
-		if(px1 < px2 && px1+width1-1 >= px2){
-			return px2-width1;
+		if(py1+Data.CD_DIFF > py2+height2-1-Data.CD_DIFF || py1+height1-1-Data.CD_DIFF < py2+Data.CD_DIFF) return Integer.MIN_VALUE;
+		if(px1 < px2 && px1+width1-1-Data.CD_DIFF >= px2+Data.CD_DIFF){
+			return px2-width1+2*Data.CD_DIFF;
 		}
-		return -1;
+		return Integer.MIN_VALUE;
 	}
 	/**
 	 * スプライト同士のスプライトの衝突判定
@@ -259,22 +259,22 @@ public class Map{
 		int dDown = hitDown(s1.x,s1.y+s1.vy,s1.width,s1.height,s2.x,s2.y+s2.vy,s2.width,s2.height);
 		int dLeft = hitLeft(s1.x+s1.vx,s1.y,s1.width,s1.height,s2.x+s2.vx,s2.y,s2.width,s2.height);
 		int dRight = hitRight(s1.x+s1.vx,s1.y,s1.width,s1.height,s2.x+s2.vx,s2.y,s2.width,s2.height);
-		if(dUp > 0){
+		if(dUp != Integer.MIN_VALUE){
 			if(s1 instanceof Player) s2.touch(s1,Sprite.DOWN,dUp);
 			if(s1 instanceof Weapon) s2.attacked(s1);
 			return true;
 		}
-		if(dDown > 0){
+		if(dDown != Integer.MIN_VALUE){
 			if(s1 instanceof Player) s2.touch(s1,Sprite.UP,dDown);
 			if(s1 instanceof Weapon) s2.attacked(s1);
 			return true;
 		}
-		if(dLeft > 0){
+		if(dLeft != Integer.MIN_VALUE){
 			if(s1 instanceof Player) s2.touch(s1,Sprite.RIGHT,dLeft);
 			if(s1 instanceof Weapon) s2.attacked(s1);
 			return true;
 		}
-		if(dRight > 0){
+		if(dRight != Integer.MIN_VALUE){
 			if(s1 instanceof Player) s2.touch(s1,Sprite.LEFT,dRight);
 			if(s1 instanceof Weapon) s2.attacked(s1);
 			return true;

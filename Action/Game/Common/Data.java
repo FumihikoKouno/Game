@@ -12,6 +12,8 @@ public class Data{
 	public static int gravity = 1;
 	public static int CHIP_SIZE = 32;
 	
+	public static int CD_DIFF = 2;
+	
 	public static int gameStatus = PLAYING;
 	
 	public static final ImageData image = new ImageData();
