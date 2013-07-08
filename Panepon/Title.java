@@ -52,9 +52,11 @@ class Title{
 		case Data.RANKING:
 			mw = ranking;
 			break;
+			/*
 		case Data.CONFIG:
 			mw = config;
 			break;
+			*/
 		case Data.EXIT:
 			mw = exit;
 			break;

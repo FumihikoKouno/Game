@@ -9,8 +9,8 @@ public class Data{
 	public static final int STAGE_CLEAR = 3;
     public static final int DEMO = 4;
 	public static final int RANKING = 5;
-	public static final int CONFIG = 6;
-	public static final int EXIT = 7;
+//	public static final int CONFIG = 6;
+	public static final int EXIT = 6;
 
 	public static boolean mouseCansel;
 	public static boolean keyCansel;
