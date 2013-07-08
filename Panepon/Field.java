@@ -221,12 +221,32 @@ public class Field{
 			panel[y][x+1] = tmp;
 		}
 	}
+
+    private boolean fallingPanelExist(){
+	for(int i = 0; i < Data.ROW; i++){
+	    for(int j = 0; j < Data.COL; j++){
+		if(panel[i][j] == null) continue;
+		if(panel[i][j].isFalling()) return true;
+	    }
+	}
+	return false;
+    }
+
+    private boolean connectPanelExist(){
+        for(int i = 0; i < Data.ROW; i++){
+	    for(int j = 0; j < Data.COL; j++){
+		if(panel[i][j] == null) continue;
+		if(panel[i][j].getConnected() != 0) return true;
+	    }
+	}
+	return false;
+    }
 	
 	private boolean scrollStop(){
 		if(gameOverFrame != 0) return true;
 		if(topExist() && Data.scrollOffset != 0) return true;
 		if(KeyStatus.scroll){
-			if(deletePanelExist() && topExist()) return true;
+		    if((fallingPanelExist() || connectPanelExist() || deletePanelExist()) && topExist()) return true;
 			else return false;
 		}
 		for(int i = 0; i < Data.ROW; i++){
