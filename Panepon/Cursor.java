@@ -79,8 +79,8 @@ class Cursor{
 		int imageY = 0;
 		switch(status){
 		case Data.TITLE:
-			drawX = Data.TITLE_CURSOR_X + 5 * ((Data.frame%30<15)?0:1);
-			drawY = Data.TITLE_CURSOR_Y + Data.TITLE_DIFFERENCE * y;
+			drawX = (Data.TITLE_CURSOR_X + 5 * ((Data.frame%30<15)?0:1))*Data.zoom;
+			drawY = (Data.TITLE_CURSOR_Y + Data.TITLE_DIFFERENCE * y)*Data.zoom;
 			width = Data.PANEL_SIZE;
 			height = Data.PANEL_SIZE;
 			imageX = 0;
@@ -90,9 +90,9 @@ class Cursor{
 		case Data.SCORE_ATTACK:
 		case Data.STAGE_CLEAR:
 		case Data.DEMO:
-			drawX = Data.FIELD_START_X + x * Data.PANEL_SIZE;
-			drawY = -Data.scrollOffset + Data.FIELD_START_Y + y * Data.PANEL_SIZE;
-			width = Data.PANEL_SIZE << 1;
+			drawX = (Data.FIELD_START_X + x * Data.PANEL_SIZE)*Data.zoom;
+			drawY = (-Data.scrollOffset + Data.FIELD_START_Y + y * Data.PANEL_SIZE)*Data.zoom;
+			width = (Data.PANEL_SIZE << 1);
 			height = Data.PANEL_SIZE;
 			imageX = 0;
 			imageY = 0;
@@ -100,7 +100,7 @@ class Cursor{
 		default:
 			break;
 		}
-		g.drawImage(Data.image.cursorImage,drawX,drawY,drawX+width,drawY+height,
+		g.drawImage(Data.image.cursorImage,drawX,drawY,drawX+width*Data.zoom,drawY+height*Data.zoom,
 			imageX,imageY,imageX+width,imageY+height,
 			null);
 	}

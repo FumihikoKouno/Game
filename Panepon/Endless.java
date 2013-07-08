@@ -42,10 +42,10 @@ public class Endless extends Field{
 		Data.setFont(g,Data.SCORE_FONT);
 		if(startFrame <= Data.frame){
 			if(gameOverFrame == 0) Data.time  = (Data.frame-startFrame)/Data.fps;
-			g.drawString((Data.time/60)+":"+String.format("%1$02d",(Data.time%60)),Data.REST_X+space_x,Data.REST_Y-space_y);
+			g.drawString((Data.time/60)+":"+String.format("%1$02d",(Data.time%60)),(Data.REST_X+space_x)*Data.zoom,(Data.REST_Y-space_y)*Data.zoom);
 		}else{
-			g.drawString(((startFrame-Data.frame)/Data.fps+1)+"",Data.WIDTH/2,Data.HEIGHT/2);
-			g.drawString("0:00",Data.REST_X+space_x,Data.REST_Y-space_y);
+			g.drawString(((startFrame-Data.frame)/Data.fps+1)+"",Data.WIDTH/2*Data.zoom,Data.HEIGHT/2*Data.zoom);
+			g.drawString("0:00",(Data.REST_X+space_x)*Data.zoom,(Data.REST_Y-space_y)*Data.zoom);
 		}
 	}
 }

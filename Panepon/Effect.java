@@ -23,8 +23,8 @@ class Effect{
 	}
 	
 	public void draw(Graphics g){
-		int drawX = Data.FIELD_START_X + Data.PANEL_SIZE * x;
-		int drawY = Data.FIELD_START_Y + Data.PANEL_SIZE * y;
+		int drawX = (Data.FIELD_START_X + Data.PANEL_SIZE * x)*Data.zoom;
+		int drawY = (Data.FIELD_START_Y + Data.PANEL_SIZE * y)*Data.zoom;
 		int imageX;
 		int imageY;
 		switch(kind){
@@ -36,17 +36,17 @@ class Effect{
 				imageX = (num%10)*Data.EFFECT_SIZE;
 				imageY = (num/10)*Data.EFFECT_SIZE;
 			}
-			drawX += Data.PANEL_SIZE * 1.5;
-			drawY -= (Data.PANEL_SIZE<<1);
+			drawX += (Data.PANEL_SIZE * 1.5)*Data.zoom;
+			drawY -= (Data.PANEL_SIZE<<1)*Data.zoom;
 			g.drawImage(Data.image.chainImage,
-				drawX, drawY, drawX+Data.EFFECT_SIZE, drawY+Data.EFFECT_SIZE,
+				drawX, drawY, drawX+Data.EFFECT_SIZE*Data.zoom, drawY+Data.EFFECT_SIZE*Data.zoom,
 				imageX, imageY, imageX + Data.EFFECT_SIZE, imageY + Data.EFFECT_SIZE,
 				null
 			);
 			break;
 		case Data.SAME_EFFECT:
-			drawX += Data.PANEL_SIZE + 1.5;
-			drawY -= Data.PANEL_SIZE;
+			drawX += (Data.PANEL_SIZE + 1.5)*Data.zoom;
+			drawY -= Data.PANEL_SIZE*Data.zoom;
 			if(num >= 40){
 				imageX = 0;
 				imageY = 0;
@@ -55,7 +55,7 @@ class Effect{
 				imageY = (num/10)*Data.EFFECT_SIZE;
 			}
 			g.drawImage(Data.image.sameImage,
-				drawX, drawY, drawX+Data.EFFECT_SIZE, drawY+Data.EFFECT_SIZE,
+				drawX, drawY, drawX+Data.EFFECT_SIZE*Data.zoom, drawY+Data.EFFECT_SIZE*Data.zoom,
 				imageX, imageY, imageX + Data.EFFECT_SIZE, imageY + Data.EFFECT_SIZE,
 				null
 			);

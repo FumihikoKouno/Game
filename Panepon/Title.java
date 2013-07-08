@@ -9,6 +9,7 @@ class Title{
 	private MessageWindow demo;
 	private MessageWindow ranking;
 	private MessageWindow exit;
+	private MessageWindow config;
 	private final int messageX = 5;
 	private final int messageY = 300;
 	private final int messageCOL = 15;
@@ -23,6 +24,7 @@ class Title{
 		stageClear = new MessageWindow("すべてのパネルが一定ラインを下回るとクリアになるモードです。",messageX,messageY,messageCOL,messageROW);
 		demo = new MessageWindow("デモです。基本的な操作説明をします。",messageX,messageY,messageCOL,messageROW);
 		ranking = new MessageWindow("ランキングを表示します。",messageX,messageY,messageCOL,messageROW);
+		config = new MessageWindow("設定を変更します",messageX,messageY,messageCOL,messageROW);
 		exit = new MessageWindow("プログラムを終了します。",messageX,messageY,messageCOL,messageROW);
 		cursor.set(0,0);
 		Data.cursorMaxX = 0;
@@ -50,6 +52,9 @@ class Title{
 		case Data.RANKING:
 			mw = ranking;
 			break;
+		case Data.CONFIG:
+			mw = config;
+			break;
 		case Data.EXIT:
 			mw = exit;
 			break;
@@ -63,7 +68,9 @@ class Title{
     }
     
     public void draw(Graphics g){
-	    g.drawImage(Data.image.titleImage,0,0,null);
+	    g.drawImage(Data.image.titleImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,
+	    	0,0,Data.WIDTH,Data.HEIGHT,
+	    	null);
     	cursor.draw(g,Data.TITLE);
     	if(mw != null) mw.draw(g);
     }

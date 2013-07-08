@@ -19,6 +19,13 @@ public class Panepon extends JFrame {
 	}
 	
 	public static void main(String[] args) {
+		if(args.length >= 1 && args[0] != null){
+			try{
+				Data.zoom = Integer.parseInt(args[0]);
+			}catch(NumberFormatException e){
+				Data.zoom = 1;
+			}
+		}
 		Panepon frame = new Panepon();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);

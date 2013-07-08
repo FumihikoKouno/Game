@@ -33,12 +33,12 @@ class MainPanel extends JPanel{
 		this.addKeyListener(key);
 		this.addMouseListener(mouse);
 		this.addMouseMotionListener(mouseMotion);
-		setPreferredSize(new Dimension(Data.WIDTH, Data.HEIGHT));
+		setPreferredSize(new Dimension(Data.WIDTH*Data.zoom, Data.HEIGHT*Data.zoom));
 	}
 	
 	public void start(){
 		while(dbImage == null){
-			dbImage = createImage(Data.WIDTH,Data.HEIGHT);
+			dbImage = createImage(Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom);
 			if(dbImage != null){
 				dbg = dbImage.getGraphics();
 			}
@@ -62,7 +62,7 @@ class MainPanel extends JPanel{
 
 	public void update() {
 		dbg.setColor(Color.BLACK);
-		dbg.fillRect(0,0,Data.WIDTH,Data.HEIGHT);
+		dbg.fillRect(0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom);
 		switch(Data.gameStatus){
 		case Data.TITLE:
 			if(prevGameStatus != Data.gameStatus){

@@ -56,13 +56,13 @@ class Panel{
     public boolean end(){ return end_frame != 0 && end_frame < Data.frame; }
     
     public void draw(Graphics g, int x, int y){
-	int drawX = Data.FIELD_START_X + x * Data.PANEL_SIZE + offset_x;
-	int drawY = -Data.scrollOffset + Data.FIELD_START_Y + y * Data.PANEL_SIZE + offset_y;
+    	int drawX = (Data.FIELD_START_X + x * Data.PANEL_SIZE + offset_x)*Data.zoom;
+    	int drawY = (-Data.scrollOffset + Data.FIELD_START_Y + y * Data.PANEL_SIZE + offset_y)*Data.zoom;
 	int imageX = kind*Data.PANEL_SIZE;
 	int imageY = 0;
 	if(y == Data.ROW){
 	    g.drawImage(Data.image.nextPanelImage,
-			drawX, drawY, drawX+Data.PANEL_SIZE, drawY+Data.PANEL_SIZE,
+			drawX, drawY, drawX+Data.PANEL_SIZE*Data.zoom, drawY+Data.PANEL_SIZE*Data.zoom,
 			imageX, imageY, imageX + Data.PANEL_SIZE, imageY + Data.PANEL_SIZE,
 			null
 			);
@@ -70,13 +70,13 @@ class Panel{
 	    if(kind >= 0){
 		if((isDeleting() && d_animation_time-1 < Data.frame) || (isDeleting() && (d_animation_time > Data.frame) && ((Data.frame%(Data.DELETE_TIME/3))>=(Data.DELETE_TIME/6)))){
 		    g.drawImage(Data.image.deletingPanelImage,
-				drawX, drawY, drawX+Data.PANEL_SIZE, drawY+Data.PANEL_SIZE,
+				drawX, drawY, drawX+Data.PANEL_SIZE*Data.zoom, drawY+Data.PANEL_SIZE*Data.zoom,
 				imageX, imageY, imageX + Data.PANEL_SIZE, imageY + Data.PANEL_SIZE,
 				null
 				);
 		}else{
 		    g.drawImage(Data.image.panelImage,
-				drawX, drawY, drawX+Data.PANEL_SIZE, drawY+Data.PANEL_SIZE,
+				drawX, drawY, drawX+Data.PANEL_SIZE*Data.zoom, drawY+Data.PANEL_SIZE*Data.zoom,
 				imageX, imageY, imageX + Data.PANEL_SIZE, imageY + Data.PANEL_SIZE,
 				null
 				);

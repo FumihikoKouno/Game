@@ -423,7 +423,9 @@ public class Demo extends Field{
 		int space_y = 7;
 		Data.setFont(g,Data.SCORE_FONT);
 		if(Data.gameStatus == Data.DEMO && Data.mousePressed){
-			g.drawImage(Data.image.mouseImage,demoMouseX,demoMouseY,null);
+			g.drawImage(Data.image.mouseImage,demoMouseX*Data.zoom,demoMouseY*Data.zoom,
+				(demoMouseX+13)*Data.zoom,(demoMouseY+20)*Data.zoom,
+				0,0,13,20,null);
 		}
 		if(mw != null) mw.draw(g);
 	}

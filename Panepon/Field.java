@@ -492,19 +492,20 @@ public class Field{
 			}
 			cursor.draw(g,Data.ENDLESS);
 		}
-		g.drawImage(Data.image.fieldImage,0,0,null);
+		g.drawImage(Data.image.fieldImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,
+			0,0,Data.WIDTH,Data.HEIGHT,null);
 		for(int i = 0; i < effect.size(); i++){
 			effect.get(i).draw(g);
 		}
 		int space_x = 20;
 		int space_y = 7;
 		Data.setFont(g,Data.SCORE_FONT);
-		g.drawString(Data.score+"",Data.SCORE_X+space_x,Data.SCORE_Y-space_y);
-		g.drawString(Data.lv+"",Data.LV_X+space_x,Data.LV_Y-space_y);
-		g.drawString(Data.maxChain+"",Data.MAX_CHAIN_X+space_x,Data.MAX_CHAIN_Y-space_y);
-		g.drawString(Data.maxDelete+"",Data.MAX_DELETE_X+space_x,Data.MAX_DELETE_Y-space_y);
+		g.drawString(Data.score+"",(Data.SCORE_X+space_x)*Data.zoom,(Data.SCORE_Y-space_y)*Data.zoom);
+		g.drawString(Data.lv+"",(Data.LV_X+space_x)*Data.zoom,(Data.LV_Y-space_y)*Data.zoom);
+		g.drawString(Data.maxChain+"",(Data.MAX_CHAIN_X+space_x)*Data.zoom,(Data.MAX_CHAIN_Y-space_y)*Data.zoom);
+		g.drawString(Data.maxDelete+"",(Data.MAX_DELETE_X+space_x)*Data.zoom,(Data.MAX_DELETE_Y-space_y)*Data.zoom);
 		if(gameOverFrame != 0){
-			g.drawString("Game Over",Data.WIDTH/2-100,Data.HEIGHT/2);
+			g.drawString("Game Over",(Data.WIDTH/2-100)*Data.zoom,(Data.HEIGHT/2)*Data.zoom);
 		}
 	}
 }

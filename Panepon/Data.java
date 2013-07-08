@@ -9,11 +9,14 @@ public class Data{
 	public static final int STAGE_CLEAR = 3;
     public static final int DEMO = 4;
 	public static final int RANKING = 5;
-	public static final int EXIT = 6;
+	public static final int CONFIG = 6;
+	public static final int EXIT = 7;
 
 	public static boolean mouseCansel;
 	public static boolean keyCansel;
 	public static int time;
+	
+	public static int zoom = 1;
 	
 	public static final int RANKING_NAME_X = 70;
 	public static final int RANKING_TIME_X = 350;
@@ -44,7 +47,7 @@ public class Data{
     public static final int DELETE_TIME = 50;
     public static final int DELETE_DIFFERENCE_TIME = 10;
     public static final int MPF = PANEL_SIZE/2;
-    public static final int GRAVITY = 16;
+    public static int GRAVITY = 16;
     public static final int PANEL_NUMBER = 6;
     public static final int INIT_CURSOR_X = 2;
     public static final int INIT_CURSOR_Y = 8;
@@ -99,18 +102,15 @@ public class Data{
 	public static final int SCORE_FONT = 0;
 	public static final int MESSAGE_FONT = 1;
 	
-	private static Font scoreFont = new Font("‚l‚r ‚oƒSƒVƒbƒN",0, 24);
-	private static Font messageFont = new Font("‚l‚r ‚oƒSƒVƒbƒN",0, 18);
-	
 	public static void setFont(Graphics g, int fontNo){
 		switch(fontNo){
 		case SCORE_FONT:
 			g.setColor(Color.WHITE);
-    		g.setFont(scoreFont);
+    		g.setFont(new Font("‚l‚r ‚oƒSƒVƒbƒN",0, 24*zoom));
 			break;
 		case MESSAGE_FONT:
 			g.setColor(Color.WHITE);
-			g.setFont(messageFont);
+			g.setFont(new Font("‚l‚r ‚oƒSƒVƒbƒN",0, 18*zoom));
 			break;
 		}
 	}
