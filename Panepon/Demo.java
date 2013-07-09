@@ -375,6 +375,8 @@ public class Demo extends Field{
 
 	public void init(){
 		super.init();
+		Data.seed = System.currentTimeMillis();
+		random.setSeed(Data.seed);
 		mw = null;
 		gameOverFrame = 0;
 		demoMouseX = 0;

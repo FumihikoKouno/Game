@@ -36,6 +36,8 @@ public class ScoreAttack extends Field{
 
 	public void init(){
 		super.init();
+		Data.seed = System.currentTimeMillis();
+		random.setSeed(Data.seed);
 		Data.keyCansel = false;
 		Data.mouseCansel = false;
 		startFrame = Data.frame + Data.fps * 3;

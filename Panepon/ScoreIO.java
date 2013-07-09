@@ -15,9 +15,25 @@ import java.io.FileNotFoundException;
 
 class ScoreIO{
 	private int mode;
-	Record eRecord;
-	Record scRecord;
-	Record stRecord;
+	private Record eRecord;
+	private Record scRecord;
+	private Record stRecord;
+	private long eSeed;
+	private long scSeed;
+	private long stSeed;
+	private int[] eScrollFrame;
+	private int[] scScrollFrame;
+	private int[] stScrollFrame;
+	private int[] eSwapFrame;
+	private int[] scSwapFrame;
+	private int[] stSwapFrame;
+	private int[] eSwapX;
+	private int[] scSwapX;
+	private int[] stSwapX;
+	private int[] eSwapY;
+	private int[] scSwapY;
+	private int[] stSwapY;
+	
 	public ScoreIO(){}
 	
 	private void statusPrint(String fileName){
@@ -28,15 +44,10 @@ class ScoreIO{
 		System.out.println("    stRecord " + stRecord);
 	}
 	
-	public void makeRanking(Record[] endless, Record[] scoreAttack, Record[] stageClear){
+	public void makeRanking(Record[] endless, Record[] scoreAttack, Record[] stageClear, boolean[] replayStatus){
 		File dir = new File("./Score");
 		File[] list;
 		String name;
-		/*
-		endless = new Record[10];
-		scoreAttack = new Record[10];
-		stageClear = new Record[10];
-		*/
 		for(int i = 0; i < 10; i++){
 			endless[i] = null;
 			scoreAttack[i] = null;
@@ -122,6 +133,9 @@ class ScoreIO{
 	}
 	
 	public void readFile(String name){
+		boolean replayE;
+		boolean replaySC;
+		boolean replayST;
 		int eScore = 0;
 		int eTime = 0;
 		int eMaxChain = 0;
@@ -134,10 +148,11 @@ class ScoreIO{
 		int stTime = 0;
 		int stMaxChain = 0;
 		int stMaxDelete = 0;
-		byte[] tmp = new byte[51];
+		int prevData;
+		byte[] tmp = new byte[54];
 		try{
 			BufferedInputStream is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name)));
-			is.read(tmp,0,51);
+			prevData = is.read(tmp,0,54);
 			for(int i = 0; i < 4; i++){
 				eScore += ((tmp[1+i*4] & 0xff) << (8*i));
 				eTime += ((tmp[2+i*4] & 0xff) << (8*i));
@@ -152,21 +167,43 @@ class ScoreIO{
 				stMaxChain += ((tmp[37+i*4] & 0xff) << (8*i));
 				stMaxDelete += ((tmp[38+i*4] & 0xff) << (8*i));
 			}
+			if(prevData != -1){
+				if(tmp[51] == 0x01){
+					replayE = true;
+				}else{
+					replayE = false;
+				}
+				if(tmp[52] == 0x01){
+					replaySC = true;
+				}else{
+					replaySC = false;
+				}
+				if(tmp[53] == 0x01){
+					replayST = true;
+				}else{
+					replayST = false;
+				}
+			}else{
+				replayE = false;
+				replaySC = false;
+				replayST = false;
+			}
 			if(tmp[0] == 0x01){
-				eRecord = new Record(name.substring(0,name.length()-6),eScore,eTime,eMaxChain,eMaxDelete);
+				eRecord = new Record(name.substring(0,name.length()-6),eScore,eTime,eMaxChain,eMaxDelete,replayE);
 			}else{
 				eRecord = null;
 			}
 			if(tmp[17] == 0x01){
-				scRecord = new Record(name.substring(0,name.length()-6),scScore,scTime,scMaxChain,scMaxDelete);
+				scRecord = new Record(name.substring(0,name.length()-6),scScore,scTime,scMaxChain,scMaxDelete,replaySC);
 			}else{
 				scRecord = null;
 			}
 			if(tmp[34] == 0x01){
-				stRecord = new Record(name.substring(0,name.length()-6),stScore,stTime,stMaxChain,stMaxDelete);
+				stRecord = new Record(name.substring(0,name.length()-6),stScore,stTime,stMaxChain,stMaxDelete,replayST);
 			}else{
 				stRecord = null;
 			}
+			
 			is.close();
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
@@ -182,11 +219,13 @@ class ScoreIO{
 			dir.mkdir();
 		}
 		JFrame frame = new JFrame();
-		String name = JOptionPane.showInputDialog(frame, "–¼‘O‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢");
-		if(name != null && !name.equals("")){
+		String name = "";
+		while(name != null && name.equals("")) name = JOptionPane.showInputDialog(frame, "–¼‘O‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢");
+		if(name != null){
 			name += ".score";
 			if(new File("./Score/"+name).exists()){
 				readFile(name);
+				boolean update = false;
 				int tmpScore;
 				int tmpTime;
 				int tmpMaxChain;

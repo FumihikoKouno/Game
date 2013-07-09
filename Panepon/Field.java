@@ -15,7 +15,7 @@ public class Field{
 	
 	protected int gameOverFrame;
 	
-	ArrayList<Effect> effect = new ArrayList<Effect>();
+	protected ArrayList<Effect> effect = new ArrayList<Effect>();
 	protected int startFrame;
 	protected int scrollFrame;
 	protected int pressingPanelX;
@@ -39,7 +39,7 @@ public class Field{
 			mouseReleased = true;
 			cursor.move();
 			if(!KeyStatus.change) cursorReleased = true;
-			if(KeyStatus.change && cursorReleased) panelSwap();
+			if(KeyStatus.change && cursorReleased) swapping();
 		}else{
 			if(mouseReleased){
 				pressPanel();
@@ -71,6 +71,7 @@ public class Field{
 	
 	private void panelMove(){
 		boolean movable = true;
+		boolean left = true;
 		int x = -1;
 		int y = -1;
 		int newOffset = 0;
@@ -78,29 +79,22 @@ public class Field{
 		if(pressingPanel.cMoving()) return;
 		if(pressingPanelX == Data.pressedX) return;
 		if(pressingPanelX < Data.pressedX){
+			left = false;
 			x = pressingPanelX + 1;
 			y = pressingPanelY;
 			newOffset = -Data.PANEL_SIZE;
 			if(panel[y][x] != null && (panel[y][x].cMoving() || panel[y][x].isDeleting())) movable = false;
 		}
 		if(pressingPanelX > Data.pressedX){
+			left = true;
 			x = pressingPanelX - 1;
 			y = pressingPanelY;
 			newOffset = Data.PANEL_SIZE;
 			if(panel[y][x] != null && (panel[y][x].cMoving() || panel[y][x].isDeleting())) movable = false;
 		}
 		if(movable){
-			if(panel[y][x] == null){
-				panel[pressingPanelY][pressingPanelX].setOffset(newOffset,0);
-				panel[y][x] = panel[pressingPanelY][pressingPanelX];
-				panel[pressingPanelY][pressingPanelX] = null;
-			}else{
-				panel[pressingPanelY][pressingPanelX].setOffset(newOffset,0);
-				panel[y][x].setOffset(-newOffset,0);
-				Panel tmp = panel[y][x];
-				panel[y][x] = panel[pressingPanelY][pressingPanelX];
-				panel[pressingPanelY][pressingPanelX] = tmp;
-			}
+			if(left) swapPanel(x,y);
+			else swapPanel(pressingPanelX,pressingPanelY);
 			pressingPanelX = x;
 			pressingPanelY = y;
 		}
@@ -192,7 +186,7 @@ public class Field{
 		}
 	}
 	
-	private void panelSwap(){
+	private void swapping(){
 		cursorReleased = false;
 		int x = cursor.getX();
 		int y = cursor.getY();
@@ -201,25 +195,32 @@ public class Field{
 		if(panel[y][x] != null && (panel[y][x].cMoving() || panel[y][x].isDeleting())) leftMovable = false;
 		if(panel[y][x+1] != null && (panel[y][x+1].cMoving() || panel[y][x+1].isDeleting())) rightMovable = false;
 		if(leftMovable && rightMovable){
-			if(panel[y][x] == null && panel[y][x+1] == null) return;
-			if(panel[y][x] == null){
-				panel[y][x+1].setOffset(Data.PANEL_SIZE,0);
-				panel[y][x] = panel[y][x+1];
-				panel[y][x+1] = null;
-				return;
-			}
-			if(panel[y][x+1] == null){
-				panel[y][x].setOffset(-Data.PANEL_SIZE,0);
-				panel[y][x+1] = panel[y][x];
-				panel[y][x] = null;
-				return;
-			}
-			panel[y][x].setOffset(-Data.PANEL_SIZE,0);
-			panel[y][x+1].setOffset(Data.PANEL_SIZE,0);
-			Panel tmp = panel[y][x];
-			panel[y][x] = panel[y][x+1];
-			panel[y][x+1] = tmp;
+			swapPanel(x,y);
 		}
+	}
+	
+	protected void swapPanel(int x, int y){
+		Data.replaySwapFrame.add(new Integer(Data.frame-startFrame));
+		Data.replaySwapX.add(new Integer(x));
+		Data.replaySwapY.add(new Integer(y));
+		if(panel[y][x] == null && panel[y][x+1] == null) return;
+		if(panel[y][x] == null){
+			panel[y][x+1].setOffset(Data.PANEL_SIZE,0);
+			panel[y][x] = panel[y][x+1];
+			panel[y][x+1] = null;
+			return;
+		}
+		if(panel[y][x+1] == null){
+			panel[y][x].setOffset(-Data.PANEL_SIZE,0);
+			panel[y][x+1] = panel[y][x];
+			panel[y][x] = null;
+			return;
+		}
+		panel[y][x].setOffset(-Data.PANEL_SIZE,0);
+		panel[y][x+1].setOffset(Data.PANEL_SIZE,0);
+		Panel tmp = panel[y][x];
+		panel[y][x] = panel[y][x+1];
+		panel[y][x+1] = tmp;
 	}
 
     private boolean fallingPanelExist(){
@@ -292,6 +293,7 @@ public class Field{
 			return;
 		}
 		if(scrollFrame + (10 - Data.lv) * 2 <= Data.frame || KeyStatus.scroll){
+			Data.replayScrollFrame.add(new Integer(Data.frame-startFrame));
 			Data.scrollOffset = (Data.scrollOffset + Data.SCROLL_UNIT) % Data.PANEL_SIZE;
 			if(Data.scrollOffset == 0){
 				appearNewLine();
@@ -335,6 +337,10 @@ public class Field{
 	}
 	
 	public void init(){
+		Data.replayScrollFrame.clear();
+		Data.replaySwapFrame.clear();
+		Data.replaySwapX.clear();
+		Data.replaySwapY.clear();
 		gameOverFrame = 0;
 		cursor = new Cursor(Data.INIT_CURSOR_X,Data.INIT_CURSOR_Y);
 		cursor.setLoopAble(false);

@@ -65,6 +65,8 @@ public class StageClear extends Field{
 	
 	public void init(){
 		super.init();
+		Data.seed = System.currentTimeMillis();
+		random.setSeed(Data.seed);
 		upNo = 0;
 		clearLine = -1;
 		Data.keyCansel = false;

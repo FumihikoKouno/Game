@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.awt.Color;
 
 class Ranking{
 	int mode;
@@ -7,13 +8,14 @@ class Ranking{
 	Record[] endless = new Record[10];
 	Record[] score = new Record[10];
 	Record[] stage = new Record[10];
+	boolean[] replayStatus = new boolean[3];
 	ScoreIO sIO = new ScoreIO();
 	public Ranking(){
 		cursor = new Cursor(0,0);
 	}
 	
 	public void init(){
-		sIO.makeRanking(endless,score,stage);
+		sIO.makeRanking(endless,score,stage,replayStatus);
 		cursor.setLoopAble(true);
 		Data.keyCansel = false;
 		Data.mouseCansel = false;
@@ -39,6 +41,8 @@ class Ranking{
 				0,0,Data.WIDTH,Data.HEIGHT,null);
 			for(int i = 0; i < endless.length; i++){
 				if(endless[i] == null) break;
+				if(endless[i].getReplay()) g.setColor(Color.RED);
+				else g.setColor(Color.WHITE);
 				g.drawString(endless[i].getName(),Data.RANKING_NAME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(endless[i].getScore()+"",Data.RANKING_SCORE_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(endless[i].getTime()+"",Data.RANKING_TIME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
@@ -46,6 +50,7 @@ class Ranking{
 				g.drawString(endless[i].getMaxDelete()+"",Data.RANKING_MAX_DELETE_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 			}
 			if((Data.frame % 60) < 30){
+				g.setColor(Color.WHITE);
 				g.drawString("Stage Clear",5*Data.zoom,470*Data.zoom);
 				g.drawString("Score Attack",500*Data.zoom,470*Data.zoom);
 				g.drawImage(Data.image.scoreChangeImage,0,400*Data.zoom,640*Data.zoom,427*Data.zoom,
@@ -57,6 +62,8 @@ class Ranking{
 				0,0,Data.WIDTH,Data.HEIGHT,null);
 			for(int i = 0; i < score.length; i++){
 				if(score[i] == null) break;
+				if(score[i].getReplay()) g.setColor(Color.RED);
+				else g.setColor(Color.WHITE);
 				g.drawString(score[i].getName(),Data.RANKING_NAME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(score[i].getScore()+"",Data.RANKING_SCORE_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(score[i].getTime()+"",Data.RANKING_TIME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
@@ -64,6 +71,7 @@ class Ranking{
 				g.drawString(score[i].getMaxDelete()+"",Data.RANKING_MAX_DELETE_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 			}
 			if((Data.frame % 60) < 30){
+				g.setColor(Color.WHITE);
 				g.drawString("Endless",5*Data.zoom,470*Data.zoom);
 				g.drawString("Stage Clear",500*Data.zoom,470*Data.zoom);
 				g.drawImage(Data.image.scoreChangeImage,0,400*Data.zoom,640*Data.zoom,427*Data.zoom,
@@ -75,6 +83,8 @@ class Ranking{
 				0,0,Data.WIDTH,Data.HEIGHT,null);
 			for(int i = 0; i < endless.length; i++){
 				if(stage[i] == null) break;
+				if(stage[i].getReplay()) g.setColor(Color.RED);
+				else g.setColor(Color.WHITE);
 				g.drawString(stage[i].getName(),Data.RANKING_NAME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(stage[i].getScore()+"",Data.RANKING_STAGE_SCORE_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(stage[i].getTime()+"",Data.RANKING_STAGE_TIME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
@@ -82,6 +92,7 @@ class Ranking{
 				g.drawString(stage[i].getMaxDelete()+"",Data.RANKING_MAX_DELETE_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 			}
 			if((Data.frame % 60) < 30){
+				g.setColor(Color.WHITE);
 				g.drawString("Score Attack",5*Data.zoom,470*Data.zoom);
 				g.drawString("Endless",500*Data.zoom,470*Data.zoom);
 				g.drawImage(Data.image.scoreChangeImage,0,400*Data.zoom,640*Data.zoom,427*Data.zoom,

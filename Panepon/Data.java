@@ -1,6 +1,7 @@
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Color;
+import java.util.ArrayList;
 
 public class Data{
     public static final int TITLE = 0;
@@ -9,7 +10,6 @@ public class Data{
 	public static final int STAGE_CLEAR = 3;
     public static final int DEMO = 4;
 	public static final int RANKING = 5;
-//	public static final int CONFIG = 6;
 	public static final int EXIT = 6;
 
 	public static boolean mouseCansel;
@@ -37,6 +37,12 @@ public class Data{
 	public static final int TITLE_CURSOR_X = 310;
 	public static final int TITLE_CURSOR_Y = 190;
 	public static final int TITLE_DIFFERENCE = 48;
+	
+	public static ArrayList<Integer> replayScrollFrame = new ArrayList<Integer>();
+	public static ArrayList<Integer> replaySwapFrame = new ArrayList<Integer>();
+	public static ArrayList<Integer> replaySwapX = new ArrayList<Integer>();
+	public static ArrayList<Integer> replaySwapY = new ArrayList<Integer>();
+	public static long seed;
 	
 	public static int cursorMaxX;
 	public static int cursorMaxY;

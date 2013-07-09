@@ -4,15 +4,18 @@ class Record{
 	private int time;
 	private int maxChain;
 	private int maxDelete;
+	private boolean replay;
 
-	public Record(String name, int score, int time, int maxChain, int maxDelete){
+	public Record(String name, int score, int time, int maxChain, int maxDelete, boolean replay){
 		this.name = name;
 		this.score = score;
 		this.time = time;
 		this.maxChain = maxChain;
 		this.maxDelete = maxDelete;
+		this.replay = replay;
 	}
 	
+	public boolean getReplay(){ return replay; }
 	public String getName(){ return name; }
 	public int getScore(){ return score; }
 	public int getTime(){ return time; }
