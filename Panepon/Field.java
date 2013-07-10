@@ -24,7 +24,7 @@ public class Field{
 	private boolean cursorReleased;
 	protected Random random = new Random();
 	protected Panel[][] panel = new Panel[Data.ROW][Data.COL];
-	private Cursor cursor;
+	protected Cursor cursor;
 	protected Panel[] newLine = new Panel[Data.COL];
 	private boolean mouseReleased;
 	

@@ -264,7 +264,8 @@ class ScoreIO{
 		is.read(tmp,0,8);
 		eSeed = 0;
 		for(int i = 0; i < 8; i++){
-		    eSeed += ( (tmp[i]&0xff) << (8*i) );
+				long bit = tmp[i];
+		    eSeed += ( (bit&0x00000000000000ffL) << (8*i) );
 		}
 		is.read(tmp,0,4);
 		int count = 0;
@@ -293,7 +294,8 @@ class ScoreIO{
 		is.read(tmp,0,8);
 		scSeed = 0;
 		for(int i = 0; i < 8; i++){
-		    scSeed += ( (tmp[i]&0xff) << (8*i) );
+				long bit = tmp[i];
+		    scSeed += ( (bit&0x00000000000000ffL) << (8*i) );
 		}
 		is.read(tmp,0,4);
 		int count = 0;
@@ -322,7 +324,8 @@ class ScoreIO{
 		is.read(tmp,0,8);
 		stSeed = 0;
 		for(int i = 0; i < 8; i++){
-		    stSeed += ( (tmp[i]&0xff) << (8*i) );
+				long bit = tmp[i];
+		    stSeed += ( (bit&0x00000000000000ffL) << (8*i) );
 		}
 		is.read(tmp,0,4);
 		int count = 0;
@@ -486,7 +489,7 @@ class ScoreIO{
 				if(replayST) os.write(0x01);
 				else os.write(0x00);
 				for(int i = 0; i < 8; i++){
-				    os.write((int)((Data.seed & (0xff << i*8)) >> i*8));
+				    os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
 				}
 				int len = Data.replayScrollFrame.size();
 				for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -508,7 +511,7 @@ class ScoreIO{
                                 }
 				if(replaySC){
 				    for(int i = 0; i < 8; i++){
-					os.write((int)((scSeed & (0xff << i*8)) >> i*8));
+					os.write((int)((scSeed & (0xffL << i*8)) >> i*8));
 				    }
 				    len = scScrollFrame.length;
 				    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -529,7 +532,7 @@ class ScoreIO{
 				}
 				if(replayST){
                                     for(int i = 0; i < 8; i++){
-                                        os.write((int)((stSeed & (0xff << i*8)) >> i*8));
+                                        os.write((int)((stSeed & (0xffL << i*8)) >> i*8));
                                     }
                                     len = stScrollFrame.length;
 				    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -613,7 +616,7 @@ class ScoreIO{
 
                                 if(replayE){
                                     for(int i = 0; i < 8; i++){
-                                        os.write((int)((eSeed & (0xff << i*8)) >> i*8));
+                                        os.write((int)((eSeed & (0xffL << i*8)) >> i*8));
                                     }
                                     int len = eScrollFrame.length;
 				    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -634,7 +637,7 @@ class ScoreIO{
                                 }
                                     
                                 for(int i = 0; i < 8; i++){
-                                    os.write((int)((Data.seed & (0xff << i*8)) >> i*8));
+                                    os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
                                 }
                                 int len = Data.replayScrollFrame.size();
                                 for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -657,7 +660,7 @@ class ScoreIO{
 
                                 if(replayST){
                                     for(int i = 0; i < 8; i++){
-                                        os.write((int)((stSeed & (0xff << i*8)) >> i*8));
+                                        os.write((int)((stSeed & (0xffL << i*8)) >> i*8));
                                     }
                                     len = stScrollFrame.length;
                                     for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -741,7 +744,7 @@ class ScoreIO{
 
                                 if(replayE){
                                     for(int i = 0; i < 8; i++){
-                                        os.write((int)((eSeed & (0xff << i*8)) >> i*8));
+                                        os.write((int)((eSeed & (0xffL << i*8)) >> i*8));
                                     }
                                     int len = eScrollFrame.length;
                                     for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -763,7 +766,7 @@ class ScoreIO{
 
                                 if(replaySC){
                                     for(int i = 0; i < 8; i++){
-                                        os.write((int)((scSeed & (0xff << i*8)) >> i*8));
+                                        os.write((int)((scSeed & (0xffL << i*8)) >> i*8));
                                     }
                                     int len = scScrollFrame.length;
                                     for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -784,7 +787,7 @@ class ScoreIO{
                                 }
 
                                 for(int i = 0; i < 8; i++){
-                                    os.write((int)((Data.seed & (0xff << i*8)) >> i*8));
+                                    os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
                                 }
                                 int len = Data.replayScrollFrame.size();
                                 for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -831,7 +834,7 @@ class ScoreIO{
 			    os.write(0x00);
 			    os.write(0x00);
 			    for(int i = 0; i < 8; i++){
-				os.write((int)((Data.seed & (0xff << i*8)) >> i*8));
+				os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
 			    }
 			    int len = Data.replayScrollFrame.size();
 			    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -879,7 +882,7 @@ class ScoreIO{
 			    os.write(0x00);
 
 			    for(int i = 0; i < 8; i++){
-				os.write((int)((Data.seed & (0xff << i*8)) >> i*8));
+				os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
 			    }
 			    int len = Data.replayScrollFrame.size();
 			    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
@@ -917,12 +920,12 @@ class ScoreIO{
 				os.write((Data.maxChain & (0xff<<i*8)) >> i*8);
 				os.write((Data.maxDelete & (0xff<<i*8)) >> i*8);
 			    }
-			    for(int i = 0; i < 8; i++){
-				os.write((int)((Data.seed & (0xff << i*8)) >> i*8));
-			    }
 			    os.write(0x00);
 			    os.write(0x00);
 			    os.write(0x01);
+			    for(int i = 0; i < 8; i++){
+				os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
+			    }
 			    int len = Data.replayScrollFrame.size();
 			    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
 			    for(int i = 0; i < len; i++){

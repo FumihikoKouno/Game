@@ -2,9 +2,12 @@ import java.awt.Graphics;
 import java.awt.Color;
 
 class Ranking{
-    Replay replay;
+	Replay replay;
 	int mode;
 	int offset;
+	int endlessLen;
+	int scoreLen;
+	int stageLen;
 	Cursor cursor;
 	Record[] endless = new Record[10];
 	Record[] score = new Record[10];
@@ -22,29 +25,84 @@ class Ranking{
 		Data.mouseCansel = false;
 		mode = Data.ENDLESS;
 		cursor.set(0,0);
-		Data.cursorMaxX = Data.STAGE_CLEAR - 1;
-		Data.cursorMaxY = 0;
+		for(int i = 0; i < endless.length; i++){
+			if(endless[i] == null){
+				endlessLen = i;
+				break;
+			}
+		}
+		for(int i = 0; i < score.length; i++){
+			if(score[i] == null){
+				scoreLen = i;
+				break;
+			}
+		}
+		for(int i = 0; i < stage.length; i++){
+			if(stage[i] == null){
+				stageLen = i;
+				break;
+			}
+		}
+		Data.cursorMaxX = 2;
+		Data.cursorMaxY = endlessLen-1;
 	}
 	
 	public void update(){
-	    if(replay != null){
+	if(replay != null){
 		replay.update();
+		if(replay.end()){
+			cursor.set(0,0);
+			Data.cursorMaxX = 2;
+			Data.cursorMaxY = endlessLen-1;
+			replay = null;
+		}
 		return;
-	    }
+	}
 		cursor.move();
-		mode = cursor.getX() + 1;
+		switch(cursor.getX()){
+		case 0:
+			mode = Data.ENDLESS;
+			Data.cursorMaxY = endlessLen-1;
+			break;
+		case 1:
+			mode = Data.SCORE_ATTACK;
+			Data.cursorMaxY = scoreLen-1;
+			break;
+		case 2:
+			mode = Data.STAGE_CLEAR;
+			Data.cursorMaxY = stageLen-1;
+			break;
+		}
+		if(Data.cursorMaxY < 0) Data.cursorMaxY = 0;
+		cursor.setY(cursor.getY());
 		if(KeyStatus.change) Data.gameStatus = Data.TITLE;
 		if(KeyStatus.enter){
+			String name = null;
+			int ty = cursor.getY();
+			KeyStatus.enter = false;
+			switch(mode){
+			case Data.ENDLESS:
+				if(endless[ty] != null && endless[ty].getReplay()) name = endless[ty].getName();
+				break;
+			case Data.SCORE_ATTACK:
+				if(score[ty] != null && score[ty].getReplay()) name = score[ty].getName();
+				break;
+			case Data.STAGE_CLEAR:
+				if(stage[ty] != null && stage[ty].getReplay()) name = stage[ty].getName();
+				break;
+			}
+			if(name != null){
 		    replay = new Replay();
-		    replay.setStatus(endless[0].getName(), Data.ENDLESS);
+		    replay.setStatus(name, mode);
 		    replay.init();
+			}
 		}
 	}
 	public void draw(Graphics g){
-	    if(replay != null){
-		replay.draw(g);
-		return;
-	    }
+		if(replay != null){
+			replay.draw(g);
+			return;
+		}
 		Data.setFont(g,Data.SCORE_FONT);
 		int drawX = 60*Data.zoom;
 		int drawY = 100*Data.zoom;
@@ -116,5 +174,6 @@ class Ranking{
 		default:
 			break;
 		}
+		cursor.draw(g,Data.RANKING);
 	}
 }

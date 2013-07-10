@@ -38,6 +38,10 @@ public class Data{
 	public static final int TITLE_CURSOR_Y = 190;
 	public static final int TITLE_DIFFERENCE = 48;
 	
+	public static final int RANKING_CURSOR_X = 5;
+	public static final int RANKING_CURSOR_Y = 93;
+	public static final int RANKING_DIFFERENCE = 29;
+	
 	public static ArrayList<Integer> replayScrollFrame = new ArrayList<Integer>();
 	public static ArrayList<Integer> replaySwapFrame = new ArrayList<Integer>();
 	public static ArrayList<Integer> replaySwapX = new ArrayList<Integer>();

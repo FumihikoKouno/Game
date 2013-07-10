@@ -24,6 +24,11 @@ class Cursor{
 		else if(x < 0) this.x = 0;
 		else this.x = x;
 	}
+	public void setY(int y){
+		if(y > Data.cursorMaxY) this.y = Data.cursorMaxY;
+		else if(y < 0) this.y = 0;
+		else this.y = y;
+	}
 	public void setLoopAble(boolean b){
 		loop = b;
 	}
@@ -81,6 +86,14 @@ class Cursor{
 		case Data.TITLE:
 			drawX = (Data.TITLE_CURSOR_X + 5 * ((Data.frame%30<15)?0:1))*Data.zoom;
 			drawY = (Data.TITLE_CURSOR_Y + Data.TITLE_DIFFERENCE * y)*Data.zoom;
+			width = Data.PANEL_SIZE;
+			height = Data.PANEL_SIZE;
+			imageX = 0;
+			imageY = Data.PANEL_SIZE;
+			break;
+		case Data.RANKING:
+			drawX = (Data.RANKING_CURSOR_X + 5 * ((Data.frame%30<15)?0:1))*Data.zoom;
+			drawY = (Data.RANKING_CURSOR_Y + Data.RANKING_DIFFERENCE * y)*Data.zoom;
 			width = Data.PANEL_SIZE;
 			height = Data.PANEL_SIZE;
 			imageX = 0;
