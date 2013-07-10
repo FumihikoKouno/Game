@@ -12,6 +12,7 @@ public class Endless extends Field{
 			}
 			if(gameOverFrame != 0 && gameOverFrame <= Data.frame){
 				new ScoreIO().output();
+				System.out.println(Data.seed);
 				Data.gameStatus = Data.TITLE;
 				Data.keyCansel = false;
 				Data.mouseCansel = false;

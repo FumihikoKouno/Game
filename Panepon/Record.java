@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class Record{
 	private String name;
 	private int score;
@@ -29,6 +31,6 @@ class Record{
 		return time < against.getTime();
 	}
 	public String toString(){
-		return (name+":: Score:"+score+", Time:"+time+", maxChain:"+maxChain+", maxDelete"+maxDelete);
+		return (name+":: Score:"+score+", Time:"+time+", maxChain:"+maxChain+", maxDelete:"+maxDelete+", replay:"+replay);
 	}
 }

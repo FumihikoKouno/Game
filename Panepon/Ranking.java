@@ -2,6 +2,7 @@ import java.awt.Graphics;
 import java.awt.Color;
 
 class Ranking{
+    Replay replay;
 	int mode;
 	int offset;
 	Cursor cursor;
@@ -26,11 +27,24 @@ class Ranking{
 	}
 	
 	public void update(){
+	    if(replay != null){
+		replay.update();
+		return;
+	    }
 		cursor.move();
 		mode = cursor.getX() + 1;
 		if(KeyStatus.change) Data.gameStatus = Data.TITLE;
+		if(KeyStatus.enter){
+		    replay = new Replay();
+		    replay.setStatus(endless[0].getName(), Data.ENDLESS);
+		    replay.init();
+		}
 	}
 	public void draw(Graphics g){
+	    if(replay != null){
+		replay.draw(g);
+		return;
+	    }
 		Data.setFont(g,Data.SCORE_FONT);
 		int drawX = 60*Data.zoom;
 		int drawY = 100*Data.zoom;
@@ -42,7 +56,7 @@ class Ranking{
 			for(int i = 0; i < endless.length; i++){
 				if(endless[i] == null) break;
 				if(endless[i].getReplay()) g.setColor(Color.RED);
-				else g.setColor(Color.WHITE);
+       				else g.setColor(Color.WHITE);
 				g.drawString(endless[i].getName(),Data.RANKING_NAME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(endless[i].getScore()+"",Data.RANKING_SCORE_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(endless[i].getTime()+"",Data.RANKING_TIME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
