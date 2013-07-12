@@ -14,9 +14,9 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 
 class ScoreIO{
-    private boolean replayE;
-    private boolean replaySC;
-    private boolean replayST;
+	private boolean replayE;
+	private boolean replaySC;
+	private boolean replayST;
 	private Record eRecord;
 	private Record scRecord;
 	private Record stRecord;
@@ -41,9 +41,62 @@ class ScoreIO{
 	private void statusPrint(String fileName){
 		System.out.println(fileName);
 		System.out.println("  status:");
-		System.out.println("    eRecord " + eRecord);
-		System.out.println("    scRecord " + scRecord);
-		System.out.println("    stRecord " + stRecord);
+		System.out.println("eRecord " + eRecord);
+		System.out.println("scRecord " + scRecord);
+		System.out.println("stRecord " + stRecord);
+	}
+	
+	public void makeModeRanking(Record[] r, int mode){
+		Record tmp = null;
+		switch(mode){
+		case Data.ENDLESS:
+			tmp = eRecord;
+			break;
+		case Data.SCORE_ATTACK:
+			tmp = scRecord;
+			break;
+		case Data.STAGE_CLEAR:
+			tmp = stRecord;
+			break;
+		}
+		if(tmp != null){
+			for(int j = 0; j < r.length; j++){
+				if(r[j] == null){
+					r[j] = tmp;
+					break;
+				}else{
+					if(mode == Data.STAGE_CLEAR){
+						if(tmp.haveShorterTimeThan(r[j])){
+							for(int k = r.length-1; k >= j; k--){
+								if(r[k] == null) continue;
+								if(k == r.length-1){
+									r[k] = null;
+								}else{
+									r[k+1] = r[k];
+									r[k] = null;
+								}
+							}
+							r[j] = tmp;
+							break;
+						}
+					}else{
+						if(tmp.haveHighScoreThan(r[j])){
+							for(int k = r.length-1; k >= j; k--){
+								if(r[k] == null) continue;
+								if(k == r.length-1){
+									r[k] = null;
+								}else{
+									r[k+1] = r[k];
+									r[k] = null;
+								}
+							}
+							r[j] = tmp;
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public void makeRanking(Record[] endless, Record[] scoreAttack, Record[] stageClear, boolean[] replayStatus){
@@ -62,300 +115,243 @@ class ScoreIO{
 				fileName = list[i].getName();
 				if(fileName.endsWith(".score")){
 					readFile(fileName);
-					if(eRecord != null){
-						for(int j = 0; j < endless.length; j++){
-							if(endless[j] == null){
-								endless[j] = eRecord;
-								break;
-							}else{
-								if(eRecord.haveHighScoreThan(endless[j])){
-									for(int k = endless.length-1; k >= j; k--){
-										if(endless[k] == null) continue;
-										if(k == endless.length-1){
-											endless[k] = null;
-										}else{
-											endless[k+1] = endless[k];
-											endless[k] = null;
-										}
-									}
-									endless[j] = eRecord;
-									break;
-								}
-							}
-						}
-					}
-					if(scRecord != null){
-						for(int j = 0; j < scoreAttack.length; j++){
-							if(scoreAttack[j] == null){
-								scoreAttack[j] = scRecord;
-								break;
-							}else{
-								if(scRecord.haveHighScoreThan(scoreAttack[j])){
-									for(int k = scoreAttack.length-1; k >= j; k--){
-										if(scoreAttack[k] == null) continue;
-										if(k == scoreAttack.length-1){
-											scoreAttack[k] = null;
-										}else{
-											scoreAttack[k+1] = scoreAttack[k];
-											scoreAttack[k] = null;
-										}
-									}
-									scoreAttack[j] = scRecord;
-									break;
-								}
-							}
-						}
-					}
-					if(stRecord != null){
-						for(int j = 0; j < stageClear.length; j++){
-							if(stageClear[j] == null){
-								stageClear[j] = stRecord;
-								break;
-							}else{
-								if(stRecord.haveShorterTimeThan(stageClear[j])){
-									for(int k = stageClear.length-1; k >= j; k--){
-										if(stageClear[k] == null) continue;
-										if(k == stageClear.length-1){
-											stageClear[k] = null;
-										}else{
-											stageClear[k+1] = stageClear[k];
-											stageClear[k] = null;
-										}
-									}
-									stageClear[j] = stRecord;
-									break;
-								}
-							}
-						}
-					}
+					makeModeRanking(endless,Data.ENDLESS);
+					makeModeRanking(scoreAttack,Data.SCORE_ATTACK);
+					makeModeRanking(stageClear,Data.STAGE_CLEAR);
 				}
 			}
 		}
 		return;
 	}
+
+	
+	public void writeDataRecord(BufferedOutputStream os){
+		try{
+			os.write(0x01);
+			for(int i = 0; i < 4; i++){
+				os.write((Data.score & (0xff<<i*8)) >> i*8);
+				os.write((Data.time & (0xff<<i*8)) >> i*8);
+				os.write((Data.maxChain & (0xff<<i*8)) >> i*8);
+				os.write((Data.maxDelete & (0xff<<i*8)) >> i*8);
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+	public void writeRecord(BufferedOutputStream os, int mode){
+		try{
+			Record tmp = null;
+			switch(mode){
+			case Data.ENDLESS:
+				tmp = eRecord;
+				break;
+			case Data.SCORE_ATTACK:
+				tmp = scRecord;
+				break;
+			case Data.STAGE_CLEAR:
+				tmp = stRecord;
+				break;
+			default:
+				return;
+			}
+			if(tmp == null){
+				for(int i = 0; i < 17; i++) os.write(0x00);
+			}else{
+				os.write(0x01);
+				for(int i = 0; i < 4; i++){
+					os.write((tmp.getScore() & (0xff<<i*8)) >> i*8);
+					os.write((tmp.getTime() & (0xff<<i*8)) >> i*8);
+					os.write((tmp.getMaxChain() & (0xff<<i*8)) >> i*8);
+					os.write((tmp.getMaxDelete() & (0xff<<i*8)) >> i*8);
+				}
+			}
+			
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
 	
 
-    public long getSeed(int mode){
-	switch(mode){
-	case Data.ENDLESS:
-	    return eSeed;
-	case Data.SCORE_ATTACK:
-	    return scSeed;
-	case Data.STAGE_CLEAR:
-	    return stSeed;
-	}
+	public long getSeed(int mode){
+		switch(mode){
+		case Data.ENDLESS:
+		return eSeed;
+		case Data.SCORE_ATTACK:
+		return scSeed;
+		case Data.STAGE_CLEAR:
+		return stSeed;
+		}
 	return -1L;
-    }
+  }
 
-    public int[] getScrollFrame(int mode){
+public int[] getScrollFrame(int mode){
 	switch(mode){
 	case Data.ENDLESS:
-	    return eScrollFrame;
+	return eScrollFrame;
 	case Data.SCORE_ATTACK:
-	    return scScrollFrame;
+	return scScrollFrame;
 	case Data.STAGE_CLEAR:
-	    return stScrollFrame;
+	return stScrollFrame;
 	}
 	return null;
-    }
-    public int[] getSwapX(int mode){
+}
+public int[] getSwapX(int mode){
 	switch(mode){
 	case Data.ENDLESS:
-	    return eSwapX;
+	return eSwapX;
 	case Data.SCORE_ATTACK:
-	    return scSwapX;
+	return scSwapX;
 	case Data.STAGE_CLEAR:
-	    return stSwapX;
+	return stSwapX;
 	}
 	return null;
-    }
+}
 
-    public int[] getSwapY(int mode){
+public int[] getSwapY(int mode){
 	switch(mode){
 	case Data.ENDLESS:
-	    return eSwapY;
+	return eSwapY;
 	case Data.SCORE_ATTACK:
-	    return scSwapY;
+	return scSwapY;
 	case Data.STAGE_CLEAR:
-	    return stSwapY;
+	return stSwapY;
 	}
 	return null;
-    }
+}
 
 
-    public int[] getSwapFrame(int mode){
+public int[] getSwapFrame(int mode){
 	switch(mode){
 	case Data.ENDLESS:
-	    return eSwapFrame;
+	return eSwapFrame;
 	case Data.SCORE_ATTACK:
-	    return scSwapFrame;
+	return scSwapFrame;
 	case Data.STAGE_CLEAR:
-	    return stSwapFrame;
+	return stSwapFrame;
 	}
 	return null;
-    }
+}
 
-    public void setReplayData(int mode, long s, int[] sf, int[] wf, int[] x, int[] y){
-	switch(mode){
-	case Data.ENDLESS:
-	    s = eSeed;
-	    sf = eScrollFrame;
-	    wf = eSwapFrame;
-	    x = eSwapX;
-	    y = eSwapY;
-	    break;
-	case Data.SCORE_ATTACK:
-	    s = scSeed;
-	    sf = scScrollFrame;
-	    wf = scSwapFrame;
-	    x = scSwapX;
-	    y = scSwapY;
-	    break;
-	case Data.STAGE_CLEAR:
-	    s = stSeed;
-	    sf = stScrollFrame;
-	    wf = stSwapFrame;
-	    x = stSwapX;
-	    y = stSwapY;
-	    break;
-	}
-    }
-
-    public void readReplayData(String name){
+public void readReplayData(String name){
 	try{
-	    byte[] tmp = new byte[51];
-	    BufferedInputStream is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name+".score")));
-	    is.read(tmp,0,51);
-	    readReplayData(is);
-	    is.close();
+	byte[] tmp = new byte[51];
+	BufferedInputStream is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name+".score")));
+	is.read(tmp,0,51);
+	readReplayData(is);
+	is.close();
 	}catch(FileNotFoundException e){
-	    e.printStackTrace();
+	e.printStackTrace();
 	}catch(IOException e){
-	    e.printStackTrace();
+	e.printStackTrace();
 	}
-    }
+}
 
-    public void readReplayData(BufferedInputStream is){
+	public void readModeReplayData(BufferedInputStream is, int mode){
+		try{
+			switch(mode){
+			case Data.ENDLESS:
+				if(!replayE) return;
+				break;
+			case Data.SCORE_ATTACK:
+				if(!replaySC) return;
+				break;
+			case Data.STAGE_CLEAR:
+				if(!replayST) return;
+				break;
+			}
+			byte[] tmp = new byte[8];
+			long tmpSeed = 0;
+			int[] tmpScrollFrame;
+			int[] tmpSwapFrame;
+			int[] tmpSwapX;
+			int[] tmpSwapY;
+			is.read(tmp,0,8);
+			tmpSeed = 0;
+			for(int i = 0; i < 8; i++){
+					long bit = tmp[i];
+					tmpSeed += ( (bit&0x00000000000000ffL) << (8*i) );
+			}
+			is.read(tmp,0,4);
+			int count = 0;
+			for(int i = 0; i < 4; i++) count += ( (tmp[i] & 0xff) << (8*i));
+			tmpScrollFrame = new int[count];
+			for(int i = 0; i < count; i++){
+				tmpScrollFrame[i] = 0;
+				is.read(tmp,0,4);
+				for(int j = 0; j < 4; j++) tmpScrollFrame[i] += ((tmp[j] & 0xff) << (8*j));
+			}
+			count = 0;
+			is.read(tmp,0,4);
+			for(int i = 0; i < 4; i++) count += ( (tmp[i] & 0xff) << (8*i));
+			tmpSwapFrame = new int[count];
+			tmpSwapX = new int[count];
+			tmpSwapY = new int[count];
+			for(int i = 0; i < count; i++){
+				is.read(tmp,0,6);
+				tmpSwapFrame[i] = 0;
+				for(int j = 0; j < 4; j++) tmpSwapFrame[i] += ((tmp[j]&0xff) << (8*j));
+				tmpSwapX[i] = tmp[4] & 0xff;
+				tmpSwapY[i] = tmp[5] & 0xff;
+			}
+			switch(mode){
+			case Data.ENDLESS:
+				eSeed = tmpSeed;
+				eScrollFrame = tmpScrollFrame;
+				eSwapFrame = tmpSwapFrame;
+				eSwapX = tmpSwapX;
+				eSwapY = tmpSwapY;
+				break;
+			case Data.SCORE_ATTACK:
+				scSeed = tmpSeed;
+				scScrollFrame = tmpScrollFrame;
+				scSwapFrame = tmpSwapFrame;
+				scSwapX = tmpSwapX;
+				scSwapY = tmpSwapY;
+				break;
+			case Data.STAGE_CLEAR:
+				stSeed = tmpSeed;
+				stScrollFrame = tmpScrollFrame;
+				stSwapFrame = tmpSwapFrame;
+				stSwapX = tmpSwapX;
+				stSwapY = tmpSwapY;
+				break;
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+public void readReplayData(BufferedInputStream is){
 	try{
-	    byte[] tmp = new byte[8];
-	    int flag = is.read(tmp,0,3);
-	    if(flag == -1){
+	byte[] tmp = new byte[8];
+	int flag = is.read(tmp,0,3);
+	if(flag == -1){
 		replayE = false;
 		replaySC = false;
 		replayST = false;
 		return;
-	    }
-	    if(tmp[0] == 0x01){
-		replayE = true;
-	    }else{
-		replayE = false;
-	    }
-	    if(tmp[1] == 0x01){
-		replaySC = true;
-	    }else{
-		replaySC = false;
-	    }
-	    if(tmp[2] == 0x01){
-		replayST = true;
-	    }else{
-		replayST = false;
-	    }
-	    if(replayE){
-		is.read(tmp,0,8);
-		eSeed = 0;
-		for(int i = 0; i < 8; i++){
-				long bit = tmp[i];
-		    eSeed += ( (bit&0x00000000000000ffL) << (8*i) );
-		}
-		is.read(tmp,0,4);
-		int count = 0;
-		for(int i = 0; i < 4; i++) count += ( (tmp[i] & 0xff) << (8*i));
-		eScrollFrame = new int[count];
-		for(int i = 0; i < count; i++){
-		    eScrollFrame[i] = 0;
-		    is.read(tmp,0,4);
-		    for(int j = 0; j < 4; j++) eScrollFrame[i] += ((tmp[j] & 0xff) << (8*j));
-		}
-		count = 0;
-		is.read(tmp,0,4);
-		for(int i = 0; i < 4; i++) count += ( (tmp[i] & 0xff) << (8*i));
-		eSwapFrame = new int[count];
-		eSwapX = new int[count];
-		eSwapY = new int[count];
-		for(int i = 0; i < count; i++){
-		    is.read(tmp,0,6);
-		    eSwapFrame[i] = 0;
-		    for(int j = 0; j < 4; j++) eSwapFrame[i] += ((tmp[j]&0xff) << (8*j));
-		    eSwapX[i] = tmp[4] & 0xff;
-		    eSwapY[i] = tmp[5] & 0xff;
-		}
-	    }
-	    if(replaySC){
-		is.read(tmp,0,8);
-		scSeed = 0;
-		for(int i = 0; i < 8; i++){
-				long bit = tmp[i];
-		    scSeed += ( (bit&0x00000000000000ffL) << (8*i) );
-		}
-		is.read(tmp,0,4);
-		int count = 0;
-		for(int i = 0; i < 4; i++) count += ( (tmp[i] & 0xff) << (8*i));
-		scScrollFrame = new int[count];
-		for(int i = 0; i < count; i++){
-		    scScrollFrame[i] = 0;
-		    is.read(tmp,0,4);
-		    for(int j = 0; j < 4; j++) scScrollFrame[i] += ((tmp[j] & 0xff) << (8*j));
-		}
-		count = 0;
-		is.read(tmp,0,4);
-		for(int i = 0; i < 4; i++) count += ( (tmp[i] & 0xff) << (8*i));
-		scSwapFrame = new int[count];
-		scSwapX = new int[count];
-		scSwapY = new int[count];
-		for(int i = 0; i < count; i++){
-		    is.read(tmp,0,6);
-		    scSwapFrame[i] = 0;
-		    for(int j = 0; j < 4; j++) scSwapFrame[i] += ((tmp[j]&0xff) << (8*j));
-		    scSwapX[i] = tmp[4] & 0xff;
-		    scSwapY[i] = tmp[5] & 0xff;
-		}
-	    }
-	    if(replayST){
-		is.read(tmp,0,8);
-		stSeed = 0;
-		for(int i = 0; i < 8; i++){
-				long bit = tmp[i];
-		    stSeed += ( (bit&0x00000000000000ffL) << (8*i) );
-		}
-		is.read(tmp,0,4);
-		int count = 0;
-		for(int i = 0; i < 4; i++) count += ( (tmp[i] & 0xff) << (8*i));
-		stScrollFrame = new int[count];
-		for(int i = 0; i < count; i++){
-		    stScrollFrame[i] = 0;
-		    is.read(tmp,0,4);
-		    for(int j = 0; j < 4; j++) stScrollFrame[i] += ((tmp[j] & 0xff) << (8*j));
-		}
-		count = 0;
-		is.read(tmp,0,4);
-		for(int i = 0; i < 4; i++) count += ( (tmp[i] & 0xff) << (8*i));
-		stSwapFrame = new int[count];
-		stSwapX = new int[count];
-		stSwapY = new int[count];
-		for(int i = 0; i < count; i++){
-		    is.read(tmp,0,6);
-		    stSwapFrame[i] = 0;
-		    for(int j = 0; j < 4; j++) stSwapFrame[i] += ((tmp[j]&0xff) << (8*j));
-		    stSwapX[i] = tmp[4] & 0xff;
-		    stSwapY[i] = tmp[5] & 0xff;
-		}
-	    }
-	}catch(IOException e){
-	    e.printStackTrace();
 	}
-    }
-    
+	replayE = (tmp[0] == 0x01);
+	replaySC = (tmp[1] == 0x01);
+	replayST = (tmp[2] == 0x01);
+		readModeReplayData(is,Data.ENDLESS);
+		readModeReplayData(is,Data.SCORE_ATTACK);
+		readModeReplayData(is,Data.STAGE_CLEAR);
+	}catch(IOException e){
+	e.printStackTrace();
+	}
+}
+
 	public void readFile(String name){
+		if(!(new File("./Score/"+name).exists())){
+			eRecord = null;
+			scRecord = null;
+			stRecord = null;
+			replayE = false;
+			replaySC = false;
+			replayST = false;
+			return;
+		}
 		int eScore = 0;
 		int eTime = 0;
 		int eMaxChain = 0;
@@ -404,8 +400,6 @@ class ScoreIO{
 			}else{
 				stRecord = null;
 			}
-			//			statusPrint(name);
-			
 			is.close();
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
@@ -414,546 +408,164 @@ class ScoreIO{
 		}
 	}
 	
-	public void output(){
-	    boolean updatable = false;
-	    File dir = new File("./Score");
-	    if(!dir.exists()){
-		dir.mkdir();
-	    }
-	    JFrame frame = new JFrame();
-	    String name = "";
-	    while(name != null && name.equals("")) name = JOptionPane.showInputDialog(frame, "–¼‘O‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢");
-	    if(name != null){
-		name += ".score";
-		if(new File("./Score/"+name).exists()){
-		    readFile(name);
-		    boolean update = false;
-		    int tmpScore;
-		    int tmpTime;
-		    int tmpMaxChain;
-		    int tmpMaxDelete;
-		    switch(Data.gameStatus){
-		    case Data.ENDLESS:
-			if(eRecord == null || eRecord.getScore() < Data.score){
-			    try {
-				BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
-				os.write(0x01);
-				for(int i = 0; i < 4; i++){
-				    os.write((Data.score & (0xff<<i*8)) >> i*8);
-				    os.write((Data.time & (0xff<<i*8)) >> i*8);
-				    os.write((Data.maxChain & (0xff<<i*8)) >> i*8);
-				    os.write((Data.maxDelete & (0xff<<i*8)) >> i*8);
-				}
-				if(scRecord != null){
-				    os.write(0x01);
-				    tmpScore = scRecord.getScore();
-				    tmpTime = scRecord.getTime();
-				    tmpMaxChain = scRecord.getMaxChain();
-				    tmpMaxDelete = scRecord.getMaxDelete();
-				}else{
-				    os.write(0x00);
-				    tmpScore = 0;
-				    tmpTime = 0;
-				    tmpMaxChain = 0;
-				    tmpMaxDelete = 0;
-				}
-				for(int i = 0; i < 4; i++){
-				    os.write((tmpScore & (0xff<<i*8)) >> i*8);
-				    os.write((tmpTime & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxChain & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxDelete & (0xff<<i*8)) >> i*8);
-				}							
-				if(stRecord != null){
-				    os.write(0x01);
-				    tmpScore = stRecord.getScore();
-				    tmpTime = stRecord.getTime();
-				    tmpMaxChain = stRecord.getMaxChain();
-				    tmpMaxDelete = stRecord.getMaxDelete();
-				}else{
-				    os.write(0x00);
-				    tmpScore = 0;
-				    tmpTime = 0;
-				    tmpMaxChain = 0;
-				    tmpMaxDelete = 0;
-				}
-				for(int i = 0; i < 4; i++){
-				    os.write((tmpScore & (0xff<<i*8)) >> i*8);
-				    os.write((tmpTime & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxChain & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxDelete & (0xff<<i*8)) >> i*8);
-				}
-
-				os.write(0x01);
-				if(replaySC) os.write(0x01);
-				else os.write(0x00);
-				if(replayST) os.write(0x01);
-				else os.write(0x00);
-				for(int i = 0; i < 8; i++){
-				    os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
-				}
-				int len = Data.replayScrollFrame.size();
-				for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-				for(int i = 0; i < len; i++){
-				    int scrollFrameTmp = Data.replayScrollFrame.get(i);
-				    for(int j = 0; j < 4; j++){
-					os.write((scrollFrameTmp & (0xff << j*8)) >> j*8);
-				    }
-				}
-				len = Data.replaySwapFrame.size();
-				for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                for(int i = 0; i < len; i++){
-                                    int swapFrameTmp = Data.replaySwapFrame.get(i);
-                                    for(int j = 0; j < 4; j++){
-                                        os.write((swapFrameTmp & (0xff << j*8)) >> j*8);
-                                    }
-				    os.write(Data.replaySwapX.get(i) & 0xff);
-				    os.write(Data.replaySwapY.get(i) & 0xff);
-                                }
-				if(replaySC){
-				    for(int i = 0; i < 8; i++){
-					os.write((int)((scSeed & (0xffL << i*8)) >> i*8));
-				    }
-				    len = scScrollFrame.length;
-				    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-				    for(int i = 0; i < len; i++){
-					for(int j = 0; j < 4; j++){
-					    os.write((scScrollFrame[i] & (0xff << j*8)) >> j*8);
-					}
-				    }
-				    len = scSwapFrame.length;
-				    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-				    for(int i = 0; i < len; i++){
-					for(int j = 0; j < 4; j++){
-					    os.write((scSwapFrame[i] & (0xff << j*8)) >> j*8);
-					}
-					os.write(scSwapX[i] & 0xff);
-					os.write(scSwapY[i] & 0xff);
-				    }
-				}
-				if(replayST){
-                                    for(int i = 0; i < 8; i++){
-                                        os.write((int)((stSeed & (0xffL << i*8)) >> i*8));
-                                    }
-                                    len = stScrollFrame.length;
-				    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((stScrollFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                    }
-                                    len = stSwapFrame.length;
-				    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((stSwapFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                        os.write(stSwapX[i] & 0xff);
-                                        os.write(stSwapY[i] & 0xff);
-                                    }
-
-				}
-				os.close();
-			    }catch(IOException e){
-				e.printStackTrace();
-			    }
+	public void writeReplay(BufferedOutputStream os, int mode){
+		try{
+			long tmpSeed;
+			int[] tmpScrollFrame;
+			int[] tmpSwapFrame;
+			int[] tmpSwapX;
+			int[] tmpSwapY;
+			int len;
+			switch(mode){
+			case Data.ENDLESS:
+				if(!replayE) return;
+					tmpSeed = eSeed;
+					tmpScrollFrame = eScrollFrame;
+					tmpSwapFrame = eSwapFrame;
+					tmpSwapX = eSwapX;
+					tmpSwapY = eSwapY;
+				break;
+			case Data.SCORE_ATTACK:
+				if(!replaySC) return;
+					tmpSeed = scSeed;
+					tmpScrollFrame = scScrollFrame;
+					tmpSwapFrame = scSwapFrame;
+					tmpSwapX = scSwapX;
+					tmpSwapY = scSwapY;
+				break;
+			case Data.STAGE_CLEAR:
+				if(!replayST) return;
+					tmpSeed = stSeed;
+					tmpScrollFrame = stScrollFrame;
+					tmpSwapFrame = stSwapFrame;
+					tmpSwapX = stSwapX;
+					tmpSwapY = stSwapY;
+				break;
+			default:
+				return;
 			}
-			break;
-		    case Data.SCORE_ATTACK:
-			if(scRecord == null || scRecord.getScore() < Data.score){
-			    try {
-				BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
-				if(eRecord != null){
-				    os.write(0x01);
-				    tmpScore = eRecord.getScore();
-				    tmpTime = eRecord.getTime();
-				    tmpMaxChain = eRecord.getMaxChain();
-				    tmpMaxDelete = eRecord.getMaxDelete();
-				}else{
-				    os.write(0x00);
-				    tmpScore = 0;
-				    tmpTime = 0;
-				    tmpMaxChain = 0;
-				    tmpMaxDelete = 0;
-				}
-				for(int i = 0; i < 4; i++){
-				    os.write((tmpScore & (0xff<<i*8)) >> i*8);
-				    os.write((tmpTime & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxChain & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxDelete & (0xff<<i*8)) >> i*8);
-				}
-				os.write(0x01);
-				for(int i = 0; i < 4; i++){
-				    os.write((Data.score & (0xff<<i*8)) >> i*8);
-				    os.write((Data.time & (0xff<<i*8)) >> i*8);
-				    os.write((Data.maxChain & (0xff<<i*8)) >> i*8);
-				    os.write((Data.maxDelete & (0xff<<i*8)) >> i*8);
-				}		
-				if(stRecord != null){
-				    os.write(0x01);
-				    tmpScore = stRecord.getScore();
-				    tmpTime = stRecord.getTime();
-				    tmpMaxChain = stRecord.getMaxChain();
-				    tmpMaxDelete = stRecord.getMaxDelete();
-				}else{
-				    os.write(0x00);
-				    tmpScore = 0;
-				    tmpTime = 0;
-				    tmpMaxChain = 0;
-				    tmpMaxDelete = 0;
-				}
-				for(int i = 0; i < 4; i++){
-				    os.write((tmpScore & (0xff<<i*8)) >> i*8);
-				    os.write((tmpTime & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxChain & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxDelete & (0xff<<i*8)) >> i*8);
-				}
-
-                                if(replayE) os.write(0x01);
-				else os.write(0x00);
-				os.write(0x01);
-                                if(replayST) os.write(0x01);
-                                else os.write(0x00);
-
-                                if(replayE){
-                                    for(int i = 0; i < 8; i++){
-                                        os.write((int)((eSeed & (0xffL << i*8)) >> i*8));
-                                    }
-                                    int len = eScrollFrame.length;
-				    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((eScrollFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                    }
-                                    len = eSwapFrame.length;
-				    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((eSwapFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                        os.write(eSwapX[i] & 0xff);
-                                        os.write(eSwapY[i] & 0xff);
-                                    }
-                                }
-                                    
-                                for(int i = 0; i < 8; i++){
-                                    os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
-                                }
-                                int len = Data.replayScrollFrame.size();
-                                for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                for(int i = 0; i < len; i++){
-                                    int scrollFrameTmp = Data.replayScrollFrame.get(i);
-                                    for(int j = 0; j < 4; j++){
-                                        os.write((scrollFrameTmp & (0xff << j*8)) >> j*8);
-                                    }
-                                }
-                                len = Data.replaySwapFrame.size();
-                                for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                for(int i = 0; i < len; i++){
-                                    int swapFrameTmp = Data.replaySwapFrame.get(i);
-                                    for(int j = 0; j < 4; j++){
-                                        os.write((swapFrameTmp & (0xff << j*8)) >> j*8);
-                                    }
-                                    os.write(Data.replaySwapX.get(i) & 0xff);
-                                    os.write(Data.replaySwapY.get(i) & 0xff);
-                                }
-
-                                if(replayST){
-                                    for(int i = 0; i < 8; i++){
-                                        os.write((int)((stSeed & (0xffL << i*8)) >> i*8));
-                                    }
-                                    len = stScrollFrame.length;
-                                    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((stScrollFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                    }
-                                    len = stSwapFrame.length;
-                                    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((stSwapFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                        os.write(stSwapX[i] & 0xff);
-                                        os.write(stSwapY[i] & 0xff);
-                                    }
-
-                                }
-				os.close();
-			    }catch(IOException e){
-				e.printStackTrace();
-			    }
+			for(int i = 0; i < 8; i++){
+				os.write((int)((tmpSeed & (0xffL << i*8)) >> i*8));
 			}
-			break;
-		    case Data.STAGE_CLEAR:
-			if(stRecord == null || stRecord.getTime() > Data.time){
-			    try {
-				BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
-				if(eRecord != null){
-				    os.write(0x01);
-				    tmpScore = eRecord.getScore();
-				    tmpTime = eRecord.getTime();
-				    tmpMaxChain = eRecord.getMaxChain();
-				    tmpMaxDelete = eRecord.getMaxDelete();
-				}else{
-				    os.write(0x00);
-				    tmpScore = 0;
-				    tmpTime = 0;
-				    tmpMaxChain = 0;
-				    tmpMaxDelete = 0;
+			len = tmpScrollFrame.length;
+			for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
+			for(int i = 0; i < len; i++){
+				for(int j = 0; j < 4; j++){
+				os.write((tmpScrollFrame[i] & (0xff << j*8)) >> j*8);
 				}
-				for(int i = 0; i < 4; i++){
-				    os.write((tmpScore & (0xff<<i*8)) >> i*8);
-				    os.write((tmpTime & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxChain & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxDelete & (0xff<<i*8)) >> i*8);
-				}
-				if(scRecord != null){
-				    os.write(0x01);
-				    tmpScore = scRecord.getScore();
-				    tmpTime = scRecord.getTime();
-				    tmpMaxChain = scRecord.getMaxChain();
-				    tmpMaxDelete = scRecord.getMaxDelete();
-				}else{
-				    os.write(0x00);
-				    tmpScore = 0;
-				    tmpTime = 0;
-				    tmpMaxChain = 0;
-				    tmpMaxDelete = 0;
-				}
-				for(int i = 0; i < 4; i++){
-				    os.write((tmpScore & (0xff<<i*8)) >> i*8);
-				    os.write((tmpTime & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxChain & (0xff<<i*8)) >> i*8);
-				    os.write((tmpMaxDelete & (0xff<<i*8)) >> i*8);
-				}
-				os.write(0x01);
-				for(int i = 0; i < 4; i++){
-				    os.write((Data.score & (0xff<<i*8)) >> i*8);
-				    os.write((Data.time & (0xff<<i*8)) >> i*8);
-				    os.write((Data.maxChain & (0xff<<i*8)) >> i*8);
-				    os.write((Data.maxDelete & (0xff<<i*8)) >> i*8);
-				}
-
-                                if(replayE) os.write(0x01);
-                                else os.write(0x00);
-                                if(replaySC) os.write(0x01);
-                                else os.write(0x00);
-                                os.write(0x01);
-
-                                if(replayE){
-                                    for(int i = 0; i < 8; i++){
-                                        os.write((int)((eSeed & (0xffL << i*8)) >> i*8));
-                                    }
-                                    int len = eScrollFrame.length;
-                                    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((eScrollFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                    }
-                                    len = eSwapFrame.length;
-                                    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((eSwapFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                        os.write(eSwapX[i] & 0xff);
-                                        os.write(eSwapY[i] & 0xff);
-                                    }
-                                }
-
-                                if(replaySC){
-                                    for(int i = 0; i < 8; i++){
-                                        os.write((int)((scSeed & (0xffL << i*8)) >> i*8));
-                                    }
-                                    int len = scScrollFrame.length;
-                                    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((scScrollFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                    }
-                                    len = scSwapFrame.length;
-                                    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                    for(int i = 0; i < len; i++){
-                                        for(int j = 0; j < 4; j++){
-                                            os.write((scSwapFrame[i] & (0xff << j*8)) >> j*8);
-                                        }
-                                        os.write(scSwapX[i] & 0xff);
-                                        os.write(scSwapY[i] & 0xff);
-                                    }
-                                }
-
-                                for(int i = 0; i < 8; i++){
-                                    os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
-                                }
-                                int len = Data.replayScrollFrame.size();
-                                for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-				for(int i = 0; i < len; i++){
-                                    int scrollFrameTmp = Data.replayScrollFrame.get(i);
-                                    for(int j = 0; j < 4; j++){
-                                        os.write((scrollFrameTmp & (0xff << j*8)) >> j*8);
-                                    }
-                                }
-                                len = Data.replaySwapFrame.size();
-                                for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-                                for(int i = 0; i < len; i++){
-                                    int swapFrameTmp = Data.replaySwapFrame.get(i);
-                                    for(int j = 0; j < 4; j++){
-                                        os.write((swapFrameTmp & (0xff << j*8)) >> j*8);
-                                    }
-                                    os.write(Data.replaySwapX.get(i) & 0xff);
-                                    os.write(Data.replaySwapY.get(i) & 0xff);
-                                }
-
-				os.close();
-			    }catch(IOException e){
-				e.printStackTrace();
-			    }
 			}
-			break;
-		    }
-		}else{
-		    switch(Data.gameStatus){
-		    case Data.ENDLESS:
-			try {
-			    BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
-			    os.write(0x01);
-			    for(int i = 0; i < 4; i++){
-				os.write((Data.score & (0xff<<i*8)) >> i*8);
-				os.write((Data.time & (0xff<<i*8)) >> i*8);
-				os.write((Data.maxChain & (0xff<<i*8)) >> i*8);
-				os.write((Data.maxDelete & (0xff<<i*8)) >> i*8);
-			    }
-			    for(int i = 0; i < 34; i++){
-				os.write(0x00);
-			    }
-			    os.write(0x01);
-			    os.write(0x00);
-			    os.write(0x00);
-			    for(int i = 0; i < 8; i++){
-				os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
-			    }
-			    int len = Data.replayScrollFrame.size();
-			    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-			    for(int i = 0; i < len; i++){
-				int scrollFrameTmp = Data.replayScrollFrame.get(i);
+			len = tmpSwapFrame.length;
+			for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
+			for(int i = 0; i < len; i++){
 				for(int j = 0; j < 4; j++){
-				    os.write((scrollFrameTmp & (0xff << j*8)) >> j*8);
+					os.write((tmpSwapFrame[i] & (0xff << j*8)) >> j*8);
 				}
-			    }
-			    len = Data.replaySwapFrame.size();
-			    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-			    for(int i = 0; i < len; i++){
-				int swapFrameTmp = Data.replaySwapFrame.get(i);
-				for(int j = 0; j < 4; j++){
-				    os.write((swapFrameTmp & (0xff << j*8)) >> j*8);
-				}
-				os.write(Data.replaySwapX.get(i) & 0xff);
-				os.write(Data.replaySwapY.get(i) & 0xff);
-			    }
-
-			    os.close();
-			}catch(IOException e){
-			    e.printStackTrace();
+				os.write(tmpSwapX[i] & 0xff);
+				os.write(tmpSwapY[i] & 0xff);
 			}
-			break;
-		    case Data.SCORE_ATTACK:
-			try {
-			    BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
-			    for(int i = 0; i < 17; i++){
-				os.write(0x00);
-			    }
-			    os.write(0x01);
-			    for(int i = 0; i < 4; i++){
-				os.write((Data.score & (0xff<<i*8)) >> i*8);
-				os.write((Data.time & (0xff<<i*8)) >> i*8);
-				os.write((Data.maxChain & (0xff<<i*8)) >> i*8);
-				os.write((Data.maxDelete & (0xff<<i*8)) >> i*8);
-			    }
-			    for(int i = 0; i < 17; i++){
-				os.write(0x00);
-			    }
-
-			    os.write(0x00);
-			    os.write(0x01);
-			    os.write(0x00);
-
-			    for(int i = 0; i < 8; i++){
-				os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
-			    }
-			    int len = Data.replayScrollFrame.size();
-			    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-			    for(int i = 0; i < len; i++){
-				int scrollFrameTmp = Data.replayScrollFrame.get(i);
-				for(int j = 0; j < 4; j++){
-				    os.write((scrollFrameTmp & (0xff << j*8)) >> j*8);
-				}
-			    }
-			    len = Data.replaySwapFrame.size();
-			    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-			    for(int i = 0; i < len; i++){
-				int swapFrameTmp = Data.replaySwapFrame.get(i);
-				for(int j = 0; j < 4; j++){
-				    os.write((swapFrameTmp & (0xff << j*8)) >> j*8);
-				}
-				os.write(Data.replaySwapX.get(i) & 0xff);
-				os.write(Data.replaySwapY.get(i) & 0xff);
-			    }
-			    os.close();
-			}catch(IOException e){
-			    e.printStackTrace();
-			}
-			break;
-		    case Data.STAGE_CLEAR:
-			try {
-			    BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
-			    for(int i = 0; i < 34; i++){
-				os.write(0x00);
-			    }
-			    os.write(0x01);
-			    for(int i = 0; i < 4; i++){
-				os.write((Data.score & (0xff<<i*8)) >> i*8);
-				os.write((Data.time & (0xff<<i*8)) >> i*8);
-				os.write((Data.maxChain & (0xff<<i*8)) >> i*8);
-				os.write((Data.maxDelete & (0xff<<i*8)) >> i*8);
-			    }
-			    os.write(0x00);
-			    os.write(0x00);
-			    os.write(0x01);
-			    for(int i = 0; i < 8; i++){
-				os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
-			    }
-			    int len = Data.replayScrollFrame.size();
-			    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-			    for(int i = 0; i < len; i++){
-				int scrollFrameTmp = Data.replayScrollFrame.get(i);
-				for(int j = 0; j < 4; j++){
-				    os.write((scrollFrameTmp & (0xff << j*8)) >> j*8);
-				}
-			    }
-			    len = Data.replaySwapFrame.size();
-			    for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
-			    for(int i = 0; i < len; i++){
-				int swapFrameTmp = Data.replaySwapFrame.get(i);
-				for(int j = 0; j < 4; j++){
-				    os.write((swapFrameTmp & (0xff << j*8)) >> j*8);
-				}
-				os.write(Data.replaySwapX.get(i) & 0xff);
-				os.write(Data.replaySwapY.get(i) & 0xff);
-			    }
-			    os.close();
-			}catch(IOException e){
-			    e.printStackTrace();
-			}
-			break;
-		    }
-		    
+		}catch(IOException e){
+			e.printStackTrace();
 		}
-	    }
 	}
-	private void input(){
+	
+	public void writeDataReplay(BufferedOutputStream os){
+		try{
+			for(int i = 0; i < 8; i++){
+				os.write((int)((Data.seed & (0xffL << i*8)) >> i*8));
+			}
+			int len = Data.replayScrollFrame.size();
+			for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
+			for(int i = 0; i < len; i++){
+				int scrollFrameTmp = Data.replayScrollFrame.get(i);
+				for(int j = 0; j < 4; j++){
+					os.write((scrollFrameTmp & (0xff << j*8)) >> j*8);
+				}
+			}
+			len = Data.replaySwapFrame.size();
+			for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
+			for(int i = 0; i < len; i++){
+				int swapFrameTmp = Data.replaySwapFrame.get(i);
+				for(int j = 0; j < 4; j++){
+					os.write((swapFrameTmp & (0xff << j*8)) >> j*8);
+				}
+				os.write(Data.replaySwapX.get(i) & 0xff);
+				os.write(Data.replaySwapY.get(i) & 0xff);
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 	}
+	
+	public void output(){
+		boolean updatable = false;
+		File dir = new File("./Score");
+		if(!dir.exists()){
+			dir.mkdir();
+		}
+		JFrame frame = new JFrame();
+		String name = "";
+		while(name != null && name.equals("")) name = JOptionPane.showInputDialog(frame, "–¼‘O‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢");
+		if(name != null){
+			name += ".score";
+			boolean update = false;
+			readFile(name);
+			try{
+				BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
+				switch(Data.gameStatus){
+				case Data.ENDLESS:
+					update = (eRecord == null || eRecord.getScore() < Data.score);
+					if(update) writeDataRecord(os);
+					else writeRecord(os,Data.ENDLESS);
+					writeRecord(os,Data.SCORE_ATTACK);
+					writeRecord(os,Data.STAGE_CLEAR);
+					os.write(0x01);
+					if(replaySC) os.write(0x01);
+					else os.write(0x00);
+					if(replayST) os.write(0x01);
+					else os.write(0x00);
+					if(update) writeDataReplay(os);
+					else writeReplay(os,Data.ENDLESS);
+					writeReplay(os,Data.SCORE_ATTACK);
+					writeReplay(os,Data.STAGE_CLEAR);
+					break;
+				case Data.SCORE_ATTACK:
+					update = (scRecord == null || scRecord.getScore() < Data.score);
+					writeRecord(os,Data.ENDLESS);
+					if(update) writeDataRecord(os);
+					else writeRecord(os,Data.SCORE_ATTACK);
+					writeRecord(os,Data.STAGE_CLEAR);
+					if(replayE) os.write(0x01);
+					else os.write(0x00);
+					os.write(0x01);
+					if(replayST) os.write(0x01);
+					else os.write(0x00);
+					writeReplay(os,Data.ENDLESS);
+					if(update) writeDataReplay(os);
+					else writeReplay(os,Data.SCORE_ATTACK);
+					writeReplay(os,Data.STAGE_CLEAR);
+					break;
+				case Data.STAGE_CLEAR:
+					update = (stRecord == null || stRecord.getTime() > Data.time);
+					writeRecord(os,Data.ENDLESS);
+					writeRecord(os,Data.SCORE_ATTACK);
+					if(update) writeDataRecord(os);
+					else writeRecord(os,Data.STAGE_CLEAR);
+					if(replayE) os.write(0x01);
+					else os.write(0x00);
+					if(replaySC) os.write(0x01);
+					else os.write(0x00);
+					os.write(0x01);
+					writeReplay(os,Data.ENDLESS);
+					writeReplay(os,Data.SCORE_ATTACK);
+					if(update) writeDataReplay(os);
+					else writeReplay(os,Data.STAGE_CLEAR);
+					break;
+				}
+				os.close();
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
 }
