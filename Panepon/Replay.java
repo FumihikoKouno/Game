@@ -14,11 +14,16 @@ public class Replay extends Field{
 	
 	private int scrollIndex;
 	private int swapIndex;
+	private int cursorIndex;
 	private long rseed;
 	private int[] rscrollFrame;
 	private int[] rswapFrame;
 	private int[] rswapX;
 	private int[] rswapY;
+	private int[] rcursorFrame;
+	private int[] rcursorX;
+	private int[] rcursorY;
+	
 	
 	public boolean end(){
 		return end;
@@ -88,7 +93,15 @@ public class Replay extends Field{
 	}
 	
 	protected void appearNewLine(){
-		super.appearNewLine();
+		for(int i = 1; i < Data.ROW; i++){
+			for(int j = 0; j < Data.COL; j++){
+			panel[i-1][j] = panel[i][j];
+			}
+		}
+		for(int i = 0; i < Data.COL; i++){
+			panel[Data.ROW-1][i] = newLine[i];
+		}
+		createNewLine();
 		if(mode == Data.STAGE_CLEAR){
 			upNo++;
 			if(upNo == Data.CLEAR_LINE){
@@ -105,6 +118,7 @@ public class Replay extends Field{
 		random.setSeed(rseed);
 		scrollIndex = 0;
 		swapIndex = 0;
+		cursorIndex = 0;
 		upNo = 0;
 		clearLine = -1;
 		Data.keyCansel = true;
@@ -132,15 +146,25 @@ public class Replay extends Field{
 		rswapFrame = io.getSwapFrame(mode);
 		rswapX = io.getSwapX(mode);
 		rswapY = io.getSwapY(mode);
+		rcursorFrame = io.getCursorFrame(mode);
+		rcursorX = io.getCursorX(mode);
+		rcursorY = io.getCursorY(mode);
 	}
 	
 	public void update(){
+		if(cursorIndex < rcursorFrame.length){
+			if(Data.frame-startFrame == rcursorFrame[cursorIndex]){
+				int tx = rcursorX[cursorIndex];
+				int ty = rcursorY[cursorIndex];
+				cursor.set(tx,ty);
+				cursorIndex++;
+			}
+		}
 		if(swapIndex < rswapFrame.length){
 			if(Data.frame-startFrame == rswapFrame[swapIndex]){
 				int tx = rswapX[swapIndex];
 				int ty = rswapY[swapIndex];
 				swapPanel(tx,ty);
-				cursor.set(tx,ty);
 				swapIndex++;
 			}
 		}

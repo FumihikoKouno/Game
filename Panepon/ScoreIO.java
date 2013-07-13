@@ -35,6 +35,15 @@ class ScoreIO{
 	private int[] eSwapY;
 	private int[] scSwapY;
 	private int[] stSwapY;
+	private int[] eCursorFrame;
+	private int[] eCursorX;
+	private int[] eCursorY;
+	private int[] scCursorFrame;
+	private int[] scCursorX;
+	private int[] scCursorY;
+	private int[] stCursorFrame;
+	private int[] stCursorX;
+	private int[] stCursorY;
 	
 	public ScoreIO(){}
 	
@@ -218,6 +227,42 @@ class ScoreIO{
 		}
 		return null;
 	}
+	public int[] getCursorX(int mode){
+		switch(mode){
+		case Data.ENDLESS:
+		return eCursorX;
+		case Data.SCORE_ATTACK:
+		return scCursorX;
+		case Data.STAGE_CLEAR:
+		return stCursorX;
+		}
+		return null;
+	}
+
+	public int[] getCursorY(int mode){
+		switch(mode){
+		case Data.ENDLESS:
+		return eCursorY;
+		case Data.SCORE_ATTACK:
+		return scCursorY;
+		case Data.STAGE_CLEAR:
+		return stCursorY;
+		}
+		return null;
+	}
+
+
+	public int[] getCursorFrame(int mode){
+		switch(mode){
+		case Data.ENDLESS:
+		return eCursorFrame;
+		case Data.SCORE_ATTACK:
+		return scCursorFrame;
+		case Data.STAGE_CLEAR:
+		return stCursorFrame;
+		}
+		return null;
+	}
 
 	public void readReplayData(String name){
 		try{
@@ -252,6 +297,9 @@ class ScoreIO{
 			int[] tmpSwapFrame;
 			int[] tmpSwapX;
 			int[] tmpSwapY;
+			int[] tmpCursorFrame;
+			int[] tmpCursorX;
+			int[] tmpCursorY;
 			is.read(tmp,0,8);
 			tmpSeed = 0;
 			for(int i = 0; i < 8; i++){
@@ -280,6 +328,19 @@ class ScoreIO{
 				tmpSwapX[i] = tmp[4] & 0xff;
 				tmpSwapY[i] = tmp[5] & 0xff;
 			}
+			count = 0;
+			is.read(tmp,0,4);
+			for(int i = 0; i < 4; i++) count += ( (tmp[i] & 0xff) << (8*i));
+			tmpCursorFrame = new int[count];
+			tmpCursorX = new int[count];
+			tmpCursorY = new int[count];
+			for(int i = 0; i < count; i++){
+				is.read(tmp,0,6);
+				tmpCursorFrame[i] = 0;
+				for(int j = 0; j < 4; j++) tmpCursorFrame[i] += ((tmp[j]&0xff) << (8*j));
+				tmpCursorX[i] = tmp[4] & 0xff;
+				tmpCursorY[i] = tmp[5] & 0xff;
+			}
 			switch(mode){
 			case Data.ENDLESS:
 				eSeed = tmpSeed;
@@ -287,6 +348,9 @@ class ScoreIO{
 				eSwapFrame = tmpSwapFrame;
 				eSwapX = tmpSwapX;
 				eSwapY = tmpSwapY;
+				eCursorFrame = tmpCursorFrame;
+				eCursorX = tmpCursorX;
+				eCursorY = tmpCursorY;
 				break;
 			case Data.SCORE_ATTACK:
 				scSeed = tmpSeed;
@@ -294,6 +358,9 @@ class ScoreIO{
 				scSwapFrame = tmpSwapFrame;
 				scSwapX = tmpSwapX;
 				scSwapY = tmpSwapY;
+				scCursorFrame = tmpCursorFrame;
+				scCursorX = tmpCursorX;
+				scCursorY = tmpCursorY;
 				break;
 			case Data.STAGE_CLEAR:
 				stSeed = tmpSeed;
@@ -301,6 +368,9 @@ class ScoreIO{
 				stSwapFrame = tmpSwapFrame;
 				stSwapX = tmpSwapX;
 				stSwapY = tmpSwapY;
+				stCursorFrame = tmpCursorFrame;
+				stCursorX = tmpCursorX;
+				stCursorY = tmpCursorY;
 				break;
 			}
 		}catch(IOException e){
@@ -402,6 +472,9 @@ public void readReplayData(BufferedInputStream is){
 			int[] tmpSwapFrame;
 			int[] tmpSwapX;
 			int[] tmpSwapY;
+			int[] tmpCursorFrame;
+			int[] tmpCursorX;
+			int[] tmpCursorY;
 			int len;
 			switch(mode){
 			case Data.ENDLESS:
@@ -411,6 +484,9 @@ public void readReplayData(BufferedInputStream is){
 				tmpSwapFrame = eSwapFrame;
 				tmpSwapX = eSwapX;
 				tmpSwapY = eSwapY;
+				tmpCursorFrame = eCursorFrame;
+				tmpCursorX = eCursorX;
+				tmpCursorY = eCursorY;
 				break;
 			case Data.SCORE_ATTACK:
 				if(!replaySC) return;
@@ -419,6 +495,9 @@ public void readReplayData(BufferedInputStream is){
 				tmpSwapFrame = scSwapFrame;
 				tmpSwapX = scSwapX;
 				tmpSwapY = scSwapY;
+				tmpCursorFrame = scCursorFrame;
+				tmpCursorX = scCursorX;
+				tmpCursorY = scCursorY;
 				break;
 			case Data.STAGE_CLEAR:
 				if(!replayST) return;
@@ -427,6 +506,9 @@ public void readReplayData(BufferedInputStream is){
 				tmpSwapFrame = stSwapFrame;
 				tmpSwapX = stSwapX;
 				tmpSwapY = stSwapY;
+				tmpCursorFrame = stCursorFrame;
+				tmpCursorX = stCursorX;
+				tmpCursorY = stCursorY;
 				break;
 			default:
 				tmpSeed = Data.seed;
@@ -441,6 +523,15 @@ public void readReplayData(BufferedInputStream is){
 					tmpSwapFrame[i] = Data.replaySwapFrame.get(i);
 					tmpSwapX[i] = Data.replaySwapX.get(i);
 					tmpSwapY[i] = Data.replaySwapY.get(i);
+				}
+				len = Data.replayCursorFrame.size();
+				tmpCursorFrame = new int[len];
+				tmpCursorX = new int[len];
+				tmpCursorY = new int[len];
+				for(int i = 0; i < len; i++){
+					tmpCursorFrame[i] = Data.replayCursorFrame.get(i);
+					tmpCursorX[i] = Data.replayCursorX.get(i);
+					tmpCursorY[i] = Data.replayCursorY.get(i);
 				}
 				break;
 			}
@@ -462,6 +553,15 @@ public void readReplayData(BufferedInputStream is){
 				}
 				os.write(tmpSwapX[i] & 0xff);
 				os.write(tmpSwapY[i] & 0xff);
+			}
+			len = tmpCursorFrame.length;
+			for(int i = 0; i < 4; i++) os.write((len & (0xff << i*8)) >> i*8);
+			for(int i = 0; i < len; i++){
+				for(int j = 0; j < 4; j++){
+					os.write((tmpCursorFrame[i] & (0xff << j*8)) >> j*8);
+				}
+				os.write(tmpCursorX[i] & 0xff);
+				os.write(tmpCursorY[i] & 0xff);
 			}
 		}catch(IOException e){
 			e.printStackTrace();

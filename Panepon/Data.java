@@ -4,11 +4,11 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public class Data{
-    public static final int TITLE = 0;
-    public static final int ENDLESS = 1;
-    public static final int SCORE_ATTACK = 2;
+	public static final int TITLE = 0;
+	public static final int ENDLESS = 1;
+	public static final int SCORE_ATTACK = 2;
 	public static final int STAGE_CLEAR = 3;
-    public static final int DEMO = 4;
+	public static final int DEMO = 4;
 	public static final int RANKING = 5;
 	public static final int EXIT = 6;
 
@@ -42,6 +42,9 @@ public class Data{
 	public static final int RANKING_CURSOR_Y = 93;
 	public static final int RANKING_DIFFERENCE = 29;
 	
+	public static ArrayList<Integer> replayCursorFrame = new ArrayList<Integer>();
+	public static ArrayList<Integer> replayCursorX = new ArrayList<Integer>();
+	public static ArrayList<Integer> replayCursorY = new ArrayList<Integer>();
 	public static ArrayList<Integer> replayScrollFrame = new ArrayList<Integer>();
 	public static ArrayList<Integer> replaySwapFrame = new ArrayList<Integer>();
 	public static ArrayList<Integer> replaySwapX = new ArrayList<Integer>();
@@ -51,28 +54,28 @@ public class Data{
 	public static int cursorMaxX;
 	public static int cursorMaxY;
 	public static int scrollOffset;
-    public static final int PANEL_SIZE = 32;
-    public static final int SCROLL_UNIT = 4;
-    public static final int DELETE_RAG = 10;
-    public static final int DELETE_TIME = 50;
-    public static final int DELETE_DIFFERENCE_TIME = 10;
-    public static final int MPF = PANEL_SIZE/2;
-    public static int GRAVITY = 16;
-    public static final int PANEL_NUMBER = 6;
-    public static final int INIT_CURSOR_X = 2;
-    public static final int INIT_CURSOR_Y = 8;
-    public static final int WIDTH = 640;
-    public static final int HEIGHT = 480;
-    public static int frame;
-    public static int lv;
-    public static int chain;
-    public static final int fps = 30;
-    public static final int ROW = 10;
-    public static final int COL = 6;
-    public static final int FIELD_START_X = 178;
-    public static final int FIELD_START_Y = 64;
-    public static final int TIME_LIMIT = fps*120;
-    public static final int CLEAR_LINE = 20;
+	public static final int PANEL_SIZE = 32;
+	public static final int SCROLL_UNIT = 4;
+	public static final int DELETE_RAG = 10;
+	public static final int DELETE_TIME = 50;
+	public static final int DELETE_DIFFERENCE_TIME = 10;
+	public static final int MPF = PANEL_SIZE/2;
+	public static int GRAVITY = 16;
+	public static final int PANEL_NUMBER = 6;
+	public static final int INIT_CURSOR_X = 2;
+	public static final int INIT_CURSOR_Y = 8;
+	public static final int WIDTH = 640;
+	public static final int HEIGHT = 480;
+	public static int frame;
+	public static int lv;
+	public static int chain;
+	public static final int fps = 30;
+	public static final int ROW = 10;
+	public static final int COL = 6;
+	public static final int FIELD_START_X = 178;
+	public static final int FIELD_START_Y = 64;
+	public static final int TIME_LIMIT = fps*120;
+	public static final int CLEAR_LINE = 20;
 	
 	public static boolean mousePressed = false;
 	public static int pressedX;
@@ -99,16 +102,16 @@ public class Data{
 	
 	public static final int EFFECT_TIME = 20;
 	
-    public static int maxChain;
-    public static int score;
-    public static int maxDelete;
-    
-    public static int gameStatus = TITLE;
-    
-    public static final ImageData image = new ImageData();
-    
-    private static int debugCount;
-    
+	public static int maxChain;
+	public static int score;
+	public static int maxDelete;
+
+	public static int gameStatus = TITLE;
+
+	public static final ImageData image = new ImageData();
+
+	private static int debugCount;
+
 	public static final int SCORE_FONT = 0;
 	public static final int MESSAGE_FONT = 1;
 	
@@ -124,11 +127,10 @@ public class Data{
 			break;
 		}
 	}
-	
-	
-    public static void debugPrint(String s){
+
+	public static void debugPrint(String s){
 		debugCount++;
 		System.out.println("frame " + frame + " : " + s);
-    }
+	}
     
 }

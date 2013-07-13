@@ -10,7 +10,7 @@ class Cursor{
 	}
 	public int getX(){ return x; }
 	public int getY(){ return y; }
-		public void moveUp(){ y = Math.max(y-1,0); }
+	public void moveUp(){ y = Math.max(y-1,0); }
 	public void set(int x, int y){
 		if(x > Data.cursorMaxX) this.x = Data.cursorMaxX;
 		else if(x < 0) this.x = 0;

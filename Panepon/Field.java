@@ -32,6 +32,8 @@ public class Field{
 		if(startFrame > Data.frame) return;
 		gameOver();
 		if(gameOverFrame != 0) return;
+		int ty = cursor.getY();
+		int tx = cursor.getX();
 		Data.lv = Data.score/1000;
 		if(Data.lv > 9) Data.lv = 9;
 		if(!Data.mousePressed){
@@ -65,6 +67,13 @@ public class Field{
 		deletePanels();
 		endPanels();
 		deleteEffect();
+		int cx = cursor.getX();
+		int cy = cursor.getY();
+		if(ty != cy || tx != cx){
+			Data.replayCursorFrame.add(new Integer(Data.frame-startFrame));
+			Data.replayCursorX.add(new Integer(cx));
+			Data.replayCursorY.add(new Integer(cy));
+		}
 		if(Data.maxChain < Data.chain) Data.maxChain = Data.chain;
 		if(chainResetable()) Data.chain = 0;
 	}
@@ -341,6 +350,9 @@ public class Field{
 		Data.replaySwapFrame.clear();
 		Data.replaySwapX.clear();
 		Data.replaySwapY.clear();
+		Data.replayCursorFrame.clear();
+		Data.replayCursorX.clear();
+		Data.replayCursorY.clear();
 		gameOverFrame = 0;
 		cursor = new Cursor(Data.INIT_CURSOR_X,Data.INIT_CURSOR_Y);
 		cursor.setLoopAble(false);
