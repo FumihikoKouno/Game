@@ -55,6 +55,26 @@ class ScoreIO{
 		System.out.println("stRecord " + stRecord);
 	}
 	
+	public void reWriteData(){
+		File dir = new File("./Score");
+		File[] list;
+		String name;
+		String fileName;
+		if(dir.exists() && dir.isDirectory()){
+			list = dir.listFiles();
+			for(int i = 0; i < list.length; i++){
+				fileName = list[i].getName();
+				if(fileName.endsWith(".score")){
+					readFile(fileName);
+					System.out.println("read:"+fileName);
+					writeFile(fileName,-1);
+					System.out.println("wrote:"+fileName);
+				}
+			}
+		}
+		return;
+	}
+	
 	public void makeModeRanking(Record[] r, int mode){
 		Record tmp = null;
 		switch(mode){
@@ -167,7 +187,6 @@ class ScoreIO{
 		}
 	}
 	
-
 	public long getSeed(int mode){
 		switch(mode){
 		case Data.ENDLESS:
@@ -290,6 +309,8 @@ class ScoreIO{
 			case Data.STAGE_CLEAR:
 				if(!replayST) return;
 				break;
+			default:
+				return;
 			}
 			byte[] tmp = new byte[8];
 			long tmpSeed = 0;
@@ -378,26 +399,26 @@ class ScoreIO{
 		}
 	}
 	
-public void readReplayData(BufferedInputStream is){
-	try{
-		byte[] tmp = new byte[8];
-		int flag = is.read(tmp,0,3);
-		if(flag == -1){
-			replayE = false;
-			replaySC = false;
-			replayST = false;
-			return;
+	public void readReplayData(BufferedInputStream is){
+		try{
+			byte[] tmp = new byte[8];
+			int flag = is.read(tmp,0,3);
+			if(flag == -1){
+				replayE = false;
+				replaySC = false;
+				replayST = false;
+				return;
+			}
+			replayE = (tmp[0] == 0x01);
+			replaySC = (tmp[1] == 0x01);
+			replayST = (tmp[2] == 0x01);
+			readModeReplayData(is,Data.ENDLESS);
+			readModeReplayData(is,Data.SCORE_ATTACK);
+			readModeReplayData(is,Data.STAGE_CLEAR);
+		}catch(IOException e){
+			e.printStackTrace();
 		}
-		replayE = (tmp[0] == 0x01);
-		replaySC = (tmp[1] == 0x01);
-		replayST = (tmp[2] == 0x01);
-		readModeReplayData(is,Data.ENDLESS);
-		readModeReplayData(is,Data.SCORE_ATTACK);
-		readModeReplayData(is,Data.STAGE_CLEAR);
-	}catch(IOException e){
-		e.printStackTrace();
 	}
-}
 
 	public void readFile(String name){
 		if(!(new File("./Score/"+name).exists())){
@@ -579,64 +600,82 @@ public void readReplayData(BufferedInputStream is){
 		while(name != null && name.equals("")) name = JOptionPane.showInputDialog(frame, "–¼‘O‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢");
 		if(name != null){
 			name += ".score";
-			boolean update = false;
-			readFile(name);
-			try{
-				BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
-				switch(Data.gameStatus){
-				case Data.ENDLESS:
-					update = (eRecord == null || eRecord.getScore() < Data.score);
-					if(update) writeRecord(os,-1);
-					else writeRecord(os,Data.ENDLESS);
-					writeRecord(os,Data.SCORE_ATTACK);
-					writeRecord(os,Data.STAGE_CLEAR);
-					os.write(0x01);
-					if(replaySC) os.write(0x01);
-					else os.write(0x00);
-					if(replayST) os.write(0x01);
-					else os.write(0x00);
-					if(update) writeReplay(os,-1);
-					else writeReplay(os,Data.ENDLESS);
-					writeReplay(os,Data.SCORE_ATTACK);
-					writeReplay(os,Data.STAGE_CLEAR);
-					break;
-				case Data.SCORE_ATTACK:
-					update = (scRecord == null || scRecord.getScore() < Data.score);
-					writeRecord(os,Data.ENDLESS);
-					if(update) writeRecord(os,-1);
-					else writeRecord(os,Data.SCORE_ATTACK);
-					writeRecord(os,Data.STAGE_CLEAR);
-					if(replayE) os.write(0x01);
-					else os.write(0x00);
-					os.write(0x01);
-					if(replayST) os.write(0x01);
-					else os.write(0x00);
-					writeReplay(os,Data.ENDLESS);
-					if(update) writeReplay(os,-1);
-					else writeReplay(os,Data.SCORE_ATTACK);
-					writeReplay(os,Data.STAGE_CLEAR);
-					break;
-				case Data.STAGE_CLEAR:
-					update = (stRecord == null || stRecord.getTime() > Data.time);
-					writeRecord(os,Data.ENDLESS);
-					writeRecord(os,Data.SCORE_ATTACK);
-					if(update) writeRecord(os,-1);
-					else writeRecord(os,Data.STAGE_CLEAR);
-					if(replayE) os.write(0x01);
-					else os.write(0x00);
-					if(replaySC) os.write(0x01);
-					else os.write(0x00);
-					os.write(0x01);
-					writeReplay(os,Data.ENDLESS);
-					writeReplay(os,Data.SCORE_ATTACK);
-					if(update) writeReplay(os,-1);
-					else writeReplay(os,Data.STAGE_CLEAR);
-					break;
-				}
-				os.close();
-			}catch(IOException e){
-				e.printStackTrace();
+			writeFile(name,Data.gameStatus);
+		}
+	}
+	
+	public void writeFile(String name, int mode){
+		boolean update = false;
+		readFile(name);
+		try{
+			BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
+			switch(mode){
+			case Data.ENDLESS:
+				update = (eRecord == null || eRecord.getScore() < Data.score);
+				if(update) writeRecord(os,-1);
+				else writeRecord(os,Data.ENDLESS);
+				writeRecord(os,Data.SCORE_ATTACK);
+				writeRecord(os,Data.STAGE_CLEAR);
+				os.write(0x01);
+				if(replaySC) os.write(0x01);
+				else os.write(0x00);
+				if(replayST) os.write(0x01);
+				else os.write(0x00);
+				if(update) writeReplay(os,-1);
+				else writeReplay(os,Data.ENDLESS);
+				writeReplay(os,Data.SCORE_ATTACK);
+				writeReplay(os,Data.STAGE_CLEAR);
+				break;
+			case Data.SCORE_ATTACK:
+				update = (scRecord == null || scRecord.getScore() < Data.score);
+				writeRecord(os,Data.ENDLESS);
+				if(update) writeRecord(os,-1);
+				else writeRecord(os,Data.SCORE_ATTACK);
+				writeRecord(os,Data.STAGE_CLEAR);
+				if(replayE) os.write(0x01);
+				else os.write(0x00);
+				os.write(0x01);
+				if(replayST) os.write(0x01);
+				else os.write(0x00);
+				writeReplay(os,Data.ENDLESS);
+				if(update) writeReplay(os,-1);
+				else writeReplay(os,Data.SCORE_ATTACK);
+				writeReplay(os,Data.STAGE_CLEAR);
+				break;
+			case Data.STAGE_CLEAR:
+				update = (stRecord == null || stRecord.getTime() > Data.time);
+				writeRecord(os,Data.ENDLESS);
+				writeRecord(os,Data.SCORE_ATTACK);
+				if(update) writeRecord(os,-1);
+				else writeRecord(os,Data.STAGE_CLEAR);
+				if(replayE) os.write(0x01);
+				else os.write(0x00);
+				if(replaySC) os.write(0x01);
+				else os.write(0x00);
+				os.write(0x01);
+				writeReplay(os,Data.ENDLESS);
+				writeReplay(os,Data.SCORE_ATTACK);
+				if(update) writeReplay(os,-1);
+				else writeReplay(os,Data.STAGE_CLEAR);
+				break;
+			default:
+				writeRecord(os,Data.ENDLESS);
+				writeRecord(os,Data.SCORE_ATTACK);
+				writeRecord(os,Data.STAGE_CLEAR);
+				if(replayE) os.write(0x01);
+				else os.write(0x00);
+				if(replaySC) os.write(0x01);
+				else os.write(0x00);
+				if(replayST) os.write(0x01);
+				else os.write(0x00);
+				writeReplay(os,Data.ENDLESS);
+				writeReplay(os,Data.SCORE_ATTACK);
+				writeReplay(os,Data.STAGE_CLEAR);
+				break;
 			}
+			os.close();
+		}catch(IOException e){
+			e.printStackTrace();
 		}
 	}
 	

@@ -64,16 +64,21 @@ class Title{
 	}
 	
 	public void update(){
+		/*
+		if(KeyStatus.change){
+			new ScoreIO().reWriteData();
+			System.exit(0);
+		}
+		*/
 		cursor.move();
 		messageUpdate();
 		if(KeyStatus.enter) enter();
-    }
-    
-    public void draw(Graphics g){
-	    g.drawImage(Data.image.titleImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,
-	    	0,0,Data.WIDTH,Data.HEIGHT,
-	    	null);
-    	cursor.draw(g,Data.TITLE);
-    	if(mw != null) mw.draw(g);
-    }
+	}
+	public void draw(Graphics g){
+		g.drawImage(Data.image.titleImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,
+		0,0,Data.WIDTH,Data.HEIGHT,
+		null);
+		cursor.draw(g,Data.TITLE);
+		if(mw != null) mw.draw(g);
+	}
 }

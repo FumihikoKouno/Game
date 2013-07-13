@@ -93,6 +93,7 @@ public class Replay extends Field{
 	}
 	
 	protected void appearNewLine(){
+		if(rcursorFrame.length == 0) cursor.moveUp();
 		for(int i = 1; i < Data.ROW; i++){
 			for(int j = 0; j < Data.COL; j++){
 			panel[i-1][j] = panel[i][j];
@@ -166,6 +167,7 @@ public class Replay extends Field{
 				int ty = rswapY[swapIndex];
 				swapPanel(tx,ty);
 				swapIndex++;
+				if(rcursorFrame.length == 0) cursor.set(tx,ty);
 			}
 		}
 		super.update();
