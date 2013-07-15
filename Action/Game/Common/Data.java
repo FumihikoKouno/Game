@@ -1,4 +1,5 @@
 package Game.Common;
+import Game.Sprite.Player;
 public class Data{
 	public static final int TITLE = 0;
 	public static final int PLAYING = 1;
@@ -11,7 +12,9 @@ public class Data{
 	public static final int fps = 30;
 	public static int gravity = 1;
 	public static int CHIP_SIZE = 32;
-	
+
+        public static Player player;
+
 	public static final int CD_DIFF = 2;
 	
 	public static final int SCREEN_OUT = 32;

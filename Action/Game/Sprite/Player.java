@@ -62,6 +62,20 @@ public class Player extends Sprite{
 	private int jumpSpeed = 15;
 	private static final int jumpMax = 2;
 	
+    public Player clone(){
+	Player newPlayer = new Player();
+	newPlayer.x = this.x;
+	newPlayer.y = this.y;
+	newPlayer.image = this.image;
+	newPlayer.vx = this.vx;
+	newPlayer.vy = this.vy;
+	newPlayer.width = this.width;
+	newPlayer.height = this.height;
+	newPlayer.life = this.life;
+	return newPlayer;
+    }
+
+
 	/**
 	 * コンストラクタ
 	 * なんとなく引数なしバージョンも書いてるけど
@@ -76,7 +90,7 @@ public class Player extends Sprite{
 	 * 位置と各変数の初期化
 	 */
 	public Player(int x, int y){
-		super(x,y);
+                super(x,y);
 		image = Data.image.playerImage;
 		vx = 0; vy = 0;
 		width = 32;
@@ -166,20 +180,20 @@ public class Player extends Sprite{
 					// ここでswitch(equipment){ case Data.SWORD: break; case Data.ARROW: break }みたいに場合分け予定
 					switch(direction){
 					case UP:
-						weapon = new Arrow(x,y,Weapon.UP);
-//						weapon = new Sword(x, y, Weapon.UP);
+					        weapon = new Arrow(Weapon.UP);
+//						weapon = new Sword(Weapon.UP);
 						break;
 					case DOWN:
-						weapon = new Arrow(x,y+height,Weapon.DOWN);
-//						weapon = new Sword(x, y+height, Weapon.DOWN);
+						weapon = new Arrow(Weapon.DOWN);
+//						weapon = new Sword(height, Weapon.DOWN);
 						break;
 					case LEFT:
-						weapon = new Arrow(x,y,Weapon.LEFT);
-//						weapon = new Sword(x, y, Weapon.LEFT);
+						weapon = new Arrow(Weapon.LEFT);
+//						weapon = new Sword(Weapon.LEFT);
 						break;
 					case RIGHT:
-						weapon = new Arrow(x+width,y,Weapon.RIGHT);
-//						weapon = new Sword(x+width, y, Weapon.RIGHT);
+						weapon = new Arrow(Weapon.RIGHT);
+//						weapon = new Sword(Weapon.RIGHT);
 						break;
 					}
 				}
@@ -269,12 +283,13 @@ public class Player extends Sprite{
 		invisible = true;
 		attackedFrame = Data.frame;
 	}
+
 	/**
 	 * 描画処理
 	 */
 	public void draw(Graphics g, int screenX, int screenY){
 		if(!invisible || Data.frame % 2 != 0){
-			super.draw(g,screenX,screenY);
+		    super.draw(g,screenX,screenY);
 		}
 		if(weapon != null) weapon.draw(g, screenX, screenY);
 		g.drawString("life : " + life, 15,15);

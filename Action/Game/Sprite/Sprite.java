@@ -33,15 +33,15 @@ public class Sprite{
 	 * スプライトの位置
 	 * スプライトの一番左上の部分の座標を指す
 	 */
-	public int x,y;
+	protected int x,y;
 	// スプライトの速度
-	public int vx, vy;
+	protected int vx, vy;
 	// スプライトの向き
-	public int direction;
+	protected int direction;
 	// スプライトの大きさ
-	public int width, height;
+	protected int width, height;
 	// スプライトのID
-	public int spriteID;
+	protected int spriteID;
 	// スプライトのアニメーション用変数
 	protected int animationStatus;
 	protected int animationFrame;
@@ -71,6 +71,21 @@ public class Sprite{
 		this.x = x;
 		this.y = y;
 	}
+
+    public int getX(){ return x; }
+    public int getY(){ return y; }
+    public int getVx(){ return vx; }
+    public int getVy(){ return vy; }
+    public int getWidth(){ return width; }
+    public int getHeight(){ return height; }
+    public int getDirection(){ return direction; }
+    public int getSpriteID(){ return spriteID; }
+
+    public void setV(int vx, int vy){
+	this.vx = vx;
+	this.vy = vy;
+    }
+
 	// スプライトのupdate
 	public void update(MapData mapData){}
 	/**

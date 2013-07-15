@@ -38,41 +38,36 @@ class MainPanel extends JPanel{
 		this.addMouseListener(mouse);
 		
 		setPreferredSize(new Dimension(Data.WIDTH, Data.HEIGHT));
-
-		// ゲームループスタート
-		new GameLoop().start();
 	}
 	
 	/**
 	 * ゲームループ
 	 */
-	public class GameLoop extends Thread{
-		public void run(){
-			while(dbImage == null){
-				dbImage = createImage(Data.WIDTH,Data.HEIGHT);
-				if(dbImage != null){
-					dbg = dbImage.getGraphics();
-				}
-			}
-			long time;
-			// ゲーム開始時にフレーム数をリセット
-			Data.frame = 0;
-			// MilliSecondPerFrameで1フレームあたり何ミリ秒かの変数
-			int mspf = 1000 / Data.fps;
-			while(true){
-				time = System.currentTimeMillis();
-				update();
-				time = System.currentTimeMillis() - time;
-				if(time > mspf) Data.debugPrint("slowdown");
-				try{
-					if(time < mspf) Thread.sleep(mspf-time);
-				}catch(InterruptedException e){
-					e.printStackTrace();
-				}
-				Data.frame++;
-			}
-		}
+    public void run(){
+	while(dbImage == null){
+	    dbImage = createImage(Data.WIDTH,Data.HEIGHT);
+	    if(dbImage != null){
+		dbg = dbImage.getGraphics();
+	    }
 	}
+	long time;
+	// ゲーム開始時にフレーム数をリセット
+	Data.frame = 0;
+	// MilliSecondPerFrameで1フレームあたり何ミリ秒かの変数
+	int mspf = 1000 / Data.fps;
+	while(true){
+	    time = System.currentTimeMillis();
+	    update();
+	    time = System.currentTimeMillis() - time;
+	    if(time > mspf) Data.debugPrint("slowdown");
+	    try{
+		if(time < mspf) Thread.sleep(mspf-time);
+	    }catch(InterruptedException e){
+		e.printStackTrace();
+	    }
+	    Data.frame++;
+	}
+    }
 	/**
 	 * プログラム全体のupdate
 	 */
