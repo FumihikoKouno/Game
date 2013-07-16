@@ -27,9 +27,29 @@ public class Field{
 	protected Cursor cursor;
 	protected Panel[] newLine = new Panel[Data.COL];
 	private boolean mouseReleased;
+	private boolean retryReleased;
+	private boolean toTitleReleased;
+	
+	public void retry(){
+			init();
+	}
 	
 	public void update(){
 		if(startFrame > Data.frame) return;
+		if(!KeyStatus.retry) retryReleased = true;
+		if(retryReleased && KeyStatus.retry){
+			retryReleased = false;
+			retry();
+			return;
+		}
+		if(!KeyStatus.toTitle) toTitleReleased = true;
+		if(toTitleReleased && KeyStatus.toTitle){
+			toTitleReleased = false;
+			Data.gameStatus = Data.TITLE;
+			Data.keyCansel = false;
+			Data.mouseCansel = false;
+			return;
+		}
 		gameOver();
 		if(gameOverFrame != 0) return;
 		int ty = cursor.getY();
@@ -251,12 +271,21 @@ public class Field{
 	}
 	return false;
     }
+	private boolean movingPanelExist(){
+		for(int i = 0; i < Data.ROW; i++){
+			for(int j = 0; j < Data.COL; j++){
+			if(panel[i][j] == null) continue;
+			if(panel[i][j].cMoving()) return true;
+		}
+	}
+	return false;
+	}
 	
 	private boolean scrollStop(){
 		if(gameOverFrame != 0) return true;
 		if(topExist() && Data.scrollOffset != 0) return true;
 		if(KeyStatus.scroll){
-		    if((fallingPanelExist() || connectPanelExist() || deletePanelExist()) && topExist()) return true;
+		    if((fallingPanelExist() || connectPanelExist() || deletePanelExist() || movingPanelExist()) && topExist()) return true;
 			else return false;
 		}
 		for(int i = 0; i < Data.ROW; i++){
@@ -368,6 +397,8 @@ public class Field{
 		Data.maxChain = 0;
 		scrollFrame = Data.frame;
 		cursorReleased = true;
+		toTitleReleased = false;
+		retryReleased = false;
 		Data.scrollOffset = 0;
 	}
 	

@@ -7,16 +7,22 @@ class Record{
 	private int maxChain;
 	private int maxDelete;
 	private boolean replay;
-
-	public Record(String name, int score, int time, int maxChain, int maxDelete, boolean replay){
+	private int sumTime;
+	private int count;
+	
+	public Record(String name, int score, int time, int maxChain, int maxDelete, boolean replay, int sumTime, int count){
 		this.name = name;
 		this.score = score;
 		this.time = time;
 		this.maxChain = maxChain;
 		this.maxDelete = maxDelete;
 		this.replay = replay;
+		this.sumTime = sumTime;
+		this.count = count;
 	}
 	
+	public int getCount(){ return count; }
+	public int getSumTime(){ return sumTime; }
 	public boolean getReplay(){ return replay; }
 	public String getName(){ return name; }
 	public int getScore(){ return score; }
@@ -31,6 +37,6 @@ class Record{
 		return time < against.getTime();
 	}
 	public String toString(){
-		return (name+":: Score:"+score+", Time:"+time+", maxChain:"+maxChain+", maxDelete:"+maxDelete+", replay:"+replay);
+		return (name+"::\n  Score:"+score+"\n  Time:"+time+"\n  maxChain:"+maxChain+"\n  maxDelete:"+maxDelete+"\n  replay:"+replay+"\n  sumTime:"+sumTime+"\n  count:"+count);
 	}
 }

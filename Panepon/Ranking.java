@@ -20,6 +20,7 @@ class Ranking{
 	
 	public void init(){
 		sIO.makeRanking(endless,score,stage,replayStatus);
+		replay = null;
 		cursor.setLoopAble(true);
 		Data.keyCansel = false;
 		Data.mouseCansel = false;

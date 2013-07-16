@@ -26,6 +26,7 @@ class MainPanel extends JPanel{
 		field = new Field();
 		ranking = new Ranking();
 		title.init();
+		title.cursorReset();
 		key = new Key();
 		mouse = new Mouse();
 		mouseMotion = new MouseMotion();
@@ -66,6 +67,7 @@ class MainPanel extends JPanel{
 		switch(Data.gameStatus){
 		case Data.TITLE:
 			if(prevGameStatus != Data.gameStatus){
+				
 				title.init();
 				prevGameStatus = Data.gameStatus;
 				KeyStatus.setAll(false);

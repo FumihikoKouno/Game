@@ -44,17 +44,23 @@ class ScoreIO{
 	private int[] stCursorFrame;
 	private int[] stCursorX;
 	private int[] stCursorY;
+	private int eSumTime;
+	private int scSumTime;
+	private int stSumTime;
+	private int eCount;
+	private int scCount;
+	private int stCount;
 	
 	public ScoreIO(){}
 	
 	private void statusPrint(String fileName){
 		System.out.println(fileName);
-		System.out.println("  status:");
-		System.out.println("eRecord " + eRecord);
-		System.out.println("scRecord " + scRecord);
-		System.out.println("stRecord " + stRecord);
+		System.out.println("*status:");
+		System.out.println(" eRecord " + eRecord);
+		System.out.println(" scRecord " + scRecord);
+		System.out.println(" stRecord " + stRecord);
 	}
-	
+	/*
 	public void reWriteData(){
 		File dir = new File("./Score");
 		File[] list;
@@ -74,6 +80,7 @@ class ScoreIO{
 		}
 		return;
 	}
+	*/
 	
 	public void makeModeRanking(Record[] r, int mode){
 		Record tmp = null;
@@ -153,6 +160,54 @@ class ScoreIO{
 		return;
 	}
 
+	public void writePlayCount(BufferedOutputStream os, int mode, boolean b){
+		try{
+			Record tmp = null;
+			switch(mode){
+			case Data.ENDLESS:
+				tmp = eRecord;
+				break;
+			case Data.SCORE_ATTACK:
+				tmp = scRecord;
+				break;
+			case Data.STAGE_CLEAR:
+				tmp = stRecord;
+				break;
+			default:
+				tmp = new Record("",Data.score,Data.time,Data.maxChain,Data.maxDelete,false,0,0);
+				break;
+			}
+			if(tmp == null){
+				if(b){
+					for(int i = 0; i < 4; i++){
+						os.write(((Data.time) & (0xff<<i*8)) >> i*8);
+						os.write(((1) & (0xff<<i*8)) >> i*8);
+					}
+				}else{
+					for(int i = 0; i < 4; i++){
+						os.write(((0) & (0xff<<i*8)) >> i*8);
+						os.write(((0) & (0xff<<i*8)) >> i*8);
+					}
+				}
+			}else{
+				if(b){
+					for(int i = 0; i < 4; i++){
+						os.write(((tmp.getSumTime()+Data.time) & (0xff<<i*8)) >> i*8);
+						os.write(((tmp.getCount()+1) & (0xff<<i*8)) >> i*8);
+					}
+				}else{
+					for(int i = 0; i < 4; i++){
+						os.write(((tmp.getSumTime()) & (0xff<<i*8)) >> i*8);
+						os.write(((tmp.getCount()) & (0xff<<i*8)) >> i*8);
+					}
+				}
+			}
+			
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+	
 	public void writeRecord(BufferedOutputStream os, int mode){
 		try{
 			Record tmp = null;
@@ -167,7 +222,7 @@ class ScoreIO{
 				tmp = stRecord;
 				break;
 			default:
-				tmp = new Record("",Data.score,Data.time,Data.maxChain,Data.maxDelete,false);
+				tmp = new Record("",Data.score,Data.time,Data.maxChain,Data.maxDelete,false,0,0);
 				break;
 			}
 			if(tmp == null){
@@ -399,6 +454,35 @@ class ScoreIO{
 		}
 	}
 	
+	public void readPlayCount(BufferedInputStream is){
+		try{
+			byte[] tmp = new byte[24];
+			int flag = is.read(tmp,0,24);
+			if(flag == -1){
+				eSumTime = 0;
+				eCount = 0;
+				scSumTime = 0;
+				scCount = 0;
+				stSumTime = 0;
+				stCount = 0;
+				return;
+			}
+			for(int i = 0; i < 8; i+=2){
+				eSumTime += ((tmp[i]&0xff) << (8*i));
+				eCount += ((tmp[i+1]&0xff) << (8*i));
+			}
+			for(int i = 0; i < 8; i+=2){
+				scSumTime += ((tmp[i+8]&0xff) << (8*i));
+				scCount += ((tmp[i+9]&0xff) << (8*i));
+			}
+			for(int i = 0; i < 8; i+=2){
+				stSumTime += ((tmp[i+16]&0xff) << (8*i));
+				stCount += ((tmp[i+17]&0xff) << (8*i));
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
 	public void readReplayData(BufferedInputStream is){
 		try{
 			byte[] tmp = new byte[8];
@@ -462,19 +546,20 @@ class ScoreIO{
 				stMaxDelete += ((tmp[38+i*4] & 0xff) << (8*i));
 			}
 			readReplayData(is);
+			readPlayCount(is);
 
 			if(tmp[0] == 0x01){
-				eRecord = new Record(name.substring(0,name.length()-6),eScore,eTime,eMaxChain,eMaxDelete,replayE);
+				eRecord = new Record(name.substring(0,name.length()-6),eScore,eTime,eMaxChain,eMaxDelete,replayE,eSumTime,eCount);
 			}else{
 				eRecord = null;
 			}
 			if(tmp[17] == 0x01){
-				scRecord = new Record(name.substring(0,name.length()-6),scScore,scTime,scMaxChain,scMaxDelete,replaySC);
+				scRecord = new Record(name.substring(0,name.length()-6),scScore,scTime,scMaxChain,scMaxDelete,replaySC,scSumTime,scCount);
 			}else{
 				scRecord = null;
 			}
 			if(tmp[34] == 0x01){
-				stRecord = new Record(name.substring(0,name.length()-6),stScore,stTime,stMaxChain,stMaxDelete,replayST);
+				stRecord = new Record(name.substring(0,name.length()-6),stScore,stTime,stMaxChain,stMaxDelete,replayST,stSumTime,stCount);
 			}else{
 				stRecord = null;
 			}
@@ -484,6 +569,7 @@ class ScoreIO{
 		}catch(IOException e){
 			e.printStackTrace();
 		}
+		//statusPrint(name);
 	}
 	
 	public void writeReplay(BufferedOutputStream os, int mode){
@@ -625,6 +711,9 @@ class ScoreIO{
 				else writeReplay(os,Data.ENDLESS);
 				writeReplay(os,Data.SCORE_ATTACK);
 				writeReplay(os,Data.STAGE_CLEAR);
+				writePlayCount(os,Data.ENDLESS,true);
+				writePlayCount(os,Data.SCORE_ATTACK,false);
+				writePlayCount(os,Data.STAGE_CLEAR,false);
 				break;
 			case Data.SCORE_ATTACK:
 				update = (scRecord == null || scRecord.getScore() < Data.score);
@@ -641,6 +730,9 @@ class ScoreIO{
 				if(update) writeReplay(os,-1);
 				else writeReplay(os,Data.SCORE_ATTACK);
 				writeReplay(os,Data.STAGE_CLEAR);
+				writePlayCount(os,Data.ENDLESS,false);
+				writePlayCount(os,Data.SCORE_ATTACK,true);
+				writePlayCount(os,Data.STAGE_CLEAR,false);
 				break;
 			case Data.STAGE_CLEAR:
 				update = (stRecord == null || stRecord.getTime() > Data.time);
@@ -657,6 +749,9 @@ class ScoreIO{
 				writeReplay(os,Data.SCORE_ATTACK);
 				if(update) writeReplay(os,-1);
 				else writeReplay(os,Data.STAGE_CLEAR);
+				writePlayCount(os,Data.ENDLESS,false);
+				writePlayCount(os,Data.SCORE_ATTACK,false);
+				writePlayCount(os,Data.STAGE_CLEAR,true);
 				break;
 			default:
 				writeRecord(os,Data.ENDLESS);
@@ -671,6 +766,9 @@ class ScoreIO{
 				writeReplay(os,Data.ENDLESS);
 				writeReplay(os,Data.SCORE_ATTACK);
 				writeReplay(os,Data.STAGE_CLEAR);
+				writePlayCount(os,Data.ENDLESS,false);
+				writePlayCount(os,Data.SCORE_ATTACK,false);
+				writePlayCount(os,Data.STAGE_CLEAR,false);
 				break;
 			}
 			os.close();

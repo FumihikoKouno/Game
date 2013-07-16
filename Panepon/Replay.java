@@ -24,6 +24,9 @@ public class Replay extends Field{
 	private int[] rcursorX;
 	private int[] rcursorY;
 	
+	public void retry(){
+		init();
+	}
 	
 	public boolean end(){
 		return end;
@@ -125,9 +128,14 @@ public class Replay extends Field{
 		Data.keyCansel = true;
 		Data.mouseCansel = true;
 		startFrame = Data.frame + Data.fps * 3;
+		for(int i = 0; i < Data.ROW; i++){
+			for(int j = 0; j < Data.COL; j++){
+				panel[i][j] = null;
+			}
+		}
 		for(int i = Data.ROW-1; i >= 0; i--){
 			for(int j = 0; j < Data.COL; j++){
-				if(i < Data.ROW/2+2) panel[i][j] = null;
+				if(i < Data.ROW/2+2) continue;
 				else{
 					do{
 						panel[i][j] = new Panel(random.nextInt(Data.PANEL_NUMBER));

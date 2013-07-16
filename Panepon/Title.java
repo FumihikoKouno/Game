@@ -26,9 +26,12 @@ class Title{
 		ranking = new MessageWindow("ランキングを表示します。",messageX,messageY,messageCOL,messageROW);
 		config = new MessageWindow("設定を変更します",messageX,messageY,messageCOL,messageROW);
 		exit = new MessageWindow("プログラムを終了します。",messageX,messageY,messageCOL,messageROW);
-		cursor.set(0,0);
 		Data.cursorMaxX = 0;
 		Data.cursorMaxY = Data.EXIT-1;
+	}
+	
+	public void cursorReset(){
+		cursor.set(0,0);
 	}
 	
 	private void enter(){
