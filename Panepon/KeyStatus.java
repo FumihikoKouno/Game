@@ -8,6 +8,7 @@ public class KeyStatus{
 	public static boolean enter;
 	public static boolean toTitle;
 	public static boolean retry;
+    public static boolean hard;
 	public static void setAll(boolean b){
 		up = b;
 		down = b;
@@ -18,5 +19,6 @@ public class KeyStatus{
 		enter = b;
 		toTitle = b;
 		retry = b;
+		hard = b;
 	}
 }

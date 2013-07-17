@@ -178,7 +178,7 @@ public class Field{
 		for(int i = 0; i < Data.COL; i++){
 			while(true){
 				count = 1;
-				tmp = random.nextInt(Data.PANEL_NUMBER);
+				tmp = random.nextInt(Data.PANEL_NUMBER*Data.hard);
 				for(int j = i-1; j >= 0; j--){
 					if(tmp == newLine[j].getKind()) count++;
 					else break;
@@ -285,7 +285,7 @@ public class Field{
 		if(gameOverFrame != 0) return true;
 		if(topExist() && Data.scrollOffset != 0) return true;
 		if(KeyStatus.scroll){
-		    if((fallingPanelExist() || connectPanelExist() || deletePanelExist() || movingPanelExist()) && topExist()) return true;
+		    if((fallingPanelExist() || connectPanelExist() || deletePanelExist()) && topExist()) return true;
 			else return false;
 		}
 		for(int i = 0; i < Data.ROW; i++){
@@ -332,7 +332,7 @@ public class Field{
 		}
 		if(scrollFrame + (10 - Data.lv) * 2 <= Data.frame || KeyStatus.scroll){
 			Data.replayScrollFrame.add(new Integer(Data.frame-startFrame));
-			Data.scrollOffset = (Data.scrollOffset + Data.SCROLL_UNIT) % Data.PANEL_SIZE;
+			Data.scrollOffset = (Data.scrollOffset + Data.SCROLL_UNIT*Data.hard) % Data.PANEL_SIZE;
 			if(Data.scrollOffset == 0){
 				appearNewLine();
 			}
@@ -523,7 +523,7 @@ public class Field{
 			for(int j = 0; j < Data.COL; j++){
 				if(panel[i][j]==null) continue;
 				tmp = panel[i][j].getConnected();
-				panel[i][j].setFalling(isFallable(j,i) && (tmp == 0 || (tmp+Data.DELETE_RAG<=Data.frame)));
+				panel[i][j].setFalling(isFallable(j,i) && (tmp == 0 || (tmp+Data.DELETE_RAG/Data.hard<=Data.frame)));
 			}
 		}
 	}
@@ -541,8 +541,11 @@ public class Field{
 			}
 			cursor.draw(g,Data.ENDLESS);
 		}
-		g.drawImage(Data.image.fieldImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,
-			0,0,Data.WIDTH,Data.HEIGHT,null);
+		//		if(Data.hard==1){
+		    g.drawImage(Data.image.fieldImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,0,0,Data.WIDTH,Data.HEIGHT,null);
+		    //		}else if(Data.hard==2){
+		    //		    g.drawImage(Data.image.hardFieldImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,0,0,Data.WIDTH,Data.HEIGHT,null);
+		    //		}
 		for(int i = 0; i < effect.size(); i++){
 			effect.get(i).draw(g);
 		}

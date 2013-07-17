@@ -18,6 +18,8 @@ public class Data{
 	
 	public static int zoom = 1;
 	
+    public static int hard = 1;
+
 	public static final int RANKING_NAME_X = 70;
 	public static final int RANKING_TIME_X = 350;
 	public static final int RANKING_SCORE_X = 210;

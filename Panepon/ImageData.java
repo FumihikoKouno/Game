@@ -22,4 +22,6 @@ public class ImageData{
 	public final Image scoreAttackImage = new ImageIcon(getClass().getResource("Image/ScoreAttackScore.gif")).getImage();
 	public final Image stageClearImage = new ImageIcon(getClass().getResource("Image/StageClearScore.gif")).getImage();
 	public final Image scoreChangeImage = new ImageIcon(getClass().getResource("Image/ScoreChange.gif")).getImage();
+	public final Image hardTitleImage = new ImageIcon(getClass().getResource("Image/hard_title.gif")).getImage();
+	public final Image hardFieldImage = new ImageIcon(getClass().getResource("Image/hard_field.gif")).getImage();
 }

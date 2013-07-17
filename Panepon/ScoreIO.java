@@ -136,7 +136,9 @@ class ScoreIO{
 	}
 	
 	public void makeRanking(Record[] endless, Record[] scoreAttack, Record[] stageClear, boolean[] replayStatus){
-		File dir = new File("./Score");
+	    File dir;
+	    if(Data.hard==1) dir = new File("./Score");
+	    else dir = new File("./HardScore");
 		File[] list;
 		String name;
 		for(int i = 0; i < 10; i++){
@@ -345,7 +347,9 @@ class ScoreIO{
 	public void readReplayData(String name){
 		try{
 		byte[] tmp = new byte[51];
-		BufferedInputStream is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name+".score")));
+		BufferedInputStream is;
+		if(Data.hard == 1) is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name+".score")));
+		else  is = new BufferedInputStream(new FileInputStream(new File("./HardScore/"+name+".score")));
 		is.read(tmp,0,51);
 		readReplayData(is);
 		is.close();
@@ -509,6 +513,7 @@ class ScoreIO{
 	}
 
 	public void readFile(String name){
+	    if(Data.hard==1){
 		if(!(new File("./Score/"+name).exists())){
 			eRecord = null;
 			scRecord = null;
@@ -518,6 +523,17 @@ class ScoreIO{
 			replayST = false;
 			return;
 		}
+	    }else{
+		if(!(new File("./HardScore/"+name).exists())){
+			eRecord = null;
+			scRecord = null;
+			stRecord = null;
+			replayE = false;
+			replaySC = false;
+			replayST = false;
+			return;
+		}
+	    }
 		int eScore = 0;
 		int eTime = 0;
 		int eMaxChain = 0;
@@ -533,7 +549,9 @@ class ScoreIO{
 		int prevData;
 		byte[] tmp = new byte[51];
 		try{
-			BufferedInputStream is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name)));
+		    BufferedInputStream is;
+		    if(Data.hard==1) is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name)));
+		    else is = new BufferedInputStream(new FileInputStream(new File("./HardScore/"+name)));
 			prevData = is.read(tmp,0,51);
 			for(int i = 0; i < 4; i++){
 				eScore += ((tmp[1+i*4] & 0xff) << (8*i));
@@ -681,7 +699,9 @@ class ScoreIO{
 	
 	public void output(){
 		boolean updatable = false;
-		File dir = new File("./Score");
+		File dir;
+		if(Data.hard==1) dir = new File("./Score");
+		else dir = new File("./HardScore");
 		if(!dir.exists()){
 			dir.mkdir();
 		}
@@ -698,7 +718,9 @@ class ScoreIO{
 		boolean update = false;
 		readFile(name);
 		try{
-			BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
+		    BufferedOutputStream os;
+		    if(Data.hard==1) os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
+		    else os = new BufferedOutputStream(new FileOutputStream(new File("./HardScore/"+name)));
 			switch(mode){
 			case Data.ENDLESS:
 				update = (eRecord == null || eRecord.getScore() < Data.score);

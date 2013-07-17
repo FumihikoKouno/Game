@@ -41,6 +41,9 @@ class Key implements KeyListener{
 		case KeyEvent.VK_R:
 		    KeyStatus.retry = true;
 		    break;
+		case KeyEvent.VK_H:
+		    KeyStatus.hard = true;
+		    break;
 		}
 	}
 	public void keyReleased(KeyEvent e){
@@ -79,6 +82,9 @@ class Key implements KeyListener{
 		    break;
 		case KeyEvent.VK_R:
 		    KeyStatus.retry = false;
+		    break;
+		case KeyEvent.VK_H:
+		    KeyStatus.hard = false;
 		    break;
 		}
 	}

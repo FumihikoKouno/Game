@@ -138,7 +138,7 @@ public class Replay extends Field{
 				if(i < Data.ROW/2+2) continue;
 				else{
 					do{
-						panel[i][j] = new Panel(random.nextInt(Data.PANEL_NUMBER));
+						panel[i][j] = new Panel(random.nextInt(Data.PANEL_NUMBER*Data.hard));
 					}while(isDeletable(j,i));
 				}
 			}
@@ -188,7 +188,7 @@ public class Replay extends Field{
 		if(Data.frame-startFrame != rscrollFrame[scrollIndex]){
 			return;
 		}
-		Data.scrollOffset = (Data.scrollOffset + Data.SCROLL_UNIT) % Data.PANEL_SIZE;
+		Data.scrollOffset = (Data.scrollOffset + Data.SCROLL_UNIT*Data.hard) % Data.PANEL_SIZE;
 		if(Data.scrollOffset == 0){
 			appearNewLine();
 		}

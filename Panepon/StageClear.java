@@ -82,7 +82,7 @@ public class StageClear extends Field{
 				if(i < Data.ROW/2+2) continue;
 				else{
 					do{
-						panel[i][j] = new Panel(random.nextInt(Data.PANEL_NUMBER));
+						panel[i][j] = new Panel(random.nextInt(Data.PANEL_NUMBER*Data.hard));
 					}while(isDeletable(j,i));
 				}
 			}

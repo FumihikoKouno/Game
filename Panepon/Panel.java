@@ -28,10 +28,10 @@ class Panel{
 	    offset_x = Math.max(offset_x-Data.MPF,0);
 	}
 	if(offset_y < 0){
-	    offset_y = Math.min(offset_y+Data.GRAVITY,0);
+	    offset_y = Math.min(offset_y+Data.GRAVITY*Data.hard,0);
 	}
 	if(offset_y > 0){
-	    offset_y = Math.max(offset_y-Data.GRAVITY,0);
+	    offset_y = Math.max(offset_y-Data.GRAVITY*Data.hard,0);
 	}
     }	
     
@@ -39,9 +39,9 @@ class Panel{
     public int getConnected(){ return connected; }
     public int getDeleteLimit(){ return delete_limit; }
     public void setDeleteFrame(int count, int max){
-	d_animation_time = Data.frame+Data.DELETE_TIME;
-	delete_limit = d_animation_time+count*Data.DELETE_DIFFERENCE_TIME;
-	end_frame = d_animation_time+max*Data.DELETE_DIFFERENCE_TIME; 
+	d_animation_time = Data.frame+Data.DELETE_TIME/Data.hard;
+	delete_limit = d_animation_time+count*Data.DELETE_DIFFERENCE_TIME/Data.hard;
+	end_frame = d_animation_time+max*Data.DELETE_DIFFERENCE_TIME/Data.hard; 
     }
     
     public boolean cMoving(){ return offset_x != 0; }
