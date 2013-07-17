@@ -24,10 +24,6 @@ public class Replay extends Field{
 	private int[] rcursorX;
 	private int[] rcursorY;
 	
-	public void retry(){
-		init();
-	}
-	
 	public boolean end(){
 		return end;
 	}

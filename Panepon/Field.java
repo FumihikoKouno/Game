@@ -31,6 +31,7 @@ public class Field{
 	private boolean toTitleReleased;
 	
 	public void retry(){
+	    KeyStatus.setAll(false);
 			init();
 	}
 	

@@ -28,22 +28,27 @@ class Ranking{
 		cursor.set(0,0);
 		for(int i = 0; i < endless.length; i++){
 			if(endless[i] == null){
-				endlessLen = i;
-				break;
+			    endlessLen = i;
+			    break;
 			}
 		}
+		if(endlessLen == 0 && endless[0] != null) endlessLen = stage.length;
+
 		for(int i = 0; i < score.length; i++){
-			if(score[i] == null){
-				scoreLen = i;
-				break;
-			}
+		    if(score[i] == null){
+			scoreLen = i;
+			break;
+		    }
 		}
+		if(scoreLen == 0 && score[0] != null) scoreLen = stage.length;
+
 		for(int i = 0; i < stage.length; i++){
-			if(stage[i] == null){
-				stageLen = i;
-				break;
-			}
+		    if(stage[i] == null){
+			stageLen = i;
+			break;
+		    }
 		}
+		if(stageLen == 0 && stage[0] != null) stageLen = stage.length;
 		Data.cursorMaxX = 2;
 		Data.cursorMaxY = endlessLen-1;
 	}
