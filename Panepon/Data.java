@@ -55,22 +55,22 @@ public class Data{
 	public static int cursorMaxY;
 	public static int scrollOffset;
 	public static final int PANEL_SIZE = 32;
-//	public static final int SCROLL_UNIT = 4;
-	public static final int SCROLL_UNIT = 8;
+	public static final int SCROLL_UNIT = 4;
+//	public static final int SCROLL_UNIT = 8;
 
-//	public static final int DELETE_RAG = 10;
-	public static final int DELETE_RAG = 5;
+	public static final int DELETE_RAG = 10;
+    //	public static final int DELETE_RAG = 5;
 
-//	public static final int DELETE_TIME = 50;
-	public static final int DELETE_TIME = 15;
+	public static final int DELETE_TIME = 50;
+//	public static final int DELETE_TIME = 15;
 
-//	public static final int DELETE_DIFFERENCE_TIME = 10;
-	public static final int DELETE_DIFFERENCE_TIME = 5;
+	public static final int DELETE_DIFFERENCE_TIME = 10;
+//	public static final int DELETE_DIFFERENCE_TIME = 5;
 	public static final int MPF = PANEL_SIZE/2;
-//	public static int GRAVITY = 16;
-	public static int GRAVITY = 32;
-//	public static final int PANEL_NUMBER = 6;
-	public static final int PANEL_NUMBER = 12;
+	public static int GRAVITY = 16;
+//	public static int GRAVITY = 32;
+	public static final int PANEL_NUMBER = 6;
+//	public static final int PANEL_NUMBER = 12;
 	public static final int INIT_CURSOR_X = 2;
 	public static final int INIT_CURSOR_Y = 8;
 	public static final int WIDTH = 640;
@@ -84,8 +84,8 @@ public class Data{
 	public static final int FIELD_START_X = 178;
 	public static final int FIELD_START_Y = 64;
 	public static final int TIME_LIMIT = fps*120;
-//	public static final int CLEAR_LINE = 20;
-	public static final int CLEAR_LINE = 40;
+	public static final int CLEAR_LINE = 20;
+//	public static final int CLEAR_LINE = 40;
 	
 	public static boolean mousePressed = false;
 	public static int pressedX;

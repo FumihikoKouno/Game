@@ -192,7 +192,11 @@ class ScoreIO{
 			}else{
 				if(b){
 					for(int i = 0; i < 4; i++){
+					    if(mode == Data.SCORE_ATTACK){
+						os.write(((tmp.getSumTime()+Data.TIME_LIMIT) & (0xff<<i*8)) >> i*8);
+					    }else{
 						os.write(((tmp.getSumTime()+Data.time) & (0xff<<i*8)) >> i*8);
+					    }
 						os.write(((tmp.getCount()+1) & (0xff<<i*8)) >> i*8);
 					}
 				}else{
