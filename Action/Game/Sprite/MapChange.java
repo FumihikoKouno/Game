@@ -31,7 +31,7 @@ public class MapChange extends Sprite{
 		}
 	}
 	// プレイヤーがスプライトに触れたときの関数
-	public void touch(Sprite s, int dir, int dest){
+	public void touch(Sprite s, int dir, int[] dest){
 		if(s instanceof Player){
 			player = (Player)s;
 			touched = true;

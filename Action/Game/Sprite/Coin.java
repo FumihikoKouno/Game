@@ -17,7 +17,7 @@ public class Coin extends Sprite{
 	// スプライトのupdate
 	public void update(MapData mapData){}
 	// プレイヤーがスプライトに触れたときの関数
-	public void touch(Sprite s, int dir, int dest){
+	public void touch(Sprite s, int dir, int[] dest){
 		if(s instanceof Player){
 			Player tmp = (Player)s;
 			tmp.coin++;

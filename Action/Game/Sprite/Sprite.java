@@ -81,6 +81,13 @@ public class Sprite{
     public int getDirection(){ return direction; }
     public int getSpriteID(){ return spriteID; }
 
+	public void setVx(int vx){
+		setV(vx,this.vy);
+	}
+	public void setVy(int vy){
+		setV(this.vx,vy);
+	}
+	
     public void setV(int vx, int vy){
 	this.vx = vx;
 	this.vy = vy;
@@ -107,7 +114,7 @@ public class Sprite{
 	// 引数はどの方向に当たったかとその寸前の位置
 	public void mapHit(int dir, int dest){}
 	// プレイヤーがスプライトに触れたときの関数
-	public void touch(Sprite s, int dir, int dest){}
+	public void touch(Sprite s, int dir, int[] dest){}
 	// プレイヤーがスプライトにかさなったときの関数
 	public void over(){}
 	// このスプライトに対してspriteが攻撃したときの関数

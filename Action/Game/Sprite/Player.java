@@ -58,7 +58,7 @@ public class Player extends Sprite{
 	 * 今はここに定義しているが
 	 * 将来的には全身装備のクラスを参照する
 	 */
-	private int movingSpeed = 12;
+	private int movingSpeed = 6;
 	private int jumpSpeed = 15;
 	private static final int jumpMax = 2;
 	

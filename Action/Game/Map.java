@@ -320,31 +320,35 @@ public class Map{
 	}
 	/**
 	 * スプライト同士のスプライトの衝突判定
-	 * 今のところプレイヤーと敵、武器と敵の衝突判定にのみ使っている
 	 */
 	public boolean spriteAndSpriteHit(Sprite s1, Sprite s2){
-	    int dUp = hitUp(s1,s2);
-	    int dDown = hitDown(s1,s2);
-	    int dLeft = hitLeft(s1,s2);
-	    int dRight = hitRight(s1,s2);
-		if(dUp != Integer.MIN_VALUE){
-			if(s1 instanceof Player) s2.touch(s1,Sprite.DOWN,dUp);
-			if(s1 instanceof Weapon) s2.attacked(s1);
-			return true;
+		int[] hitPosition = new int[4];
+		hitPosition[Sprite.UP] = hitUp(s1,s2);
+		hitPosition[Sprite.DOWN]  = hitDown(s1,s2);
+		hitPosition[Sprite.LEFT]  = hitLeft(s1,s2);
+		hitPosition[Sprite.RIGHT]  = hitRight(s1,s2);
+		int hitDir = 0;
+		for(int i = 0; i < 4; i++){
+			if(hitPosition[i] != Integer.MIN_VALUE) hitDir = hitDir | (1 << i);
 		}
-		if(dDown != Integer.MIN_VALUE){
-			if(s1 instanceof Player) s2.touch(s1,Sprite.UP,dDown);
-			if(s1 instanceof Weapon) s2.attacked(s1);
-			return true;
-		}
-		if(dLeft != Integer.MIN_VALUE){
-			if(s1 instanceof Player) s2.touch(s1,Sprite.RIGHT,dLeft);
-			if(s1 instanceof Weapon) s2.attacked(s1);
-			return true;
-		}
-		if(dRight != Integer.MIN_VALUE){
-			if(s1 instanceof Player) s2.touch(s1,Sprite.LEFT,dRight);
-			if(s1 instanceof Weapon) s2.attacked(s1);
+		if(hitDir > 0){
+			if(s1 instanceof Player) s2.touch(s1,hitDir,hitPosition);
+			else if(s1 instanceof Weapon) s2.attacked(s1);
+			else{
+				s2.touch(s1,hitDir,hitPosition);
+				int tmp;
+				tmp = hitPosition[Sprite.UP];
+				hitPosition[Sprite.UP] = hitPosition[Sprite.DOWN];
+				hitPosition[Sprite.DOWN] = tmp;
+				tmp = hitPosition[Sprite.LEFT];
+				hitPosition[Sprite.LEFT] = hitPosition[Sprite.RIGHT];
+				hitPosition[Sprite.RIGHT] = tmp;
+				hitDir = 0;
+				for(int i = 0; i < 4; i++){
+					if(hitPosition[i] != Integer.MIN_VALUE) hitDir = hitDir | (1 << i);
+				}
+				s1.touch(s2,hitDir,hitPosition);
+			}
 			return true;
 		}
 		return false;
@@ -408,6 +412,11 @@ public class Map{
 			spriteAndSpriteHit(Data.player,tmp);
 			if(Data.player.weapon != null){
 				spriteAndSpriteHit(Data.player.weapon,tmp);
+			}
+			for(int j = i+1; j < mapData.spriteList.size(); j++){
+				Sprite tmp2 = mapData.spriteList.get(j);
+				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
+				spriteAndSpriteHit(tmp,tmp2);
 			}
 			if(tmp.end){
 				mapData.spriteList.remove(tmp);

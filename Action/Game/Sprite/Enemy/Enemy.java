@@ -23,7 +23,7 @@ public class Enemy extends Sprite{
 	public Enemy(int x, int y){
 		super(x,y);
 	}
-	public void touch(Sprite s, int dir, int dest){
+	public void touch(Sprite s, int dir, int[] dest){
 		if(s instanceof Player){
 			Player tmp = (Player)s;
 			if(!tmp.invisible){
