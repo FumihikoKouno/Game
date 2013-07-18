@@ -22,4 +22,5 @@ public class ImageData{
 	public final Image coinImage = new ImageIcon(getClass().getResource("../Image/Sprite/coin.gif")).getImage();
 	public final Image menuImage = new ImageIcon(getClass().getResource("../Image/Picture/menu.gif")).getImage();
 	public final Image rightUpSlopeImage = new ImageIcon(getClass().getResource("../Image/Sprite/RightUpSlope.gif")).getImage();
+	public final Image leftUpSlopeImage = new ImageIcon(getClass().getResource("../Image/Sprite/LeftUpSlope.gif")).getImage();
 }
