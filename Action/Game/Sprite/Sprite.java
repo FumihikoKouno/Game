@@ -45,6 +45,15 @@ public class Sprite{
 	// スプライトのアニメーション用変数
 	protected int animationStatus;
 	protected int animationFrame;
+	// ジャンプしているかどうかの判定変数
+	protected boolean jump = false;
+	// ジャンプ中の回数
+	protected int jumpCount = 0;
+	/**
+	 * 無敵状態かどうか
+	 * ダメージくらって点滅しているあの状態を表わす
+	 */
+	protected boolean invisible = false;
 	// スプライトのイメージ
 	protected Image image;
 	/**
@@ -71,7 +80,15 @@ public class Sprite{
 		this.x = x;
 		this.y = y;
 	}
+	/**
+	 * ジャンプしていれば true
+	 */
+	public boolean jumping(){ return false; }
 
+	// 地面に着地したときの処理
+	public void land(){ jumpCount = 0; jump = false; }
+	public boolean isInvisible(){ return invisible; }
+	
     public int getX(){ return x; }
     public int getY(){ return y; }
     public int getVx(){ return vx; }

@@ -17,12 +17,6 @@ public class Player extends Sprite{
 	public boolean jumpReleased = true;
 	// 上のジャンプが離されたかどうかの攻撃ボタン版
 	public boolean attackReleased = true;
-	/**
-	 * ジャンプ回数
-	 * 回数と共にジャンプ中かどうかの判定もこれで行う
-	 * 0ならジャンプしていない状態で、1以上ならジャンプ中
-	 */
-	public int jumpCount;
 	// コイン枚数
 	public int coin;
 	// 武器
@@ -31,11 +25,6 @@ public class Player extends Sprite{
 	 * 方向と大きさの定義
 	 */
 	
-	/**
-	 * 無敵状態かどうか
-	 * ダメージくらって点滅しているあの状態を表わす
-	 */
-	public boolean invisible = false;
 	/**
 	 * 攻撃を受けた瞬間のフレーム数
 	 * 何フレーム無敵かとかノックバックで何フレーム動けないとか
@@ -121,6 +110,12 @@ public class Player extends Sprite{
 		}
 	}
 	/**
+	 * ジャンプしていれば true
+	 */
+	public boolean jumping(){
+		return jump;
+	}
+	/**
 	 * 各フレームでのupdate用関数
 	 */
 	public void update(){
@@ -165,7 +160,7 @@ public class Player extends Sprite{
 		 * そこが最大値になるようにしている
 		 * 空中にData.CHIP_SIZEよりも小さいスクリプトがある場合、調整が必要そう
 		 */
-		vy += Data.gravity;
+		if((Data.frame&1)==0) vy += Data.gravity;
 		if(vy > Data.CHIP_SIZE) vy = Data.CHIP_SIZE-1;
 		/**
 		 * 攻撃ボタンが押されたときの処理
@@ -240,6 +235,7 @@ public class Player extends Sprite{
 				if(jumpReleased && jumpCount < jumpMax){
 					// ジャンプボタンが押され かつ ジャンプできる場合
 					jumpReleased = false;
+					jump = true;
 					jumpCount++;
 					// ジャンプ力+1(+1は直後に重力で減る分)
 					vy = -(jumpSpeed+Data.gravity);
@@ -247,11 +243,11 @@ public class Player extends Sprite{
 			}else{
 				jumpReleased = true;
 			}
+			if(jumpReleased && vy < 0){
+				jump = false;
+				vy = 0;
+			}
 		}
-	}
-	// 地面に着地したときの処理
-	public void land(){
-		jumpCount = 0;
 	}
 	/**
 	 * d 分ダメージを受けたときの処理

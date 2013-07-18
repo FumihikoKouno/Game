@@ -26,7 +26,7 @@ public class Enemy extends Sprite{
 	public void touch(Sprite s, int dir, int[] dest){
 		if(s instanceof Player){
 			Player tmp = (Player)s;
-			if(!tmp.invisible){
+			if(!tmp.isInvisible()){
 				tmp.damage(power);
 			}
 		}
@@ -38,8 +38,9 @@ public class Enemy extends Sprite{
 			return;
 		}
 		animationUpdate(15);
-		vy += Data.gravity;
+		if((Data.frame&1)==0) vy += Data.gravity;
 		if(vy >= Data.CHIP_SIZE) vy = Data.CHIP_SIZE - 1;
+		if(vy < 0) vy = 0;
 	}
 	
 	public void mapHit(int dir, int dest){
