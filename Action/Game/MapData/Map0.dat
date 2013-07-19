@@ -68,6 +68,7 @@ background.jpg
 
 Coin 3 4
 Enemy1 2 3
+AppearingChip 16 18 45 60
 MapChange 1 0 28 39 28
 RightUpSlope 10 28
 RightUpSlope 11 27

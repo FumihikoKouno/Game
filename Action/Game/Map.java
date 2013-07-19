@@ -258,6 +258,9 @@ public class Map{
 	 * “–‚½‚è”»’è‚ð‚¢‚¶‚éê‡‚Í‚±‚¿‚ç
 	 * "1‚ªã‚É“–‚½‚é"‚ªhitUp
 	 */
+	/**
+	 * ‚»‚à‚»‚àSprite“¯Žm‚ÌÕ“Ë”»’è‚ª‚±‚ê‚Å—Ç‚¢‚Ì‚©•s–¾
+	 */
     public int hitUp(Sprite s1, Sprite s2){
 	    int px1 = s1.getX();
 	    int py1 = s1.getY()+s1.getVy();
@@ -273,15 +276,15 @@ public class Map{
 		}
 		return Integer.MIN_VALUE;
 	}
-    public int hitDown(Sprite s1, Sprite s2){
-	    int px1 = s1.getX();
-	    int py1 = s1.getY()+s1.getVy();
-	    int width1 = s1.getWidth();
-	    int height1 = s1.getHeight();
-	    int px2 = s2.getX();
-	    int py2 = s2.getY()+s2.getVy();
-	    int width2 = s2.getWidth();
-	    int height2 = s2.getHeight();
+	public int hitDown(Sprite s1, Sprite s2){
+		int px1 = s1.getX();
+		int py1 = s1.getY()+s1.getVy();
+		int width1 = s1.getWidth();
+		int height1 = s1.getHeight();
+		int px2 = s2.getX();
+		int py2 = s2.getY()+s2.getVy();
+		int width2 = s2.getWidth();
+		int height2 = s2.getHeight();
 		if(px1+Data.CD_DIFF > px2+width2-1 || px1+width1-1-Data.CD_DIFF < px2) return Integer.MIN_VALUE;
 		if(py1+Data.CD_DIFF < py2 && py1+height1-1-Data.CD_DIFF >= py2){
 			return py2-height1+Data.CD_DIFF;

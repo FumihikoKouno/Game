@@ -23,4 +23,6 @@ public class ImageData{
 	public final Image menuImage = new ImageIcon(getClass().getResource("../Image/Picture/menu.gif")).getImage();
 	public final Image rightUpSlopeImage = new ImageIcon(getClass().getResource("../Image/Sprite/RightUpSlope.gif")).getImage();
 	public final Image leftUpSlopeImage = new ImageIcon(getClass().getResource("../Image/Sprite/LeftUpSlope.gif")).getImage();
+	public final Image appearingChipImage = new ImageIcon(getClass().getResource("../Image/Sprite/appearingChip.gif")).getImage();
+	public final Image froatingStageImage = new ImageIcon(getClass().getResource("../Image/Sprite/froatingStage.gif")).getImage();
 }

@@ -108,6 +108,13 @@ public class MapData{
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
 					spriteList.add(new Enemy1(x,y));
 				}
+				if(tmp[0].equals("AppearingChip")){
+					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
+					int time = Integer.parseInt(tmp[3]);
+					int limit = Integer.parseInt(tmp[4]);
+					spriteList.add(new AppearingChip(x,y,time,limit));
+				}
 				if(tmp[0].equals("MapChange")){
 					int newMapID = Integer.parseInt(tmp[1]);
 					int px = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
