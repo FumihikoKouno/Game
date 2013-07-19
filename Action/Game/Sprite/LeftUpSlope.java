@@ -37,7 +37,7 @@ public class LeftUpSlope extends Sprite{
 			return;
 		}
 		if((s.getX()+Data.CD_DIFF+s.getVx()-x) > (py+s.getVy()-y)) return;
-		if(s.jumping()) return;
+		if(s.jumping() && s.getY() < 0) return;
 		s.setVy(s.getX()+Data.CD_DIFF+s.getVx()-x-py+y);
 		s.land();
 	}

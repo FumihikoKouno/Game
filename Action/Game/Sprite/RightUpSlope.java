@@ -37,7 +37,7 @@ public class RightUpSlope extends Sprite{
 			return;
 		}
 		if((px+s.getVx()-x) + (py+s.getVy()-y) <= Data.CHIP_SIZE) return;
-		if(s.jumping()) return;
+		if(s.jumping() && s.getY() < 0) return;
 		s.setVy(Data.CHIP_SIZE-(px+s.getVx()-x)-(py-y));
 		s.land();
 	}

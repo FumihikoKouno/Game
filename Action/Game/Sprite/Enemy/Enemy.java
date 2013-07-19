@@ -26,9 +26,7 @@ public class Enemy extends Sprite{
 	public void touch(Sprite s, int dir, int[] dest){
 		if(s instanceof Player){
 			Player tmp = (Player)s;
-			if(!tmp.isInvisible()){
-				tmp.damage(power);
-			}
+			tmp.damage(power);
 		}
 	}
 	public void update(MapData mapData){

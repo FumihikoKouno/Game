@@ -243,7 +243,7 @@ public class Player extends Sprite{
 			}else{
 				jumpReleased = true;
 			}
-			if(jumpReleased && vy < 0){
+			if((jumpReleased || !jump) && vy < 0){
 				jump = false;
 				vy = 0;
 			}
@@ -254,6 +254,7 @@ public class Player extends Sprite{
 	 * 今はノックバックとかの速度は数値で適当にやってる
 	 */
 	public void damage(int d){
+		if(invisible) return;
 		life -= d;
 		if(weapon != null && weapon instanceof Sword){
 			weapon = null;
