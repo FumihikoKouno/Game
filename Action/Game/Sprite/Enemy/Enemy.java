@@ -26,7 +26,22 @@ public class Enemy extends Sprite{
 	public void touch(Sprite s, int dir, int[] dest){
 		if(s instanceof Player){
 			Player tmp = (Player)s;
-			tmp.damage(power);
+			if((dir & (1 << HIT_DIRECT)) > 0){
+				tmp.damage(power);
+			}else{
+				if((dir & (1 << UP)) > 0){
+					tmp.setVy(dest[UP]-tmp.getY()-1+vy);
+				}
+				if((dir & (1 << DOWN)) > 0){
+					tmp.setVy(dest[DOWN]-tmp.getY()+1+vy);
+				}
+				if((dir & (1 << LEFT)) > 0){
+					tmp.setVx(dest[LEFT]-tmp.getX()-1+vx);
+				}
+				if((dir & (1 << RIGHT)) > 0){
+					tmp.setVx(dest[RIGHT]-tmp.getX()+1+vx);
+				}
+			}
 		}
 	}
 	public void update(MapData mapData){

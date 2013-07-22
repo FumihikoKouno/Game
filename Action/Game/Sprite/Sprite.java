@@ -23,6 +23,7 @@ public class Sprite{
 	public static final int DOWN = 1;
 	public static final int LEFT = 2;
 	public static final int RIGHT = 3;
+	public static final int HIT_DIRECT = 4;
 	public static int nextSpriteID = 0;
 	/**
 	 * ƒƒ“ƒo•Ï”

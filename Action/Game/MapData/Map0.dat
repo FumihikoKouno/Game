@@ -70,6 +70,7 @@ Coin 3 4
 Enemy1 2 3
 AppearingChip 16 18 45 60
 MapChange 1 0 28 39 28
+RightUpSlope 10 20
 RightUpSlope 10 28
 RightUpSlope 11 27
 RightUpSlope 12 26
@@ -77,6 +78,7 @@ RightUpSlope 13 25
 RightUpSlope 14 24
 RightUpSlope 15 23
 RightUpSlope 16 22
+LeftUpSlope 17 18
 LeftUpSlope 17 22
 LeftUpSlope 18 23
 LeftUpSlope 19 24

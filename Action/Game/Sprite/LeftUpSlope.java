@@ -21,8 +21,8 @@ public class LeftUpSlope extends Sprite{
 		int px = s.getX()+s.getWidth()-Data.CD_DIFF;
 		int py = s.getY()+s.getHeight()-Data.CD_DIFF;
 		// ‰º‚©‚çG‚ê‚½ê‡
-		if(s.getVy() < 0 && s.getY()+Data.CD_DIFF >= y+height){
-			s.setVy(y+height-Data.CD_DIFF-s.getY());
+		if((dir & (1 << UP)) > 0){
+			s.setVy(dest[UP]-s.getY()+1);
 			return;
 		}
 		// ¶‚©‚çG‚ê‚½ê‡
@@ -32,12 +32,13 @@ public class LeftUpSlope extends Sprite{
 		}
 		// ’¸“_‚Ìê‡
 		if(s.getX()+Data.CD_DIFF < x){
+			if(s.jumping() && s.getVy() < 0) return;
 			s.setVy(y-py);
 			s.land();
 			return;
 		}
 		if((s.getX()+Data.CD_DIFF+s.getVx()-x) > (py+s.getVy()-y)) return;
-		if(s.jumping() && s.getY() < 0) return;
+		if(s.jumping() && s.getVy() < 0) return;
 		s.setVy(s.getX()+Data.CD_DIFF+s.getVx()-x-py+y);
 		s.land();
 	}

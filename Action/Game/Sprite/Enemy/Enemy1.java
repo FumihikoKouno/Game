@@ -14,7 +14,7 @@ public class Enemy1 extends Enemy{
 		image = Data.image.enemyImage;
 		width = 32;
 		height = 32;
-		vx = 4;
+		vx = 0;
 		vy = 0;
 		life = 2;
 		direction = RIGHT;

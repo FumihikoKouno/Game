@@ -21,8 +21,8 @@ public class RightUpSlope extends Sprite{
 		int px = s.getX()+s.getWidth()-Data.CD_DIFF;
 		int py = s.getY()+s.getHeight()-Data.CD_DIFF;
 		// â∫Ç©ÇÁêGÇÍÇΩèÍçá
-		if(s.getVy() < 0 && s.getY()+Data.CD_DIFF >= y+height){
-			s.setVy(y+height-Data.CD_DIFF-s.getY());
+		if((dir & (1 << UP)) > 0){
+			s.setVy(dest[UP]-s.getY()+1);
 			return;
 		}
 		// âEÇ©ÇÁêGÇÍÇΩèÍçá
@@ -32,12 +32,13 @@ public class RightUpSlope extends Sprite{
 		}
 		// í∏ì_ÇÃèÍçá
 		if(px > x+width){
+			if(s.jumping() && s.getVy() < 0) return;
 			s.setVy(y-py);
 			s.land();
 			return;
 		}
 		if((px+s.getVx()-x) + (py+s.getVy()-y) <= Data.CHIP_SIZE) return;
-		if(s.jumping() && s.getY() < 0) return;
+		if(s.jumping() && s.getVy() < 0) return;
 		s.setVy(Data.CHIP_SIZE-(px+s.getVx()-x)-(py-y));
 		s.land();
 	}

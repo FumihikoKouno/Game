@@ -150,7 +150,7 @@ public class Player extends Sprite{
 		 * —á‚¦‚ÎData.CHIP_SIZE‚æ‚è‘å‚«‚¢‚Æ•Ç‚ð”²‚¯‚é‚æ‚¤‚É‚È‚é
 		 */
 		if(KeyStatus.dash){
-			if(jumpCount == 0) speed = 2 * movingSpeed;
+			if(jumpCount == 0) speed = 64;
 		}else{
 			if(jumpCount == 0) speed = movingSpeed;
 		}
