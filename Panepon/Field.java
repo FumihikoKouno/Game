@@ -31,8 +31,8 @@ public class Field{
 	private boolean toTitleReleased;
 	
 	public void retry(){
-	    KeyStatus.setAll(false);
-			init();
+		KeyStatus.setAll(false);
+		init();
 	}
 	
 	public void update(){
@@ -253,25 +253,25 @@ public class Field{
 		panel[y][x+1] = tmp;
 	}
 
-    private boolean fallingPanelExist(){
-	for(int i = 0; i < Data.ROW; i++){
-	    for(int j = 0; j < Data.COL; j++){
-		if(panel[i][j] == null) continue;
-		if(panel[i][j].isFalling()) return true;
-	    }
-	}
+	private boolean fallingPanelExist(){
+		for(int i = 0; i < Data.ROW; i++){
+			for(int j = 0; j < Data.COL; j++){
+				if(panel[i][j] == null) continue;
+				if(panel[i][j].isFalling()) return true;
+			}
+		}
 	return false;
-    }
+	}
 
-    private boolean connectPanelExist(){
-        for(int i = 0; i < Data.ROW; i++){
-	    for(int j = 0; j < Data.COL; j++){
-		if(panel[i][j] == null) continue;
-		if(panel[i][j].getConnected() != 0) return true;
-	    }
+	private boolean connectPanelExist(){
+		for(int i = 0; i < Data.ROW; i++){
+			for(int j = 0; j < Data.COL; j++){
+				if(panel[i][j] == null) continue;
+				if(panel[i][j].getConnected() != 0) return true;
+			}
+		}
+		return false;
 	}
-	return false;
-    }
 	private boolean movingPanelExist(){
 		for(int i = 0; i < Data.ROW; i++){
 			for(int j = 0; j < Data.COL; j++){
@@ -286,7 +286,7 @@ public class Field{
 		if(gameOverFrame != 0) return true;
 		if(topExist() && Data.scrollOffset != 0) return true;
 		if(KeyStatus.scroll){
-		    if((fallingPanelExist() || connectPanelExist() || deletePanelExist()) && topExist()) return true;
+			if((fallingPanelExist() || connectPanelExist() || deletePanelExist()) && topExist()) return true;
 			else return false;
 		}
 		for(int i = 0; i < Data.ROW; i++){
@@ -466,6 +466,7 @@ public class Field{
 		for(int i = Data.ROW-1; i >= 0; i--){
 			for(int j = Data.COL-1; j >= 0; j--){
 				if(flag[i][j]){
+					effect.add(new Effect(Data.DELETE_EFFECT,j,i,panel[i][j].getKind()));
 					if(first && max > 3){
 						effect.add(new Effect(Data.SAME_EFFECT,minJ,minI,max));
 						Data.score += max*max*5;
@@ -542,11 +543,11 @@ public class Field{
 			}
 			cursor.draw(g,Data.ENDLESS);
 		}
-		//		if(Data.hard==1){
-		    g.drawImage(Data.image.fieldImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,0,0,Data.WIDTH,Data.HEIGHT,null);
-		    //		}else if(Data.hard==2){
-		    //		    g.drawImage(Data.image.hardFieldImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,0,0,Data.WIDTH,Data.HEIGHT,null);
-		    //		}
+		if(Data.hard==1){
+			g.drawImage(Data.image.fieldImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,0,0,Data.WIDTH,Data.HEIGHT,null);
+		}else if(Data.hard==2){
+			g.drawImage(Data.image.hardFieldImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,0,0,Data.WIDTH,Data.HEIGHT,null);
+		}
 		for(int i = 0; i < effect.size(); i++){
 			effect.get(i).draw(g);
 		}

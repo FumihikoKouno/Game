@@ -202,19 +202,19 @@ public class Replay extends Field{
 		switch(mode){
 		case Data.SCORE_ATTACK:
 			if(startFrame <= Data.frame){
-				if(gameOverFrame == 0) Data.time =  (startFrame+Data.TIME_LIMIT-Data.frame)/Data.fps;
-			   	g.drawString((Data.time/60)+":"+String.format("%1$02d",(Data.time%60)),(Data.REST_X+space_x)*Data.zoom,(Data.REST_Y-space_y)*Data.zoom);
+				if(gameOverFrame == 0) Data.time = (startFrame+Data.TIME_LIMIT-Data.frame)/Data.fps;
+				g.drawString((Data.time/60)+":"+String.format("%1$02d",(Data.time%60)),(Data.REST_X+space_x)*Data.zoom,(Data.REST_Y-space_y)*Data.zoom);
 			}else{
 				g.drawString(((startFrame-Data.frame)/Data.fps+1)+"",Data.WIDTH/2*Data.zoom,Data.HEIGHT/2*Data.zoom);
 				Data.time = Data.TIME_LIMIT/Data.fps;
-			   	g.drawString((Data.time/60)+":"+String.format("%1$02d",(Data.time%60)),(Data.REST_X+space_x)*Data.zoom,(Data.REST_Y-space_y)*Data.zoom);
+				g.drawString((Data.time/60)+":"+String.format("%1$02d",(Data.time%60)),(Data.REST_X+space_x)*Data.zoom,(Data.REST_Y-space_y)*Data.zoom);
 			}
 			break;
 		case Data.ENDLESS:
 		case Data.STAGE_CLEAR:
 			Data.setFont(g,Data.SCORE_FONT);
 			if(startFrame <= Data.frame){
-				if(gameOverFrame == 0) Data.time  = (Data.frame-startFrame)/Data.fps;
+				if(gameOverFrame == 0) Data.time = (Data.frame-startFrame)/Data.fps;
 				g.drawString((Data.time/60)+":"+String.format("%1$02d",(Data.time%60)),(Data.REST_X+space_x)*Data.zoom,(Data.REST_Y-space_y)*Data.zoom);
 			}else{
 				g.drawString(((startFrame-Data.frame)/Data.fps+1)+"",Data.WIDTH/2*Data.zoom,Data.HEIGHT/2*Data.zoom);

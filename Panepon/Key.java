@@ -29,21 +29,21 @@ class Key implements KeyListener{
 			break;
 		case KeyEvent.VK_SHIFT:
 			if(Data.keyCansel) return;
-		    KeyStatus.scroll = true;
-		    break;
+			KeyStatus.scroll = true;
+			break;
 		case KeyEvent.VK_ENTER:
 			if(Data.keyCansel) return;
-		    KeyStatus.enter = true;
-		    break;
+			KeyStatus.enter = true;
+			break;
 		case KeyEvent.VK_T:
-		    KeyStatus.toTitle = true;
-		    break;
+			KeyStatus.toTitle = true;
+			break;
 		case KeyEvent.VK_R:
-		    KeyStatus.retry = true;
-		    break;
+			KeyStatus.retry = true;
+			break;
 		case KeyEvent.VK_H:
-		    KeyStatus.hard = true;
-		    break;
+			KeyStatus.hard = true;
+			break;
 		}
 	}
 	public void keyReleased(KeyEvent e){
@@ -71,21 +71,21 @@ class Key implements KeyListener{
 			break;
 		case KeyEvent.VK_SHIFT:
 			if(Data.keyCansel) return;
-		    KeyStatus.scroll = false;
-		    break;
+			KeyStatus.scroll = false;
+			break;
 		case KeyEvent.VK_ENTER:
 			if(Data.keyCansel) return;
-		    KeyStatus.enter = false;
-		    break;
+			KeyStatus.enter = false;
+			break;
 		case KeyEvent.VK_T:
-		    KeyStatus.toTitle = false;
-		    break;
+			KeyStatus.toTitle = false;
+			break;
 		case KeyEvent.VK_R:
-		    KeyStatus.retry = false;
-		    break;
+			KeyStatus.retry = false;
+			break;
 		case KeyEvent.VK_H:
-		    KeyStatus.hard = false;
-		    break;
+			KeyStatus.hard = false;
+			break;
 		}
 	}
 	public void keyTyped(KeyEvent e){

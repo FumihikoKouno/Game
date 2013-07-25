@@ -60,27 +60,6 @@ class ScoreIO{
 		System.out.println(" scRecord " + scRecord);
 		System.out.println(" stRecord " + stRecord);
 	}
-	/*
-	public void reWriteData(){
-		File dir = new File("./Score");
-		File[] list;
-		String name;
-		String fileName;
-		if(dir.exists() && dir.isDirectory()){
-			list = dir.listFiles();
-			for(int i = 0; i < list.length; i++){
-				fileName = list[i].getName();
-				if(fileName.endsWith(".score")){
-					readFile(fileName);
-					System.out.println("read:"+fileName);
-					writeFile(fileName,-1);
-					System.out.println("wrote:"+fileName);
-				}
-			}
-		}
-		return;
-	}
-	*/
 	
 	public void makeModeRanking(Record[] r, int mode){
 		Record tmp = null;
@@ -136,9 +115,9 @@ class ScoreIO{
 	}
 	
 	public void makeRanking(Record[] endless, Record[] scoreAttack, Record[] stageClear, boolean[] replayStatus){
-	    File dir;
-	    if(Data.hard==1) dir = new File("./Score");
-	    else dir = new File("./HardScore");
+		File dir;
+		if(Data.hard==1) dir = new File("./Score");
+		else dir = new File("./HardScore");
 		File[] list;
 		String name;
 		for(int i = 0; i < 10; i++){
@@ -194,11 +173,11 @@ class ScoreIO{
 			}else{
 				if(b){
 					for(int i = 0; i < 4; i++){
-					    if(mode == Data.SCORE_ATTACK){
+						if(mode == Data.SCORE_ATTACK){
 						os.write(((tmp.getSumTime()+Data.TIME_LIMIT) & (0xff<<i*8)) >> i*8);
-					    }else{
+						}else{
 						os.write(((tmp.getSumTime()+Data.time) & (0xff<<i*8)) >> i*8);
-					    }
+						}
 						os.write(((tmp.getCount()+1) & (0xff<<i*8)) >> i*8);
 					}
 				}else{
@@ -208,7 +187,6 @@ class ScoreIO{
 					}
 				}
 			}
-			
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -251,34 +229,34 @@ class ScoreIO{
 	public long getSeed(int mode){
 		switch(mode){
 		case Data.ENDLESS:
-		return eSeed;
+			return eSeed;
 		case Data.SCORE_ATTACK:
-		return scSeed;
+			return scSeed;
 		case Data.STAGE_CLEAR:
-		return stSeed;
+			return stSeed;
 		}
-	return -1L;
-  }
+		return -1L;
+	}
 
 	public int[] getScrollFrame(int mode){
 		switch(mode){
 		case Data.ENDLESS:
-		return eScrollFrame;
+			return eScrollFrame;
 		case Data.SCORE_ATTACK:
-		return scScrollFrame;
+			return scScrollFrame;
 		case Data.STAGE_CLEAR:
-		return stScrollFrame;
+			return stScrollFrame;
 		}
 		return null;
 	}
 	public int[] getSwapX(int mode){
 		switch(mode){
 		case Data.ENDLESS:
-		return eSwapX;
+			return eSwapX;
 		case Data.SCORE_ATTACK:
-		return scSwapX;
+			return scSwapX;
 		case Data.STAGE_CLEAR:
-		return stSwapX;
+			return stSwapX;
 		}
 		return null;
 	}
@@ -286,35 +264,35 @@ class ScoreIO{
 	public int[] getSwapY(int mode){
 		switch(mode){
 		case Data.ENDLESS:
-		return eSwapY;
+			return eSwapY;
 		case Data.SCORE_ATTACK:
-		return scSwapY;
+			return scSwapY;
 		case Data.STAGE_CLEAR:
-		return stSwapY;
+			return stSwapY;
 		}
-		return null;
+			return null;
 	}
 
 
 	public int[] getSwapFrame(int mode){
 		switch(mode){
 		case Data.ENDLESS:
-		return eSwapFrame;
+			return eSwapFrame;
 		case Data.SCORE_ATTACK:
-		return scSwapFrame;
+			return scSwapFrame;
 		case Data.STAGE_CLEAR:
-		return stSwapFrame;
+			return stSwapFrame;
 		}
 		return null;
 	}
 	public int[] getCursorX(int mode){
 		switch(mode){
 		case Data.ENDLESS:
-		return eCursorX;
+			return eCursorX;
 		case Data.SCORE_ATTACK:
-		return scCursorX;
+			return scCursorX;
 		case Data.STAGE_CLEAR:
-		return stCursorX;
+			return stCursorX;
 		}
 		return null;
 	}
@@ -322,11 +300,11 @@ class ScoreIO{
 	public int[] getCursorY(int mode){
 		switch(mode){
 		case Data.ENDLESS:
-		return eCursorY;
+			return eCursorY;
 		case Data.SCORE_ATTACK:
-		return scCursorY;
+			return scCursorY;
 		case Data.STAGE_CLEAR:
-		return stCursorY;
+			return stCursorY;
 		}
 		return null;
 	}
@@ -335,28 +313,28 @@ class ScoreIO{
 	public int[] getCursorFrame(int mode){
 		switch(mode){
 		case Data.ENDLESS:
-		return eCursorFrame;
+			return eCursorFrame;
 		case Data.SCORE_ATTACK:
-		return scCursorFrame;
+			return scCursorFrame;
 		case Data.STAGE_CLEAR:
-		return stCursorFrame;
+			return stCursorFrame;
 		}
 		return null;
 	}
 
 	public void readReplayData(String name){
 		try{
-		byte[] tmp = new byte[51];
-		BufferedInputStream is;
-		if(Data.hard == 1) is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name+".score")));
-		else  is = new BufferedInputStream(new FileInputStream(new File("./HardScore/"+name+".score")));
-		is.read(tmp,0,51);
-		readReplayData(is);
-		is.close();
+			byte[] tmp = new byte[51];
+			BufferedInputStream is;
+			if(Data.hard == 1) is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name+".score")));
+			else is = new BufferedInputStream(new FileInputStream(new File("./HardScore/"+name+".score")));
+			is.read(tmp,0,51);
+			readReplayData(is);
+			is.close();
 		}catch(FileNotFoundException e){
-		e.printStackTrace();
+			e.printStackTrace();
 		}catch(IOException e){
-		e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 
@@ -387,8 +365,8 @@ class ScoreIO{
 			is.read(tmp,0,8);
 			tmpSeed = 0;
 			for(int i = 0; i < 8; i++){
-					long bit = tmp[i];
-					tmpSeed += ( (bit&0x00000000000000ffL) << (8*i) );
+				long bit = tmp[i];
+				tmpSeed += ( (bit&0x00000000000000ffL) << (8*i) );
 			}
 			is.read(tmp,0,4);
 			int count = 0;
@@ -513,27 +491,27 @@ class ScoreIO{
 	}
 
 	public void readFile(String name){
-	    if(Data.hard==1){
-		if(!(new File("./Score/"+name).exists())){
-			eRecord = null;
-			scRecord = null;
-			stRecord = null;
-			replayE = false;
-			replaySC = false;
-			replayST = false;
-			return;
+		if(Data.hard==1){
+			if(!(new File("./Score/"+name).exists())){
+				eRecord = null;
+				scRecord = null;
+				stRecord = null;
+				replayE = false;
+				replaySC = false;
+				replayST = false;
+				return;
+			}
+		}else{
+			if(!(new File("./HardScore/"+name).exists())){
+				eRecord = null;
+				scRecord = null;
+				stRecord = null;
+				replayE = false;
+				replaySC = false;
+				replayST = false;
+				return;
+			}
 		}
-	    }else{
-		if(!(new File("./HardScore/"+name).exists())){
-			eRecord = null;
-			scRecord = null;
-			stRecord = null;
-			replayE = false;
-			replaySC = false;
-			replayST = false;
-			return;
-		}
-	    }
 		int eScore = 0;
 		int eTime = 0;
 		int eMaxChain = 0;
@@ -549,9 +527,9 @@ class ScoreIO{
 		int prevData;
 		byte[] tmp = new byte[51];
 		try{
-		    BufferedInputStream is;
-		    if(Data.hard==1) is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name)));
-		    else is = new BufferedInputStream(new FileInputStream(new File("./HardScore/"+name)));
+			BufferedInputStream is;
+			if(Data.hard==1) is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name)));
+			else is = new BufferedInputStream(new FileInputStream(new File("./HardScore/"+name)));
 			prevData = is.read(tmp,0,51);
 			for(int i = 0; i < 4; i++){
 				eScore += ((tmp[1+i*4] & 0xff) << (8*i));
@@ -591,7 +569,6 @@ class ScoreIO{
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		//statusPrint(name);
 	}
 	
 	public void writeReplay(BufferedOutputStream os, int mode){
@@ -718,9 +695,9 @@ class ScoreIO{
 		boolean update = false;
 		readFile(name);
 		try{
-		    BufferedOutputStream os;
-		    if(Data.hard==1) os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
-		    else os = new BufferedOutputStream(new FileOutputStream(new File("./HardScore/"+name)));
+			BufferedOutputStream os;
+			if(Data.hard==1) os = new BufferedOutputStream(new FileOutputStream(new File("./Score/"+name)));
+			else os = new BufferedOutputStream(new FileOutputStream(new File("./HardScore/"+name)));
 			switch(mode){
 			case Data.ENDLESS:
 				update = (eRecord == null || eRecord.getScore() < Data.score);

@@ -4,11 +4,11 @@ public class KeyStatus{
 	public static boolean left;
 	public static boolean right;
 	public static boolean change;
-    public static boolean scroll;
+	public static boolean scroll;
 	public static boolean enter;
 	public static boolean toTitle;
 	public static boolean retry;
-    public static boolean hard;
+	public static boolean hard;
 	public static void setAll(boolean b){
 		up = b;
 		down = b;

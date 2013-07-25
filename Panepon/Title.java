@@ -10,15 +10,15 @@ class Title{
 	private MessageWindow ranking;
 	private MessageWindow exit;
 	private MessageWindow config;
-    private boolean hardReleased;
-    private int hardCount;
+	private boolean hardReleased;
+	private int hardCount;
 	private final int messageX = 5;
 	private final int messageY = 300;
 	private final int messageCOL = 15;
 	private final int messageROW = 2;
-    public Title(){
-    	cursor = new Cursor(0,0);
-    }
+	public Title(){
+		cursor = new Cursor(0,0);
+	}
 	public void init(){
 		cursor.setLoopAble(true);
 		endless = new MessageWindow("時間制限なしでゲームオーバーになるまで続くモードです。",messageX,messageY,messageCOL,messageROW);
@@ -39,7 +39,7 @@ class Title{
 	}
 	
 	private void enter(){
-	    if(cursor.getY()+1 == Data.DEMO && Data.hard == 2) return;
+		if(cursor.getY()+1 == Data.DEMO && Data.hard == 2) return;
 		Data.gameStatus = cursor.getY()+1;
 	}
 
@@ -60,11 +60,6 @@ class Title{
 		case Data.RANKING:
 			mw = ranking;
 			break;
-			/*
-		case Data.CONFIG:
-			mw = config;
-			break;
-			*/
 		case Data.EXIT:
 			mw = exit;
 			break;
@@ -72,29 +67,29 @@ class Title{
 	}
 	
 	public void update(){
-	    if(!KeyStatus.hard) hardReleased = true;
-	    else if(hardReleased && KeyStatus.hard){
-		hardReleased = false;
-		hardCount++;
-	    }
-	    if(hardCount == 5){
-		Data.hard = 3 - Data.hard;
-		hardCount = 0;
-	    }
+		if(!KeyStatus.hard) hardReleased = true;
+		else if(hardReleased && KeyStatus.hard){
+			hardReleased = false;
+			hardCount++;
+		}
+		if(hardCount == 5){
+			Data.hard = 3 - Data.hard;
+			hardCount = 0;
+		}
 		cursor.move();
 		messageUpdate();
 		if(KeyStatus.enter) enter();
 	}
 	public void draw(Graphics g){
-	    if(Data.hard == 1){
-		g.drawImage(Data.image.titleImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,
-		0,0,Data.WIDTH,Data.HEIGHT,
-		null);
-	    }else if(Data.hard == 2){
-		g.drawImage(Data.image.hardTitleImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,
-		0,0,Data.WIDTH,Data.HEIGHT,
-		null);
-	    }
+		if(Data.hard == 1){
+			g.drawImage(Data.image.titleImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,
+			0,0,Data.WIDTH,Data.HEIGHT,
+			null);
+		}else if(Data.hard == 2){
+			g.drawImage(Data.image.hardTitleImage,0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom,
+			0,0,Data.WIDTH,Data.HEIGHT,
+			null);
+		}
 		cursor.draw(g,Data.TITLE);
 		if(mw != null) mw.draw(g);
 	}

@@ -28,25 +28,25 @@ class Ranking{
 		cursor.set(0,0);
 		for(int i = 0; i < endless.length; i++){
 			if(endless[i] == null){
-			    endlessLen = i;
-			    break;
+				endlessLen = i;
+				break;
 			}
 		}
 		if(endlessLen == 0 && endless[0] != null) endlessLen = stage.length;
 
 		for(int i = 0; i < score.length; i++){
-		    if(score[i] == null){
-			scoreLen = i;
-			break;
-		    }
+			if(score[i] == null){
+				scoreLen = i;
+				break;
+			}
 		}
 		if(scoreLen == 0 && score[0] != null) scoreLen = stage.length;
 
 		for(int i = 0; i < stage.length; i++){
-		    if(stage[i] == null){
-			stageLen = i;
-			break;
-		    }
+			if(stage[i] == null){
+				stageLen = i;
+				break;
+			}
 		}
 		if(stageLen == 0 && stage[0] != null) stageLen = stage.length;
 		Data.cursorMaxX = 2;
@@ -98,9 +98,9 @@ class Ranking{
 				break;
 			}
 			if(name != null){
-		    replay = new Replay();
-		    replay.setStatus(name, mode);
-		    replay.init();
+				replay = new Replay();
+				replay.setStatus(name, mode);
+				replay.init();
 			}
 		}
 	}
@@ -120,7 +120,7 @@ class Ranking{
 			for(int i = 0; i < endless.length; i++){
 				if(endless[i] == null) break;
 				if(endless[i].getReplay()) g.setColor(Color.RED);
-       				else g.setColor(Color.WHITE);
+				else g.setColor(Color.WHITE);
 				g.drawString(endless[i].getName(),Data.RANKING_NAME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(endless[i].getScore()+"",Data.RANKING_SCORE_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
 				g.drawString(endless[i].getTime()+"",Data.RANKING_TIME_X*Data.zoom,(Data.RANKING_TOP_Y+i*Data.RANKING_DIFF_Y)*Data.zoom);
