@@ -131,12 +131,10 @@ class Effect{
 				brue = 0;
 				break;
 			}
-			int f = (Data.frame-start)*Data.zoom;
-			drawY -= Data.scrollOffset;
-			drawX *= Data.zoom;
-			drawY *= Data.zoom;
+			int f = (Data.frame-start);
+			drawY -= Data.scrollOffset*Data.zoom;
 			if(f > 20){
-				g.setColor(new Color(red,green,brue,0));
+				g.setColor(new Color(red,green,brue,5));
 			}else{
 				g.setColor(new Color(red,green,brue,100-5*f));
 			}
