@@ -1,8 +1,12 @@
+/**
+ * エンドレスモード
+ */
 import java.awt.Graphics;
 
 public class Endless extends Field{
 	
 	public Endless(){}
+	// ゲームオーバーフラグを立てる関数
 	protected void gameOver(){
 		if(topExist() && (Data.scrollOffset != 0)){	
 			if(gameOverFrame == 0){
@@ -18,6 +22,7 @@ public class Endless extends Field{
 			}
 		}
 	}
+	// 初期化
 	public void init(){
 		super.init();
 		Data.seed = System.currentTimeMillis();
@@ -42,6 +47,7 @@ public class Endless extends Field{
 		}
 		createNewLine();
 	}
+	// 描画
 	public void draw(Graphics g){
 		super.draw(g);
 		int space_x = 20;

@@ -1,16 +1,41 @@
+/**
+ * カーソル関係のクラス
+ * ゲームプレイ画面ではパネル移動のカーソル
+ * タイトルやランキングでは項目選択のカーソル
+ */
+
 import java.awt.Graphics;
 
 class Cursor{
+	// カーソルのx, y座標
 	private int x, y;
+	
+	/**
+	 * 前にカーソルが動いたときからのフレーム数
+	 * 0だと前のフレームにはカーソルを動かしていない
+	 * 移動キーを押しっぱなしにしたときにいきなり大幅に動かないようにするため
+	 */
 	private int beforeMove;
+	
+	/**
+	 * trueならカーソルが最上のときに上を押したら最下に
+	 * カーソルが最下のときに下を押したときに最上にいく
+	 */
 	private boolean loop;
+	
+	// コンストラクタ 初期x, 初期y が引数
 	public Cursor(int x, int y){
 		this.x = x;
 		this.y = y;
 	}
+	
+	// x座標を得る
 	public int getX(){ return x; }
+	// y座標を得る
 	public int getY(){ return y; }
+	// カーソルを一つ上に移動する(y座標を-1する)
 	public void moveUp(){ y = Math.max(y-1,0); }
+	// 引数のx,y座標にカーソルを移す
 	public void set(int x, int y){
 		if(x > Data.cursorMaxX) this.x = Data.cursorMaxX;
 		else if(x < 0) this.x = 0;
@@ -19,23 +44,31 @@ class Cursor{
 		else if(y < 0) this.y = 0;
 		else this.y = y;
 	}
+	// x座標を設定する
 	public void setX(int x){
 		if(x > Data.cursorMaxX) this.x = Data.cursorMaxX;
 		else if(x < 0) this.x = 0;
 		else this.x = x;
 	}
+	// y座標を設定する
 	public void setY(int y){
 		if(y > Data.cursorMaxY) this.y = Data.cursorMaxY;
 		else if(y < 0) this.y = 0;
 		else this.y = y;
 	}
-	public void setLoopAble(boolean b){
-		loop = b;
-	}
+	// カーソルがループするかどうかのフラグをセット
+	public void setLoopAble(boolean b){ loop = b; }
+	
+	// 入力されているキーに応じてカーソルを動かす関数
 	public void move(){
 		boolean moved = false;
 		moved = KeyStatus.up || KeyStatus.down || KeyStatus.left || KeyStatus.right;
-		if(!moved) beforeMove = 0;
+		// このフレームでキーが離されていれば動いていないことを表わす0とする
+		if(!moved){
+			beforeMove = 0;
+			return;
+		}
+		// 前からカーソルを動かしてから移動キーを押しっぱなしにしている場合5フレーム立たないと次が動かない
 		if(beforeMove>0 && beforeMove <5){
 			beforeMove++;
 			return;
@@ -74,7 +107,8 @@ class Cursor{
 		}
 		if(beforeMove == 0 && moved) beforeMove = 1;
 	}
-	
+
+	// 描画関数 statusはゲームの状態を表わす
 	public void draw(Graphics g, int status){
 		int drawX = 0;
 		int drawY = 0;

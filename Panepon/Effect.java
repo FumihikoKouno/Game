@@ -1,12 +1,22 @@
+/**
+ * 特殊エフェクト用クラス
+ * 連鎖、同時消し、パネル消しの瞬間に出すエフェクトを用意している
+ */
 import java.awt.Graphics;
 import java.awt.Color;
 
 class Effect{
+	// エフェクトの種類
 	private int kind;
+	// エフェクトが始まったときのフレーム数
 	private int start;
+	// エフェクトを出すときに利用するx、y座標
 	private int x,y;
+	// 連鎖数とか同時消し数とか消したパネルの種類とか
 	private int num;
+	// エフェクトが終了したらtrue
 	private boolean end;
+	// コンストラクタ エフェクトの種類とか場所とかを指定
 	public Effect(int kind, int x, int y, int num){
 		this.kind = kind;
 		this.x = x;
@@ -16,20 +26,20 @@ class Effect{
 		start = Data.frame;
 	}
 	
+	// 毎フレームごとの update
 	public void update(){
 		if(start+Data.EFFECT_TIME < Data.frame) end = true;
 	}
-	
-	public boolean ended(){
-		return end;
-	}
-	
+	// 終了フラグを返す
+	public boolean ended(){ return end; }
+	// 描画
 	public void draw(Graphics g){
 		int drawX = (Data.FIELD_START_X + Data.PANEL_SIZE * x)*Data.zoom;
 		int drawY = (Data.FIELD_START_Y + Data.PANEL_SIZE * y)*Data.zoom;
 		int imageX;
 		int imageY;
 		switch(kind){
+		// 連鎖のエフェクト
 		case Data.CHAIN_EFFECT:
 			if(num >= 20){
 				imageX = 0;
@@ -46,6 +56,7 @@ class Effect{
 				null
 			);
 			break;
+		// 同時消しのエフェクト
 		case Data.SAME_EFFECT:
 			drawX += (Data.PANEL_SIZE + 1.5)*Data.zoom;
 			drawY -= Data.PANEL_SIZE*Data.zoom;
@@ -62,6 +73,7 @@ class Effect{
 				null
 			);
 			break;
+		// パネル消去時のエフェクト
 		case Data.DELETE_EFFECT:
 			int red,green,brue;
 			switch(num){

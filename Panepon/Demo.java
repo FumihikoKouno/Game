@@ -1,20 +1,28 @@
+/**
+ * デモ用クラス
+ * Fieldを継承している
+ */
 import java.awt.Graphics;
 import java.awt.Image;
 
 public class Demo extends Field{
 	public Demo(){}
-	
+	// デモのときに出てくるマウスのx、y座標
 	private int demoMouseX;
 	private int demoMouseY;
+	// 説明用メッセージウィンドウ
 	private MessageWindow mw;
+	// デモの進み具合
 	private int demoState;
+	// デモを進める用のフレーム
 	private int demoFrame;
 	
+	// 各フレームでのupdate処理
 	public void update(){
 		demoControl();
 		super.update();
 	}
-	
+	// デモの動きを示す関数 update から毎フレーム呼ばれる
 	private void demoControl(){
 		int messageX = 5;
 		int messageY = 200;
@@ -372,7 +380,7 @@ public class Demo extends Field{
 		}
 	}
 
-
+	// 初期化
 	public void init(){
 		super.init();
 		Data.seed = System.currentTimeMillis();
@@ -419,6 +427,7 @@ public class Demo extends Field{
 		newLine[5] = new Panel(2);
 	}
 	
+	// 描画
 	public void draw(Graphics g){
 		super.draw(g);
 		int space_x = 20;

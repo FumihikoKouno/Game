@@ -1,3 +1,9 @@
+/**
+ * ゲームプレイ画面の基底クラス
+ * ゲームプレイの基本操作の関数とか
+ * いろんなモードに共通の変数を定義している
+ * このクラスを継承することで比較的簡単にいろんなモードができる
+ */
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -12,12 +18,18 @@ import javax.swing.ImageIcon;
 public class Field{
 	
 	public Field(){}
-	
+	/**
+	 * ゲームオーバーになった瞬間に設定される変数
+	 * 名前入力とかタイトルに戻るとかのフレーム数になる
+	 */
 	protected int gameOverFrame;
-	
+	// エフェクトリスト
 	protected ArrayList<Effect> effect = new ArrayList<Effect>();
+	// ゲーム開始の瞬間のフレーム
 	protected int startFrame;
+	// スクロールした瞬間のフレーム
 	protected int scrollFrame;
+	
 	protected int pressingPanelX;
 	protected int pressingPanelY;
 	private Panel pressingPanel;
@@ -29,7 +41,7 @@ public class Field{
 	private boolean mouseReleased;
 	private boolean retryReleased;
 	private boolean toTitleReleased;
-	
+	// リトライ関数
 	public void retry(){
 		KeyStatus.setAll(false);
 		init();
