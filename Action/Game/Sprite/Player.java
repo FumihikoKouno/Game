@@ -51,18 +51,18 @@ public class Player extends Sprite{
 	private int jumpSpeed = 15;
 	private static final int jumpMax = 2;
 	
-    public Player clone(){
-	Player newPlayer = new Player();
-	newPlayer.x = this.x;
-	newPlayer.y = this.y;
-	newPlayer.image = this.image;
-	newPlayer.vx = this.vx;
-	newPlayer.vy = this.vy;
-	newPlayer.width = this.width;
-	newPlayer.height = this.height;
-	newPlayer.life = this.life;
-	return newPlayer;
-    }
+	public Player clone(){
+		Player newPlayer = new Player();
+		newPlayer.x = this.x;
+		newPlayer.y = this.y;
+		newPlayer.image = this.image;
+		newPlayer.vx = this.vx;
+		newPlayer.vy = this.vy;
+		newPlayer.width = this.width;
+		newPlayer.height = this.height;
+		newPlayer.life = this.life;
+		return newPlayer;
+	}
 
 
 	/**
@@ -79,7 +79,7 @@ public class Player extends Sprite{
 	 * 位置と各変数の初期化
 	 */
 	public Player(int x, int y){
-                super(x,y);
+		super(x,y);
 		image = Data.image.playerImage;
 		vx = 0; vy = 0;
 		width = 32;
@@ -160,6 +160,7 @@ public class Player extends Sprite{
 		 * そこが最大値になるようにしている
 		 * 空中にData.CHIP_SIZEよりも小さいスクリプトがある場合、調整が必要そう
 		 */
+		if(vy == 0) vy = 1;
 		if((Data.frame&1)==0) vy += Data.gravity;
 		if(vy > Data.CHIP_SIZE) vy = Data.CHIP_SIZE-1;
 		/**

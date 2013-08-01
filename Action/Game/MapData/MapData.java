@@ -111,9 +111,18 @@ public class MapData{
 				if(tmp[0].equals("AppearingChip")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
-					int time = Integer.parseInt(tmp[3]);
-					int limit = Integer.parseInt(tmp[4]);
-					spriteList.add(new AppearingChip(x,y,time,limit));
+					int start = Integer.parseInt(tmp[3]);
+					int end = Integer.parseInt(tmp[4]);
+					int limit = Integer.parseInt(tmp[5]);
+					spriteList.add(new AppearingChip(x,y,start,end,limit));
+				}
+				if(tmp[0].equals("FroatingStage")){
+					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
+					int kind = Integer.parseInt(tmp[3]);
+					int scale = Integer.parseInt(tmp[4]);
+					int dir = Integer.parseInt(tmp[5]);
+					spriteList.add(new FroatingStage(x,y,kind,scale,dir));
 				}
 				if(tmp[0].equals("MapChange")){
 					int newMapID = Integer.parseInt(tmp[1]);

@@ -300,7 +300,7 @@ public class Map{
 		x1r += vx1 * ratio;
 		x2l += vx2 * ratio;
 		x2r += vx2 * ratio;
-		if(x1l+Data.CD_DIFF < x2r && x1r-Data.CD_DIFF > x2l){
+		if(x1l+Data.CD_DIFF <= x2r && x1r-Data.CD_DIFF => x2l){
 			return (int)(touch);
 		}else{
 			return Integer.MIN_VALUE;
@@ -316,6 +316,10 @@ public class Map{
 		if(v1-v2 <= 0) return Integer.MIN_VALUE;
 		if((y1b-y2b)*(y1a-y2a) > 0) return Integer.MIN_VALUE;
 		double touch = (double)(v1*y2b-v2*y1b)/(double)(v1-v2);
+		// (v1-v2)x = (v1*y2b-v2*y1b)
+		// (x-y1b)/v1 = (x-y2b)/v2
+		// v1(x-y2b) = v2(x-y1b)
+		// (v1-v2)x = v1*y2b-v2*y1b
 		double ratio = (double)(touch-y1b)/(double)v1;
 		double x1l = s1.getX();
 		double x1r = x1l+s1.getWidth();
@@ -327,7 +331,7 @@ public class Map{
 		x1r += vx1 * ratio;
 		x2l += vx2 * ratio;
 		x2r += vx2 * ratio;
-		if(x1l+Data.CD_DIFF < x2r && x1r-Data.CD_DIFF > x2l){
+		if(x1l+Data.CD_DIFF <= x2r && x1r-Data.CD_DIFF => x2l){
 			return (int)(touch);
 		}else{
 			return Integer.MIN_VALUE;
@@ -354,7 +358,7 @@ public class Map{
 		y1d += vy1 * ratio;
 		y2u += vy2 * ratio;
 		y2d += vy2 * ratio;
-		if(y1u+Data.CD_DIFF < y2d && y1d-Data.CD_DIFF > y2u){
+		if(y1u+Data.CD_DIFF <= y2d && y1d-Data.CD_DIFF => y2u){
 			return (int)(touch);
 		}else{
 			return Integer.MIN_VALUE;
@@ -381,7 +385,7 @@ public class Map{
 		y1d += vy1 * ratio;
 		y2u += vy2 * ratio;
 		y2d += vy2 * ratio;
-		if(y1u+Data.CD_DIFF < y2d && y1d-Data.CD_DIFF > y2u){
+		if(y1u+Data.CD_DIFF <= y2d && y1d-Data.CD_DIFF => y2u){
 			return (int)(touch);
 		}else{
 			return Integer.MIN_VALUE;

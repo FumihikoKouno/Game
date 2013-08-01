@@ -90,14 +90,14 @@ public class Sprite{
 	public void land(){ jumpCount = 0; jump = false; }
 	public boolean isInvisible(){ return invisible; }
 	
-    public int getX(){ return x; }
-    public int getY(){ return y; }
-    public int getVx(){ return vx; }
-    public int getVy(){ return vy; }
-    public int getWidth(){ return width; }
-    public int getHeight(){ return height; }
-    public int getDirection(){ return direction; }
-    public int getSpriteID(){ return spriteID; }
+	public int getX(){ return x; }
+	public int getY(){ return y; }
+	public int getVx(){ return vx; }
+	public int getVy(){ return vy; }
+	public int getWidth(){ return width; }
+	public int getHeight(){ return height; }
+	public int getDirection(){ return direction; }
+	public int getSpriteID(){ return spriteID; }
 
 	public void setVx(int vx){
 		setV(vx,this.vy);
@@ -106,10 +106,10 @@ public class Sprite{
 		setV(this.vx,vy);
 	}
 	
-    public void setV(int vx, int vy){
-	this.vx = vx;
-	this.vy = vy;
-    }
+	public void setV(int vx, int vy){
+		this.vx = vx;
+		this.vy = vy;
+	}
 
 	// スプライトのupdate
 	public void update(MapData mapData){}

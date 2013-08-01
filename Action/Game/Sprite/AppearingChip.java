@@ -9,10 +9,12 @@ import java.awt.Graphics;
 public class AppearingChip extends Sprite{
 	public boolean appear;
 	public int limit;
-	public int time;
-	public AppearingChip(int x, int y, int time, int limit){
+	public int start;
+	public int end;
+	public AppearingChip(int x, int y, int start, int end, int limit){
 		super(x,y);
-		this.time = time;
+		this.start = start;
+		this.end = end;
 		this.limit = limit;
 		image = Data.image.appearingChipImage;
 		width = Data.CHIP_SIZE;
@@ -20,7 +22,8 @@ public class AppearingChip extends Sprite{
 	}
 	// スプライトのupdate
 	public void update(MapData mapData){
-		if((Data.frame%limit) < time){
+		int f = Data.frame%limit;
+		if(start < f && f < end){
 			appear = true;
 		}else{
 			appear = false;
