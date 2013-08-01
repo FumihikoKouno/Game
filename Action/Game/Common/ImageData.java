@@ -25,4 +25,5 @@ public class ImageData{
 	public final Image leftUpSlopeImage = new ImageIcon(getClass().getResource("../Image/Sprite/LeftUpSlope.gif")).getImage();
 	public final Image appearingChipImage = new ImageIcon(getClass().getResource("../Image/Sprite/appearingChip.gif")).getImage();
 	public final Image froatingStageImage = new ImageIcon(getClass().getResource("../Image/Sprite/froatingStage.gif")).getImage();
+	public final Image brokenChipImage = new ImageIcon(getClass().getResource("../Image/Sprite/broken.gif")).getImage();
 }

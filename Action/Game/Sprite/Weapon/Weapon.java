@@ -11,6 +11,7 @@ import java.awt.Graphics;
 
 public class Weapon extends Sprite{
 	public static final int SWORD = 0;
+	public static final int ARROW = 1;
 	public Weapon(int x, int y){
 		super(x,y);
 	}

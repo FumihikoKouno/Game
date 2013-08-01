@@ -1,5 +1,5 @@
 /**
- * 武器の基盤クラス
+ * 属性クラス
  */
 
 package Game.Sprite.Weapon;
@@ -11,4 +11,6 @@ import java.awt.Graphics;
 public class Element{
 	public static final int NONE = 0;
 	public static final int FIRE = 1;
+	public static final int WATER = 2;
+	public static final int THUNDER = 3;
 }

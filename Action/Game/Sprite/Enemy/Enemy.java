@@ -84,7 +84,7 @@ public class Enemy extends Sprite{
 		if(s instanceof Weapon){
 			Weapon tmp = (Weapon)s;
 			if(attackedSpriteID != tmp.getSpriteID()){
-			    attackedSpriteID = tmp.getSpriteID();
+				attackedSpriteID = tmp.getSpriteID();
 				life -= tmp.power;
 			}
 		}

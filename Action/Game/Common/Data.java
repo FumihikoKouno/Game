@@ -13,7 +13,7 @@ public class Data{
 	public static int gravity = 1;
 	public static int CHIP_SIZE = 32;
 
-        public static Player player;
+	public static Player player;
 
 	public static final int CD_DIFF = 2;
 	

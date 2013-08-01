@@ -88,6 +88,13 @@ public class MapData{
 			// ファイルをすべて読み終わるまで、スプライトの読み込み
 			while((s = file.readLine()) != null){
 				String[] tmp = s.split(" ");
+				if(tmp[0].equals("BrokenChip")){
+					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
+					int weapon = Integer.parseInt(tmp[3]);
+					int element = Integer.parseInt(tmp[4]);
+					spriteList.add(new BrokenChip(x,y,weapon,element));
+				}
 				if(tmp[0].equals("Coin")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
