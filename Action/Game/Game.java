@@ -4,8 +4,8 @@ import java.awt.Container;
 import javax.swing.JFrame;
 
 public class Game extends JFrame {
-    private MainPanel panel;
-    private Container contentPane;
+	private MainPanel panel;
+	private Container contentPane;
 	public Game() {
 		setTitle("Game");
 		panel = new MainPanel();
@@ -13,9 +13,9 @@ public class Game extends JFrame {
 		contentPane.add(panel);
 		pack();
 	}
-    public void start(){
-	panel.run();
-    }
+	public void start(){
+		panel.run();
+	}
 
 	public static void main(String[] args) {
 		Game frame = new Game();
