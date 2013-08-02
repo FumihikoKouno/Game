@@ -26,18 +26,18 @@ public class FroatingStage extends Sprite{
 		case UP_DOWN:
 			if(dir == UP){
 				vx = 0;
-				vy = -2;
+				vy = -1;
 			}else{
 				vx = 0;
-				vy = 2;
+				vy = 1;
 			}
 			break;
 		case LEFT_RIGHT:
 			if(dir == LEFT){
-				vx = -2;
+				vx = -1;
 				vy = 0;
 			}else{
-				vx = 2;
+				vx = 1;
 				vy = 0;
 			}
 			break;
@@ -76,6 +76,7 @@ public class FroatingStage extends Sprite{
 	public void touch(Sprite s, int dir, int[] dest){
 		if((dir & (1 << DOWN)) > 0){
 			s.setV(s.getVx()+vx,y+vy-s.getHeight()+Data.CD_DIFF-s.getY());
+			System.out.println(Data.frame);
 			s.land();
 			return;
 		}
@@ -90,6 +91,10 @@ public class FroatingStage extends Sprite{
 		if((dir & (1 << UP)) > 0){
 			s.setVy(y+vy+height-Data.CD_DIFF-s.getY());
 			return;
+		}
+		if(s.getY() == y-s.getHeight()+Data.CD_DIFF && s.getVy() >= 0){
+			System.out.println(Data.frame);
+			s.land();
 		}
 	}
 	

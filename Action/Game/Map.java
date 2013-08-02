@@ -232,7 +232,9 @@ public class Map{
 				 * ‚±‚ê‚ª‚È‚­‚Ä‚à—‰º‚Í‚·‚é‚ñ‚¾‚¯‚ÇA
 				 * ‹ó’†‚É‚¢‚é‚Æ‚¢‚¤”»’è‚Ì‚½‚ß‚É•K—v
 				 */
-				if(tmp instanceof Player) Data.player.fall();
+				if(tmp instanceof Player && !Data.player.landing()){
+					Data.player.fall();
+				}
 			}
 		}
 		if(tmp.getVx() < 0){

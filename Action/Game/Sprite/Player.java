@@ -10,6 +10,8 @@ import Game.Sprite.Weapon.*;
 import java.awt.Graphics;
 
 public class Player extends Sprite{
+	// このフレーム中に何かに着地したらtrue
+	private boolean landing = false;
 	/**
 	 * プレイヤーのジャンプボタンが一度離されたかどうか
 	 * これがないとジャンプボタン押しっぱなしで何度もジャンプしてしまう
@@ -86,6 +88,15 @@ public class Player extends Sprite{
 		height = 32;
 		life = 10;
 	}
+	public void land(){
+		super.land();
+		landing = true;
+	}
+	
+	public boolean landing(){
+		return landing;
+	}
+	
 	/**
 	 * 落下用関数
 	 * …といっても重力とかの話ではなく
@@ -119,6 +130,7 @@ public class Player extends Sprite{
 	 * 各フレームでのupdate用関数
 	 */
 	public void update(){
+		landing = false;
 		/**
 		 * 無敵状態およびノックバックの処理
 		 */
@@ -150,7 +162,7 @@ public class Player extends Sprite{
 		 * 例えばData.CHIP_SIZEより大きいと壁を抜けるようになる
 		 */
 		if(KeyStatus.dash){
-			if(jumpCount == 0) speed = 64;
+			if(jumpCount == 0) speed = movingSpeed<<1;
 		}else{
 			if(jumpCount == 0) speed = movingSpeed;
 		}
