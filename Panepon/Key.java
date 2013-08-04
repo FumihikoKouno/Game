@@ -1,3 +1,7 @@
+/**
+ * キー入力を受け付けるクラス
+ * キーが押されたら対応するキーのフラグをセットしたり外したりする
+ */
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 

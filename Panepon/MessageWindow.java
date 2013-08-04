@@ -1,3 +1,6 @@
+/**
+ * メッセージウィンドウのクラス
+ */
 import java.awt.Graphics;
 import java.awt.Color;
 
@@ -7,7 +10,8 @@ class MessageWindow{
 	private int x,y;
 	private String message;
 	private int messageSize;
-	
+
+	// 表示する文字列と表示場所のx、y座標、横文字数と縦文字数
 	public MessageWindow(String s,int x,int y,int c, int r){
 		message = s;
 		messageSize = message.length();
@@ -17,6 +21,7 @@ class MessageWindow{
 		this.y = y;
 	}
 	
+	// 描画
 	public void draw(Graphics g){
 		g.setColor(Color.RED);
 		g.fillRect(x*Data.zoom,y*Data.zoom,colSize*Data.MESSAGE_X_SIZE*Data.zoom,(rowSize*Data.MESSAGE_Y_SIZE+8)*Data.zoom);

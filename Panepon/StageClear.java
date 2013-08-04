@@ -1,3 +1,6 @@
+/**
+ * ステージクリア用クラス
+ */
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Color;
@@ -5,18 +8,22 @@ import java.awt.Color;
 public class StageClear extends Field{
 	
 	public StageClear(){}
-	
+	// クリアラインの場所を示す変数
 	private int clearLine;
+	// クリアライン表示のためにせり上がったライン数を覚えておく変数
 	private int upNo;
 	
+	// ゲームオーバー関数
 	protected void gameOver(){
 		boolean tmp = true;
+		// クリアラインが出現していたら
 		if(clearLine >= 0){
 			for(int i = 0; i < clearLine; i++){
 				for(int j = 0; j < Data.COL; j++){
 					if(panel[i][j] != null) tmp = false;
 				}
 			}
+			// 全てのパネルがクリアライン以下で、消えているパネルがなければ
 			if(tmp && !deletePanelExist()){
 				for(int i = 0; i < Data.ROW; i++){
 					for(int j = 0; j < Data.COL; j++){
@@ -24,12 +31,15 @@ public class StageClear extends Field{
 						if(isFallable(j,i)) tmp = false;
 					}
 				}
+				// 更に落ちているパネルがなければ
 				if(tmp){
+					// ゲームオーバー表示用の猶予時間を作り、キーとマウスをキャンセルするようにする
 					if(gameOverFrame == 0){
 						gameOverFrame = Data.frame + 60;
 						Data.keyCansel = true;
 						Data.mouseCansel = true;
 					}
+					// 時間がたてばスコアを記録してタイトルに戻る
 					if(gameOverFrame != 0 && gameOverFrame <= Data.frame){
 						new ScoreIO().output();
 						Data.gameStatus = Data.TITLE;
@@ -39,12 +49,15 @@ public class StageClear extends Field{
 				}
 			}
 		}
+		// パネルが上にいってゲームオーバーの場合
 		if(topExist() && Data.scrollOffset != 0){
+			// 猶予時間作成
 			if(gameOverFrame == 0){
 				gameOverFrame = Data.frame + 60;
 				Data.keyCansel = true;
 				Data.mouseCansel = true;
 			}
+			// タイトルに戻る
 			if(gameOverFrame != 0 && gameOverFrame <= Data.frame){
 				Data.gameStatus = Data.TITLE;
 				Data.keyCansel = false;
@@ -52,17 +65,22 @@ public class StageClear extends Field{
 			}
 		}
 	}
-	
+	// クリアラインを表示するためにオーバーライド
 	protected void appearNewLine(){
 		super.appearNewLine();
+		// せり上がったライン数
 		upNo++;
+		// せり上がりが基底ライン数を超えたら
 		if(upNo == Data.CLEAR_LINE){
+			// クリアラインをセット
 			clearLine = Data.ROW;
 		}else{
+			// クリアラインが出現していたらライン出現のたびに一つ上にずらす
 			if(clearLine > 0) clearLine--;
 		}
 	}
 	
+	// 初期化
 	public void init(){
 		super.init();
 		Data.seed = System.currentTimeMillis();
@@ -90,6 +108,7 @@ public class StageClear extends Field{
 		createNewLine();
 	}
 	
+	// 描画
 	public void draw(Graphics g){
 		super.draw(g);
 		if(clearLine > 0){

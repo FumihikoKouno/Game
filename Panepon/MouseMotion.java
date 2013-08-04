@@ -1,3 +1,7 @@
+/**
+ * マウスの動きを感知するクラス
+ * こっちではマウスの現在位置を設定する
+ */
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 

@@ -1,3 +1,7 @@
+/**
+ * キーが押されているかどうかのフラグを持つクラス
+ * 実際のゲームではこれらのフラグを見てキーの判定をする
+ */
 public class KeyStatus{
 	public static boolean up;
 	public static boolean down;

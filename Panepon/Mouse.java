@@ -1,3 +1,7 @@
+/**
+ * マウスが押されることを感知するクラス
+ * マウスが押された瞬間のx、yとかを設定する
+ */
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 

@@ -1,6 +1,10 @@
+/**
+ * スコアデータのクラス
+ */
 import java.util.ArrayList;
 
 class Record{
+	// 名前
 	private String name;
 	private int score;
 	private int time;
@@ -10,6 +14,7 @@ class Record{
 	private int sumTime;
 	private int count;
 	
+	インスタンス。各データを設定
 	public Record(String name, int score, int time, int maxChain, int maxDelete, boolean replay, int sumTime, int count){
 		this.name = name;
 		this.score = score;
@@ -30,9 +35,11 @@ class Record{
 	public int getMaxChain(){ return maxChain; }
 	public int getMaxDelete(){ return maxDelete; }
 	
+	// スコアが上回っていればtrue
 	public boolean haveHighScoreThan(Record against){
 		return score > against.getScore();
 	}
+	// タイムが短ければtrue
 	public boolean haveShorterTimeThan(Record against){
 		return time < against.getTime();
 	}

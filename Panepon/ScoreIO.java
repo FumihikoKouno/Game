@@ -1,3 +1,7 @@
+/**
+ * スコアの入出力用クラス
+ * いろいろと後付けしたためぐちゃぐちゃで一番長い
+ */
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -14,6 +18,7 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 
 class ScoreIO{
+	// 各データ
 	private boolean replayE;
 	private boolean replaySC;
 	private boolean replayST;
@@ -61,6 +66,7 @@ class ScoreIO{
 		System.out.println(" stRecord " + stRecord);
 	}
 	
+	// 与えられたモードに対応するデータをrに挿入する
 	public void makeModeRanking(Record[] r, int mode){
 		Record tmp = null;
 		switch(mode){
@@ -114,12 +120,15 @@ class ScoreIO{
 		}
 	}
 	
+	// ランキングの生成
 	public void makeRanking(Record[] endless, Record[] scoreAttack, Record[] stageClear, boolean[] replayStatus){
 		File dir;
+		// ハードモード用ランキングと普通のランキング
 		if(Data.hard==1) dir = new File("./Score");
 		else dir = new File("./HardScore");
 		File[] list;
 		String name;
+		// 各配列の初期化
 		for(int i = 0; i < 10; i++){
 			endless[i] = null;
 			scoreAttack[i] = null;
@@ -128,10 +137,14 @@ class ScoreIO{
 		String fileName;
 		if(dir.exists() && dir.isDirectory()){
 			list = dir.listFiles();
+			// Score内の各ファイルについて
 			for(int i = 0; i < list.length; i++){
 				fileName = list[i].getName();
+				// .scoreで終わるファイルなら
 				if(fileName.endsWith(".score")){
+					// ファイルの中身を読み、各メンバ変数に代入
 					readFile(fileName);
+					// 読んだデータをもとにランキングの対応する位置に挿入
 					makeModeRanking(endless,Data.ENDLESS);
 					makeModeRanking(scoreAttack,Data.SCORE_ATTACK);
 					makeModeRanking(stageClear,Data.STAGE_CLEAR);
@@ -141,6 +154,7 @@ class ScoreIO{
 		return;
 	}
 
+	// プレイ回数などを書き出す
 	public void writePlayCount(BufferedOutputStream os, int mode, boolean b){
 		try{
 			Record tmp = null;
@@ -192,6 +206,7 @@ class ScoreIO{
 		}
 	}
 	
+	// 基本記録を書き出す(スコア、時間、最大連鎖数、最大同時消し数)
 	public void writeRecord(BufferedOutputStream os, int mode){
 		try{
 			Record tmp = null;
@@ -225,7 +240,7 @@ class ScoreIO{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public long getSeed(int mode){
 		switch(mode){
 		case Data.ENDLESS:
@@ -322,12 +337,14 @@ class ScoreIO{
 		return null;
 	}
 
+	// リプレイデータを読む(引数は名前でBufferedInputStreamを引数にとる同じ名前の関数を呼ぶ)
 	public void readReplayData(String name){
 		try{
 			byte[] tmp = new byte[51];
 			BufferedInputStream is;
 			if(Data.hard == 1) is = new BufferedInputStream(new FileInputStream(new File("./Score/"+name+".score")));
 			else is = new BufferedInputStream(new FileInputStream(new File("./HardScore/"+name+".score")));
+			// リプレイデータの開始位置まで読み飛ばす
 			is.read(tmp,0,51);
 			readReplayData(is);
 			is.close();
@@ -338,6 +355,7 @@ class ScoreIO{
 		}
 	}
 
+	// 対応するモードのリプレイデータを読み、それらをメンバ変数に代入
 	public void readModeReplayData(BufferedInputStream is, int mode){
 		try{
 			switch(mode){
@@ -439,7 +457,8 @@ class ScoreIO{
 			e.printStackTrace();
 		}
 	}
-	
+
+	// プレイカウントを読む
 	public void readPlayCount(BufferedInputStream is){
 		try{
 			byte[] tmp = new byte[24];
@@ -469,6 +488,8 @@ class ScoreIO{
 			e.printStackTrace();
 		}
 	}
+	
+	// リプレイデータを読む(引数はBufferedInputStream)
 	public void readReplayData(BufferedInputStream is){
 		try{
 			byte[] tmp = new byte[8];
@@ -490,6 +511,7 @@ class ScoreIO{
 		}
 	}
 
+	// 対応する名前のファイルを読み、対応するメンバ変数にすべて代入
 	public void readFile(String name){
 		if(Data.hard==1){
 			if(!(new File("./Score/"+name).exists())){
@@ -571,6 +593,7 @@ class ScoreIO{
 		}
 	}
 	
+	// リプレイデータの書き出し
 	public void writeReplay(BufferedOutputStream os, int mode){
 		try{
 			long tmpSeed;
@@ -674,6 +697,7 @@ class ScoreIO{
 		}
 	}
 	
+	// 名前を入力し、その名前に対応するスコアデータをファイルに出力
 	public void output(){
 		boolean updatable = false;
 		File dir;
@@ -691,6 +715,7 @@ class ScoreIO{
 		}
 	}
 	
+	// 対応する名前のファイルにデータを書き出し
 	public void writeFile(String name, int mode){
 		boolean update = false;
 		readFile(name);

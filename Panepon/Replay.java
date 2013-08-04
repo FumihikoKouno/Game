@@ -1,3 +1,6 @@
+/**
+ * リプレイ用クラス
+ */
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Color;
@@ -5,13 +8,14 @@ import java.awt.Color;
 public class Replay extends Field{
 	
 	public Replay(){}
-	
+	// ステージクリアのリプレイ用データ
 	private int clearLine;
 	private int upNo;
 	
 	private int mode;
 	private boolean end;
 	
+	// リプレイの細かいデータのindexと配列
 	private int scrollIndex;
 	private int swapIndex;
 	private int cursorIndex;
@@ -24,10 +28,12 @@ public class Replay extends Field{
 	private int[] rcursorX;
 	private int[] rcursorY;
 	
+	// リプレイ終了していたらtrue
 	public boolean end(){
 		return end;
 	}
 	
+	// ゲームオーバー用関数。内容は各モードに準拠
 	protected void gameOver(){
 		switch(mode){
 		case Data.ENDLESS:
@@ -91,6 +97,7 @@ public class Replay extends Field{
 		}
 	}
 	
+	// ステージクリアのためにオーバーライド
 	protected void appearNewLine(){
 		if(rcursorFrame.length == 0) cursor.moveUp();
 		for(int i = 1; i < Data.ROW; i++){
@@ -112,6 +119,7 @@ public class Replay extends Field{
 		}
 	}
 	
+	// 初期化用関数
 	public void init(){
 		super.init();
 		end = false;
@@ -142,6 +150,7 @@ public class Replay extends Field{
 		createNewLine();
 	}
 	
+	// 対応する名前、モードのリプレイデータを読む
 	public void setStatus(String name, int mode){
 		this.mode = mode;
 		ScoreIO io = new ScoreIO();
@@ -156,7 +165,9 @@ public class Replay extends Field{
 		rcursorY = io.getCursorY(mode);
 	}
 	
+	// update
 	public void update(){
+		カーソル移動
 		if(cursorIndex < rcursorFrame.length){
 			if(Data.frame-startFrame == rcursorFrame[cursorIndex]){
 				int tx = rcursorX[cursorIndex];
@@ -165,6 +176,7 @@ public class Replay extends Field{
 				cursorIndex++;
 			}
 		}
+		// パネル移動
 		if(swapIndex < rswapFrame.length){
 			if(Data.frame-startFrame == rswapFrame[swapIndex]){
 				int tx = rswapX[swapIndex];
@@ -177,6 +189,7 @@ public class Replay extends Field{
 		super.update();
 	}
 	
+	// リプレイデータに準拠してスクロールするのでオーバーライド
 	protected void scroll(){
 		if(scrollIndex >= rscrollFrame.length){
 			return;
@@ -191,6 +204,7 @@ public class Replay extends Field{
 		scrollIndex++;
 	}
 	
+	// 描画
 	public void draw(Graphics g){
 		super.draw(g);
 		if(clearLine > 0){

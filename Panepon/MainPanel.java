@@ -1,3 +1,8 @@
+/**
+ * メインパネルクラス
+ * このゲームではパネルは一つだけ
+ * モードに対応したものを表示したりupdateしたりする
+ */
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -11,6 +16,7 @@ class MainPanel extends JPanel{
 	private Image dbImage;
 	private Graphics dbg;
 
+	// 各画面に対応するインスタンス
 	private Title title;
 	private Ranking ranking;
 	private Key key;
@@ -19,7 +25,8 @@ class MainPanel extends JPanel{
 	private MouseMotion mouseMotion;
 	
 	private int prevGameStatus;
-	
+
+	// インスタンス、だいたいインスタンスの生成を行っていたりする
 	public MainPanel(){
 		prevGameStatus = Data.TITLE;
 		title = new Title();
@@ -47,27 +54,31 @@ class MainPanel extends JPanel{
 		long time;
 		Data.frame = 0;
 		int mspf = 1000 / Data.fps;
+		// ゲームループ
 		while(true){
 			time = System.currentTimeMillis();
 			update();
 			time = System.currentTimeMillis() - time;
-			//if(time > mspf) Data.debugPrint("slowdown");
 			try{
+				// fps処理
 				if(time < mspf) Thread.sleep(mspf-time);
 			}catch(InterruptedException e){
 				e.printStackTrace();
 			}
+			// フレーム数加算
 			Data.frame++;
 		}
 	}
 
+	// 毎フレームごとのupdate関数
 	public void update() {
 		dbg.setColor(Color.BLACK);
 		dbg.fillRect(0,0,Data.WIDTH*Data.zoom,Data.HEIGHT*Data.zoom);
+		// 各モードに対応してupdate、drawする対象のインスタンスを変える
+		// モード変更時の初期化とかもする
 		switch(Data.gameStatus){
 		case Data.TITLE:
 			if(prevGameStatus != Data.gameStatus){
-				
 				title.init();
 				prevGameStatus = Data.gameStatus;
 				KeyStatus.setAll(false);

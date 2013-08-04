@@ -1,3 +1,6 @@
+/**
+ * スコアアタックモード
+ */
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -5,13 +8,17 @@ public class ScoreAttack extends Field{
 	
 	public ScoreAttack(){}
 
+	// ゲームオーバー
 	protected void gameOver(){
+		// 制限時間が0になったら
 		if(startFrame + Data.TIME_LIMIT <= Data.frame){
+			// ゲームオーバーの文字表示用に猶予時間とキー受付のキャンセルをセット
 			if(gameOverFrame == 0){
 				gameOverFrame = Data.frame + 60;
 				Data.keyCansel = true;
 				Data.mouseCansel = true;
 			}
+			// 時間が経ったらスコアを記録し、タイトルに戻る。その際キー受付のキャンセルはリセットしておく
 			if(gameOverFrame != 0 && gameOverFrame <= Data.frame){
 				new ScoreIO().output();
 				Data.gameStatus = Data.TITLE;
@@ -19,13 +26,15 @@ public class ScoreAttack extends Field{
 				Data.mouseCansel = false;
 			}
 		}
+		// 上にパネルが達してしまった場合
 		if(topExist() && (Data.scrollOffset != 0)){
+			// ゲームオーバー表示用猶予時間
 			if(gameOverFrame == 0){
 				gameOverFrame = Data.frame + 60;
 				Data.keyCansel = true;
 				Data.mouseCansel = true;
-				
 			}
+			// 時間が経ったらタイトルに戻る
 			if(gameOverFrame != 0 && gameOverFrame <= Data.frame){
 				Data.gameStatus = Data.TITLE;
 				Data.keyCansel = false;
@@ -34,6 +43,7 @@ public class ScoreAttack extends Field{
 		}
 	}
 
+	// 初期化関数
 	public void init(){
 		super.init();
 		Data.seed = System.currentTimeMillis();
@@ -58,7 +68,7 @@ public class ScoreAttack extends Field{
 		}
 		createNewLine();
 	}
-		
+	// 描画
 	public void draw(Graphics g){
 		super.draw(g);
 		int space_x = 20;

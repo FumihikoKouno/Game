@@ -1,38 +1,55 @@
+/**
+ * ランキングのクラス
+ */
 import java.awt.Graphics;
 import java.awt.Color;
 
 class Ranking{
+	// リプレイ
 	Replay replay;
 	int mode;
 	int offset;
+	// 各モードのランキングの要素数
 	int endlessLen;
 	int scoreLen;
 	int stageLen;
+	// カーソル
 	Cursor cursor;
+	// 各モードに対応する記録保持用配列
 	Record[] endless = new Record[10];
 	Record[] score = new Record[10];
 	Record[] stage = new Record[10];
+	// リプレイデータがあるかどうか(各モード用にあり3つ)
 	boolean[] replayStatus = new boolean[3];
+	// スコアの入出力用インスタンス
 	ScoreIO sIO = new ScoreIO();
+
+	// インスタンス。カーソル位置の初期化
 	public Ranking(){
 		cursor = new Cursor(0,0);
 	}
 	
+	// 初期化関数
 	public void init(){
+		// ランキングを作る
 		sIO.makeRanking(endless,score,stage,replayStatus);
 		replay = null;
+		// カーソルがループするように
 		cursor.setLoopAble(true);
 		Data.keyCansel = false;
 		Data.mouseCansel = false;
+		// 最初はエンドレス
 		mode = Data.ENDLESS;
 		cursor.set(0,0);
+		
+		// 各モードに対応する記録の要素数を保持しておく(10とは限らない)
 		for(int i = 0; i < endless.length; i++){
 			if(endless[i] == null){
 				endlessLen = i;
 				break;
 			}
 		}
-		if(endlessLen == 0 && endless[0] != null) endlessLen = stage.length;
+		if(endlessLen == 0 && endless[0] != null) endlessLen = endless.length;
 
 		for(int i = 0; i < score.length; i++){
 			if(score[i] == null){
@@ -40,7 +57,7 @@ class Ranking{
 				break;
 			}
 		}
-		if(scoreLen == 0 && score[0] != null) scoreLen = stage.length;
+		if(scoreLen == 0 && score[0] != null) scoreLen = score.length;
 
 		for(int i = 0; i < stage.length; i++){
 			if(stage[i] == null){
@@ -49,22 +66,28 @@ class Ranking{
 			}
 		}
 		if(stageLen == 0 && stage[0] != null) stageLen = stage.length;
+		// カーソルの最大値セット
 		Data.cursorMaxX = 2;
 		Data.cursorMaxY = endlessLen-1;
 	}
 	
+	// 各フレームごとのupdate
 	public void update(){
-	if(replay != null){
-		replay.update();
-		if(replay.end()){
-			cursor.set(0,0);
-			Data.cursorMaxX = 2;
-			Data.cursorMaxY = endlessLen-1;
-			replay = null;
+		// replayを再生している場合
+		if(replay != null){
+			replay.update();
+			if(replay.end()){
+				cursor.set(0,0);
+				Data.cursorMaxX = 2;
+				Data.cursorMaxY = endlessLen-1;
+				replay = null;
+			}
+			return;
 		}
-		return;
-	}
+		// リプレイを再生していないとき
+		// カーソル移動
 		cursor.move();
+		// カーソルの最大値とモードセット
 		switch(cursor.getX()){
 		case 0:
 			mode = Data.ENDLESS;
@@ -79,13 +102,17 @@ class Ranking{
 			Data.cursorMaxY = stageLen-1;
 			break;
 		}
+		// モード移動時に良い感じの位置にカーソル補正
 		if(Data.cursorMaxY < 0) Data.cursorMaxY = 0;
 		cursor.setY(cursor.getY());
+		// タイトルに戻る
 		if(KeyStatus.change) Data.gameStatus = Data.TITLE;
+		// リプレイデータがあれば再生
 		if(KeyStatus.enter){
 			String name = null;
 			int ty = cursor.getY();
 			KeyStatus.enter = false;
+			// もし対応するモードのリプレイがあればnameを設定することであることを設定する
 			switch(mode){
 			case Data.ENDLESS:
 				if(endless[ty] != null && endless[ty].getReplay()) name = endless[ty].getName();
@@ -97,13 +124,19 @@ class Ranking{
 				if(stage[ty] != null && stage[ty].getReplay()) name = stage[ty].getName();
 				break;
 			}
+			// リプレイデータがあれば
 			if(name != null){
+				// インスタンス生成
 				replay = new Replay();
+				// リプレイデータをセット
 				replay.setStatus(name, mode);
+				// リプレイの初期化
 				replay.init();
 			}
 		}
 	}
+	
+	// 描画
 	public void draw(Graphics g){
 		if(replay != null){
 			replay.draw(g);
