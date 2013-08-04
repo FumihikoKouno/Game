@@ -167,7 +167,7 @@ public class Replay extends Field{
 	
 	// update
 	public void update(){
-		カーソル移動
+		// カーソル移動
 		if(cursorIndex < rcursorFrame.length){
 			if(Data.frame-startFrame == rcursorFrame[cursorIndex]){
 				int tx = rcursorX[cursorIndex];

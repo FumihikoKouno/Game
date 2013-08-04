@@ -224,7 +224,7 @@ public class Field{
 	}
 	
 	// gameover用関数、各モードで実装
-	protected void gameOver(){assert(0);}
+	protected void gameOver(){assert(false);}
 	
 	// 連鎖数がリセットされるかどうか
 	private boolean chainResetable(){

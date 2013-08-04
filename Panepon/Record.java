@@ -14,7 +14,7 @@ class Record{
 	private int sumTime;
 	private int count;
 	
-	インスタンス。各データを設定
+	// インスタンス。各データを設定
 	public Record(String name, int score, int time, int maxChain, int maxDelete, boolean replay, int sumTime, int count){
 		this.name = name;
 		this.score = score;
