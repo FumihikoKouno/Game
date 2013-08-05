@@ -71,138 +71,7 @@ public class Map{
 		x = nx;
 		y = ny;
 	}
-	/**
-	 * 描画用関数
-	 * マップの描画と同時に
-	 * マップの持っているオブジェクトの描画関数も呼び出す
-	 * 具体的にはプレイヤー(武器も同時)とスプライトの描画関数を呼び出す
-	 */
-	public void draw(Graphics g){
-		/* 背景描画 */
-		g.drawImage(Data.image.backgroundImage,0,0,null);
-		/* マップの描画開始 */
-		int row = Data.HEIGHT / Data.CHIP_SIZE;
-		int col = Data.WIDTH / Data.CHIP_SIZE;
-		for(int i = 0; i <= row; i++){
-			for(int j = 0; j <= col; j++){ 
-				int chipX = j + x / Data.CHIP_SIZE;
-				if(chipX < 0) chipX = 0;
-				if(chipX >= mapData.col) chipX = mapData.col-1;
-				int chipY = i + y / Data.CHIP_SIZE;
-				if(chipY < 0) chipY = 0;
-				if(chipY >= mapData.row) chipY = mapData.row-1;
-				if(mapData.data[chipY][chipX] == 0) continue;
-				int imageX = (mapData.data[chipY][chipX] % 16) * Data.CHIP_SIZE;
-				int imageY = (mapData.data[chipY][chipX] / 16) * Data.CHIP_SIZE;
-				g.drawImage(Data.image.mapImage,
-					j * Data.CHIP_SIZE - (x%Data.CHIP_SIZE), i * Data.CHIP_SIZE -(y%Data.CHIP_SIZE), 
-					j * Data.CHIP_SIZE -(x%Data.CHIP_SIZE)+Data.CHIP_SIZE, i * Data.CHIP_SIZE -(y%Data.CHIP_SIZE)+Data.CHIP_SIZE,
-					imageX, imageY, imageX + Data.CHIP_SIZE, imageY + Data.CHIP_SIZE,
-					null
-				);
-			}
-		}
-		/* マップの描画終了 */
-		/* スプライトの描画 */
-		for(int i = 0; i < mapData.spriteList.size(); i++){
-			mapData.spriteList.get(i).draw(g,x,y);
-		}
-		/* プレイヤーの描画 */
-		Data.player.draw(g,x,y);
-		// ポーズ中の場合、画面にポーズの文字を点滅させる
-		if(pausing && (Data.frame/30)%2 == 0) g.drawString("Pause",Data.WIDTH/2, Data.HEIGHT/2);
-	}
-	/**
-	 * mapHitUpからmapHitRightは
-	 * 各方向のマップとの衝突判定を行う関数
-	 * マップとの衝突判定をいじる場合はこれらをいじる
-	 */
-	public int mapHitUp(Sprite s){
-		int lx = s.getX()+Data.CD_DIFF;
-		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
-		int uy = s.getY()+Data.CD_DIFF;
-		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF;
-		int vy = s.getVy();
-		int fromX = lx/Data.CHIP_SIZE;
-		int toX = rx/Data.CHIP_SIZE;
-		int fromY = (uy+vy)/Data.CHIP_SIZE;
-		int toY = dy/Data.CHIP_SIZE;
-		for(int i = toY; i >= fromY; i--){
-			for(int j = fromX; j <= toX; j++){
-				if(j<0||j>=mapData.col||i<0||i>=mapData.row) continue;
-				if(mapData.pass[i][j] == 1){
-					return (i+1)*Data.CHIP_SIZE-Data.CD_DIFF;
-				}
-			}
-		}
-		if(uy+vy < 0) return -Data.CD_DIFF;
-		return Integer.MIN_VALUE;
-	}
-	public int mapHitDown(Sprite s){
-		int lx = s.getX()+Data.CD_DIFF;
-		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
-		int uy = s.getY()+Data.CD_DIFF;
-		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF;
-		int vy = s.getVy();
-		int fromX = lx/Data.CHIP_SIZE;
-		int toX = rx/Data.CHIP_SIZE;
-		int fromY = uy/Data.CHIP_SIZE;
-		int toY = (dy+vy)/Data.CHIP_SIZE;
-		for(int i = fromY; i <= toY; i++){
-			if(i >= mapData.row) return mapData.row*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
-			for(int j = fromX; j <= toX; j++){
-				if(j<0||j>=mapData.col||i<0) continue;
-				if(mapData.pass[i][j] == 1){
-					return i*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
-				}
-			}
-		}
-		return Integer.MIN_VALUE;
-	}
-	public int mapHitLeft(Sprite s){
-		int vx = s.getVx();
-		int vy = s.getVy();
-		int lx = s.getX()+Data.CD_DIFF;
-		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
-		int uy = s.getY()+Data.CD_DIFF+vy;
-		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF+vy;
-		int fromX = (lx+vx)/Data.CHIP_SIZE;
-		int toX = rx/Data.CHIP_SIZE;
-		int fromY = uy/Data.CHIP_SIZE;
-		int toY = dy/Data.CHIP_SIZE;
-		for(int i = toX; i >= fromX; i--){
-			for(int j = fromY; j <= toY; j++){
-				if(i<0||i>=mapData.col||j<0||j>=mapData.row) continue;
-				if(mapData.pass[j][i] == 1){
-					return (i+1)*Data.CHIP_SIZE-Data.CD_DIFF;
-				}
-			}
-		}
-		if(lx+vx < 0) return -Data.CD_DIFF;
-		return Integer.MIN_VALUE;
-	}
-	public int mapHitRight(Sprite s){
-		int vx = s.getVx();
-		int vy = s.getVy();
-		int lx = s.getX()+Data.CD_DIFF;
-		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
-		int uy = s.getY()+Data.CD_DIFF+vy;
-		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF+vy;
-		int fromX = lx/Data.CHIP_SIZE;
-		int toX = (rx+vx)/Data.CHIP_SIZE;
-		int fromY = uy/Data.CHIP_SIZE;
-		int toY = dy/Data.CHIP_SIZE;
-		for(int i = fromX; i <= toX; i++){
-			if(i >= mapData.col) return mapData.col*Data.CHIP_SIZE-s.getWidth()+Data.CD_DIFF;
-			for(int j = fromY; j <= toY; j++){
-				if(i<0||j<0||j>=mapData.row) continue;
-				if(mapData.pass[j][i] == 1){
-					return i*Data.CHIP_SIZE-s.getWidth()+Data.CD_DIFF;
-				}
-			}
-		}
-		return Integer.MIN_VALUE;
-	}
+	
 	/**
 	 * スプライトとマップの衝突判定
 	 * 基本はplayerAndMapHitと同じ
@@ -253,6 +122,194 @@ public class Map{
 		}
 		return ret;
 	}
+	/**
+	 * スプライト同士のスプライトの衝突判定
+	 */
+	public boolean spriteAndSpriteHit(Sprite s1, Sprite s2){
+		int[] hitPosition = new int[4];
+		int[] hitPosition1 = new int[4];
+		int[] hitPosition2 = new int[4];
+		int[] diff = new int[4];
+		hitPosition[Sprite.UP] = hitUp(s1,s2);
+		hitPosition[Sprite.DOWN]  = hitDown(s1,s2);
+		hitPosition[Sprite.LEFT]  = hitLeft(s1,s2);
+		hitPosition[Sprite.RIGHT]  = hitRight(s1,s2);
+		int hitDir = spriteHit(s1,s2);
+		for(int i = 0; i < 4; i++){
+			if(hitPosition[i] != Integer.MIN_VALUE){
+				hitDir = hitDir | (1 << i);
+				hitPosition1[i] = hitPosition[i];
+			}else{
+				hitPosition1[i] = Integer.MIN_VALUE;
+			}
+		}
+		if(hitDir > 0){
+			hitPosition2[Sprite.UP] = hitPosition[Sprite.DOWN];
+			hitPosition2[Sprite.DOWN] = hitPosition[Sprite.UP];
+			hitPosition2[Sprite.LEFT] = hitPosition[Sprite.RIGHT];
+			hitPosition2[Sprite.RIGHT] = hitPosition[Sprite.LEFT];
+			hitPosition1[Sprite.UP] -= Data.CD_DIFF;
+			hitPosition1[Sprite.LEFT] -= Data.CD_DIFF;
+			hitPosition1[Sprite.DOWN] -= s1.getHeight()-Data.CD_DIFF;
+			hitPosition1[Sprite.RIGHT] -= s1.getWidth()-Data.CD_DIFF;
+			hitPosition2[Sprite.UP] -= Data.CD_DIFF;
+			hitPosition2[Sprite.LEFT] -= Data.CD_DIFF;
+			hitPosition2[Sprite.DOWN] -= s2.getHeight()-Data.CD_DIFF;
+			hitPosition2[Sprite.RIGHT] -= s2.getWidth()-Data.CD_DIFF;
+			if(s1 instanceof Player) s2.touch(s1,hitDir,hitPosition1);
+			else if(s1 instanceof Weapon) s2.attacked(s1);
+			else{
+				s2.touch(s1,hitDir,hitPosition1);
+				hitDir = hitDir & 16;
+				for(int i = 0; i < 4; i++){
+					if(hitPosition2[i] != Integer.MIN_VALUE) hitDir = hitDir | (1 << i);
+				}
+				s1.touch(s2,hitDir,hitPosition2);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	/** 
+	 * ポーズ用処理
+	 */
+	public void pause(){
+		/**
+		 * ポーズ用操作
+		 */
+		if(!KeyStatus.pause) pauseReleased = true;
+		if(pausing){
+			if(pauseReleased && KeyStatus.pause){
+				pausing = false;
+				pauseReleased = false;
+			}
+			return;
+		}else{
+			if(pauseReleased && KeyStatus.pause){
+				pausing = true;
+				pauseReleased = false;
+				return;
+			}
+		}
+	}
+	
+	public void menu(){
+		/**
+		 * メニュー呼び出し用の操作
+		 * 今はメニューボタンに対応するボタンを設定していないし、
+		 * そもそもメニューを作っていない
+		 */
+		if(!KeyStatus.menu) menuReleased = true;
+		if(menuReleased && KeyStatus.menu){
+			Data.gameStatus = Data.MENU;
+			menuReleased = false;
+			return;
+		}
+	}
+
+	/**
+	 * フレームごとの更新用関数
+	 * いろんなインスタンスのupdateも呼び出す
+	 * 処理の順番は結構重要だったりする
+	 * 後半の方が優先度が高い
+	 * 例えば敵に当たって仰け反るよりも
+	 * 壁にめり込まない方が大事など
+	 */
+	public void update(){
+		menu();
+		pause();
+		// プレイヤーの状態更新
+		Data.player.update();
+		/**
+		 * 武器と壁との衝突判定
+		 * 矢とかは刺さるか消えるかするよね？
+		 */
+		if(Data.player.weapon != null){
+			Data.player.weapon.update(mapData);
+			if(Data.player.weapon.end) Data.player.weapon = null;
+			else spriteAndMapHit(Data.player.weapon);
+		}
+		// スプライトの衝突判定
+		// 壁・プレイヤー・武器との衝突判定を行う
+		for(int i = 0; i < mapData.spriteList.size(); i++){
+			Sprite tmp = mapData.spriteList.get(i);
+			// 画面外のスプライトについての計算は行わない
+			if(tmp.getX() < x - Data.SCREEN_OUT || tmp.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp.getY() < y - Data.SCREEN_OUT || tmp.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
+			tmp.update(mapData);
+			spriteAndSpriteHit(Data.player,tmp);
+			if(Data.player.weapon != null){
+				spriteAndSpriteHit(Data.player.weapon,tmp);
+			}
+			for(int j = i+1; j < mapData.spriteList.size(); j++){
+				Sprite tmp2 = mapData.spriteList.get(j);
+				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
+				spriteAndSpriteHit(tmp,tmp2);
+			}
+			if(tmp.end){
+				mapData.spriteList.remove(tmp);
+				continue;
+			}
+			spriteAndMapHit(tmp);
+			tmp.move();
+		}
+		// プレイヤーのマップとの衝突判定
+		spriteAndMapHit(Data.player);
+		/**
+		 * ここまでで、マップとか敵とかにぶつかることによる
+		 * 速度変動の処理が全部終わったので、
+		 * 主人公の移動と、その移動先に合わせた画面スクロール
+		 */
+		scroll();
+		Data.player.move();
+	}
+	
+	
+	
+	/**
+	 * 描画用関数
+	 * マップの描画と同時に
+	 * マップの持っているオブジェクトの描画関数も呼び出す
+	 * 具体的にはプレイヤー(武器も同時)とスプライトの描画関数を呼び出す
+	 */
+	public void draw(Graphics g){
+		/* 背景描画 */
+		g.drawImage(Data.image.backgroundImage,0,0,null);
+		/* マップの描画開始 */
+		int row = Data.HEIGHT / Data.CHIP_SIZE;
+		int col = Data.WIDTH / Data.CHIP_SIZE;
+		for(int i = 0; i <= row; i++){
+			for(int j = 0; j <= col; j++){ 
+				int chipX = j + x / Data.CHIP_SIZE;
+				if(chipX < 0) chipX = 0;
+				if(chipX >= mapData.col) chipX = mapData.col-1;
+				int chipY = i + y / Data.CHIP_SIZE;
+				if(chipY < 0) chipY = 0;
+				if(chipY >= mapData.row) chipY = mapData.row-1;
+				if(mapData.data[chipY][chipX] == 0) continue;
+				int imageX = (mapData.data[chipY][chipX] % 16) * Data.CHIP_SIZE;
+				int imageY = (mapData.data[chipY][chipX] / 16) * Data.CHIP_SIZE;
+				g.drawImage(Data.image.mapImage,
+					j * Data.CHIP_SIZE - (x%Data.CHIP_SIZE), i * Data.CHIP_SIZE -(y%Data.CHIP_SIZE), 
+					j * Data.CHIP_SIZE -(x%Data.CHIP_SIZE)+Data.CHIP_SIZE, i * Data.CHIP_SIZE -(y%Data.CHIP_SIZE)+Data.CHIP_SIZE,
+					imageX, imageY, imageX + Data.CHIP_SIZE, imageY + Data.CHIP_SIZE,
+					null
+				);
+			}
+		}
+		/* マップの描画終了 */
+		/* スプライトの描画 */
+		for(int i = 0; i < mapData.spriteList.size(); i++){
+			mapData.spriteList.get(i).draw(g,x,y);
+		}
+		/* プレイヤーの描画 */
+		Data.player.draw(g,x,y);
+		// ポーズ中の場合、画面にポーズの文字を点滅させる
+		if(pausing && (Data.frame/30)%2 == 0) g.drawString("Pause",Data.WIDTH/2, Data.HEIGHT/2);
+	}
+	
+	
+	
 	/**
 	 * hitUpからhitRightは物体同士の各方向に対する衝突判定
 	 * 攻撃の衝突判定とかもこれらを使う
@@ -409,134 +466,96 @@ public class Map{
 			return Integer.MIN_VALUE;
 		}
 	}
+	
 	/**
-	 * スプライト同士のスプライトの衝突判定
+	 * mapHitUpからmapHitRightは
+	 * 各方向のマップとの衝突判定を行う関数
+	 * マップとの衝突判定をいじる場合はこれらをいじる
 	 */
-	public boolean spriteAndSpriteHit(Sprite s1, Sprite s2){
-		int[] hitPosition = new int[4];
-		int[] hitPosition1 = new int[4];
-		int[] hitPosition2 = new int[4];
-		int[] diff = new int[4];
-		hitPosition[Sprite.UP] = hitUp(s1,s2);
-		hitPosition[Sprite.DOWN]  = hitDown(s1,s2);
-		hitPosition[Sprite.LEFT]  = hitLeft(s1,s2);
-		hitPosition[Sprite.RIGHT]  = hitRight(s1,s2);
-		int hitDir = spriteHit(s1,s2);
-		for(int i = 0; i < 4; i++){
-			if(hitPosition[i] != Integer.MIN_VALUE){
-				hitDir = hitDir | (1 << i);
-				hitPosition1[i] = hitPosition[i];
-			}else{
-				hitPosition1[i] = Integer.MIN_VALUE;
-			}
-		}
-		if(hitDir > 0){
-			hitPosition2[Sprite.UP] = hitPosition[Sprite.DOWN];
-			hitPosition2[Sprite.DOWN] = hitPosition[Sprite.UP];
-			hitPosition2[Sprite.LEFT] = hitPosition[Sprite.RIGHT];
-			hitPosition2[Sprite.RIGHT] = hitPosition[Sprite.LEFT];
-			hitPosition1[Sprite.UP] -= Data.CD_DIFF;
-			hitPosition1[Sprite.LEFT] -= Data.CD_DIFF;
-			hitPosition1[Sprite.DOWN] -= s1.getHeight()-Data.CD_DIFF;
-			hitPosition1[Sprite.RIGHT] -= s1.getWidth()-Data.CD_DIFF;
-			hitPosition2[Sprite.UP] -= Data.CD_DIFF;
-			hitPosition2[Sprite.LEFT] -= Data.CD_DIFF;
-			hitPosition2[Sprite.DOWN] -= s2.getHeight()-Data.CD_DIFF;
-			hitPosition2[Sprite.RIGHT] -= s2.getWidth()-Data.CD_DIFF;
-			if(s1 instanceof Player) s2.touch(s1,hitDir,hitPosition1);
-			else if(s1 instanceof Weapon) s2.attacked(s1);
-			else{
-				s2.touch(s1,hitDir,hitPosition1);
-				hitDir = hitDir & 16;
-				for(int i = 0; i < 4; i++){
-					if(hitPosition2[i] != Integer.MIN_VALUE) hitDir = hitDir | (1 << i);
+	public int mapHitUp(Sprite s){
+		int lx = s.getX()+Data.CD_DIFF;
+		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
+		int uy = s.getY()+Data.CD_DIFF;
+		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF;
+		int vy = s.getVy();
+		int fromX = lx/Data.CHIP_SIZE;
+		int toX = rx/Data.CHIP_SIZE;
+		int fromY = (uy+vy)/Data.CHIP_SIZE;
+		int toY = dy/Data.CHIP_SIZE;
+		for(int i = toY; i >= fromY; i--){
+			for(int j = fromX; j <= toX; j++){
+				if(j<0||j>=mapData.col||i<0||i>=mapData.row) continue;
+				if(mapData.pass[i][j] == 1){
+					return (i+1)*Data.CHIP_SIZE-Data.CD_DIFF;
 				}
-				s1.touch(s2,hitDir,hitPosition2);
 			}
-			return true;
 		}
-		return false;
+		if(uy+vy < 0) return -Data.CD_DIFF;
+		return Integer.MIN_VALUE;
 	}
-
-	/**
-	 * フレームごとの更新用関数
-	 * いろんなインスタンスのupdateも呼び出す
-	 * 処理の順番は結構重要だったりする
-	 * 後半の方が優先度が高い
-	 * 例えば敵に当たって仰け反るよりも
-	 * 壁にめり込まない方が大事など
-	 */
-	public void update(){
-		/**
-		 * メニュー呼び出し用の操作
-		 * 今はメニューボタンに対応するボタンを設定していないし、
-		 * そもそもメニューを作っていない
-		 */
-		if(!KeyStatus.menu) menuReleased = true;
-		if(menuReleased && KeyStatus.menu){
-			Data.gameStatus = Data.MENU;
-			menuReleased = false;
-			return;
-		}
-		/**
-		 * ポーズ用操作
-		 */
-		if(!KeyStatus.pause) pauseReleased = true;
-		if(pausing){
-			if(pauseReleased && KeyStatus.pause){
-				pausing = false;
-				pauseReleased = false;
-			}
-			return;
-		}else{
-			if(pauseReleased && KeyStatus.pause){
-				pausing = true;
-				pauseReleased = false;
-				return;
+	public int mapHitDown(Sprite s){
+		int lx = s.getX()+Data.CD_DIFF;
+		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
+		int uy = s.getY()+Data.CD_DIFF;
+		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF;
+		int vy = s.getVy();
+		int fromX = lx/Data.CHIP_SIZE;
+		int toX = rx/Data.CHIP_SIZE;
+		int fromY = uy/Data.CHIP_SIZE;
+		int toY = (dy+vy)/Data.CHIP_SIZE;
+		for(int i = fromY; i <= toY; i++){
+			if(i >= mapData.row) return mapData.row*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
+			for(int j = fromX; j <= toX; j++){
+				if(j<0||j>=mapData.col||i<0) continue;
+				if(mapData.pass[i][j] == 1){
+					return i*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
+				}
 			}
 		}
-		// プレイヤーの状態更新
-		Data.player.update();
-		/**
-		 * 武器と壁との衝突判定
-		 * 矢とかは刺さるか消えるかするよね？
-		 */
-		if(Data.player.weapon != null){
-			Data.player.weapon.update(mapData);
-			if(Data.player.weapon.end) Data.player.weapon = null;
-			else spriteAndMapHit(Data.player.weapon);
+		return Integer.MIN_VALUE;
+	}
+	public int mapHitLeft(Sprite s){
+		int vx = s.getVx();
+		int vy = s.getVy();
+		int lx = s.getX()+Data.CD_DIFF;
+		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
+		int uy = s.getY()+Data.CD_DIFF+vy;
+		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF+vy;
+		int fromX = (lx+vx)/Data.CHIP_SIZE;
+		int toX = rx/Data.CHIP_SIZE;
+		int fromY = uy/Data.CHIP_SIZE;
+		int toY = dy/Data.CHIP_SIZE;
+		for(int i = toX; i >= fromX; i--){
+			for(int j = fromY; j <= toY; j++){
+				if(i<0||i>=mapData.col||j<0||j>=mapData.row) continue;
+				if(mapData.pass[j][i] == 1){
+					return (i+1)*Data.CHIP_SIZE-Data.CD_DIFF;
+				}
+			}
 		}
-		// スプライトの衝突判定
-		// 壁・プレイヤー・武器との衝突判定を行う
-		for(int i = 0; i < mapData.spriteList.size(); i++){
-			Sprite tmp = mapData.spriteList.get(i);
-			// 画面外のスプライトについての計算は行わない
-			if(tmp.getX() < x - Data.SCREEN_OUT || tmp.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp.getY() < y - Data.SCREEN_OUT || tmp.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
-			tmp.update(mapData);
-			spriteAndSpriteHit(Data.player,tmp);
-			if(Data.player.weapon != null){
-				spriteAndSpriteHit(Data.player.weapon,tmp);
+		if(lx+vx < 0) return -Data.CD_DIFF;
+		return Integer.MIN_VALUE;
+	}
+	public int mapHitRight(Sprite s){
+		int vx = s.getVx();
+		int vy = s.getVy();
+		int lx = s.getX()+Data.CD_DIFF;
+		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
+		int uy = s.getY()+Data.CD_DIFF+vy;
+		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF+vy;
+		int fromX = lx/Data.CHIP_SIZE;
+		int toX = (rx+vx)/Data.CHIP_SIZE;
+		int fromY = uy/Data.CHIP_SIZE;
+		int toY = dy/Data.CHIP_SIZE;
+		for(int i = fromX; i <= toX; i++){
+			if(i >= mapData.col) return mapData.col*Data.CHIP_SIZE-s.getWidth()+Data.CD_DIFF;
+			for(int j = fromY; j <= toY; j++){
+				if(i<0||j<0||j>=mapData.row) continue;
+				if(mapData.pass[j][i] == 1){
+					return i*Data.CHIP_SIZE-s.getWidth()+Data.CD_DIFF;
+				}
 			}
-			for(int j = i+1; j < mapData.spriteList.size(); j++){
-				Sprite tmp2 = mapData.spriteList.get(j);
-				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
-				spriteAndSpriteHit(tmp,tmp2);
-			}
-			if(tmp.end){
-				mapData.spriteList.remove(tmp);
-				continue;
-			}
-			spriteAndMapHit(tmp);
-			tmp.move();
 		}
-		// プレイヤーのマップとの衝突判定
-		spriteAndMapHit(Data.player);
-		/**
-		 * ここまでで、マップとか敵とかにぶつかることによる
-		 * 速度変動の処理が全部終わったので、
-		 * 主人公の移動と、その移動先に合わせた画面スクロール
-		 */
-		scroll();
-		Data.player.move();
+		return Integer.MIN_VALUE;
 	}
 }

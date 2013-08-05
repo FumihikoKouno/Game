@@ -21,6 +21,10 @@ public class Player extends Sprite{
 	public boolean attackReleased = true;
 	// コイン枚数
 	public int coin;
+	// どの武器を装備しているか
+	public int weaponID;
+	// どの属性を装備しているか
+	public int element;
 	// 武器
 	public Weapon weapon;
 	/**
@@ -177,33 +181,12 @@ public class Player extends Sprite{
 		if(vy > Data.CHIP_SIZE) vy = Data.CHIP_SIZE-1;
 		/**
 		 * 攻撃ボタンが押されたときの処理
-		 * 今のところ適当に作ったソードだけだけど
-		 * 将来的にはどの装備かによって別のインスタンスを作る
-		 * 多分どの装備かっていう変数はDataクラスに作ることになると思う
 		 */
 		if(KeyStatus.attack){
 			if(weapon == null){
-				if(jumpCount == 0 && attackReleased){
+				if(/*jumpCount == 0 && */attackReleased){
 					attackReleased = false;
-					// ここでswitch(equipment){ case Data.SWORD: break; case Data.ARROW: break }みたいに場合分け予定
-					switch(direction){
-					case UP:
-					        weapon = new Arrow(Weapon.UP);
-//						weapon = new Sword(Weapon.UP);
-						break;
-					case DOWN:
-						weapon = new Arrow(Weapon.DOWN);
-//						weapon = new Sword(height, Weapon.DOWN);
-						break;
-					case LEFT:
-						weapon = new Arrow(Weapon.LEFT);
-//						weapon = new Sword(Weapon.LEFT);
-						break;
-					case RIGHT:
-						weapon = new Arrow(Weapon.RIGHT);
-//						weapon = new Sword(Weapon.RIGHT);
-						break;
-					}
+					attack();
 				}
 			}
 		}else{
@@ -222,46 +205,92 @@ public class Player extends Sprite{
 			 * 壁やスプライトに当たる判定はMapクラスで行う
 			 * ここでは何も障害がなかった場合にどれだけ移動するかを設定する
 			 */
-			if(KeyStatus.up){
-				direction = UP;
+			setMove();
+			setJump();
+		}
+	}
+	
+	/**
+	 * ジャンプの処理
+	 */
+	public void setJump(){
+		if(KeyStatus.jump){
+			if(jumpReleased && jumpCount < jumpMax){
+				// ジャンプボタンが押され かつ ジャンプできる場合
+				jumpReleased = false;
+				jump = true;
+				jumpCount++;
+				// ジャンプ力+1(+1は直後に重力で減る分)
+				vy = -(jumpSpeed+Data.gravity);
 			}
-			if(KeyStatus.down){
-				direction = DOWN;
-			}
-			if(KeyStatus.left){
-				if(KeyStatus.right){
-					vx = 0;
-				}else{
-					vx = -speed;
-					direction = LEFT;
-				}
-			}
-			if(!KeyStatus.left){
-				if(KeyStatus.right){
-					vx = speed;
-					direction = RIGHT;
-				}else{
-					vx = 0;
-				}
-			}
-			if(KeyStatus.jump){
-				if(jumpReleased && jumpCount < jumpMax){
-					// ジャンプボタンが押され かつ ジャンプできる場合
-					jumpReleased = false;
-					jump = true;
-					jumpCount++;
-					// ジャンプ力+1(+1は直後に重力で減る分)
-					vy = -(jumpSpeed+Data.gravity);
-				}
+		}else{
+			jumpReleased = true;
+		}
+		if((jumpReleased || !jump) && vy < 0){
+			jump = false;
+			vy = 0;
+		}
+	}
+	/**
+	 * 主人公の移動量とか向きとかをキーに応じてセットする関数
+	 */
+	public void setMove(){
+		if(KeyStatus.up){
+			direction = UP;
+		}
+		if(KeyStatus.down){
+			direction = DOWN;
+		}
+		if(KeyStatus.left){
+			if(KeyStatus.right){
+				vx = 0;
 			}else{
-				jumpReleased = true;
+				vx = -speed;
+				direction = LEFT;
 			}
-			if((jumpReleased || !jump) && vy < 0){
-				jump = false;
-				vy = 0;
+		}
+		if(!KeyStatus.left){
+			if(KeyStatus.right){
+				vx = speed;
+				direction = RIGHT;
+			}else{
+				vx = 0;
 			}
 		}
 	}
+	
+	/**
+	 * 武器を振る処理
+	 */
+	public void attack(){
+		weaponID = 1-weaponID;
+		element = (element+1)%4;
+		switch(weaponID){
+		case Weapon.SWORD:
+			weapon = new Sword();
+			break;
+		case Weapon.ARROW:
+			weapon = new Arrow();
+			break;
+		}
+		switch(direction){
+		case UP:
+			weapon.setDirection(Weapon.UP);
+			break;
+		case DOWN:
+			weapon.setDirection(Weapon.DOWN);
+			break;
+		case LEFT:
+			weapon.setDirection(Weapon.LEFT);
+			break;
+		case RIGHT:
+			weapon.setDirection(Weapon.RIGHT);
+			break;
+		}
+		weapon.element = element;
+		weapon.appear();
+	}
+	
 	/**
 	 * d 分ダメージを受けたときの処理
 	 * 今はノックバックとかの速度は数値で適当にやってる

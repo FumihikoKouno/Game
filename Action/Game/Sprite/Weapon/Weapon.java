@@ -15,6 +15,12 @@ public class Weapon extends Sprite{
 	public Weapon(int x, int y){
 		super(x,y);
 	}
+	public void setDirection(int d){
+		direction = d;
+	}
+	// 実際に武器を出現させる
+	public void appear(){assert(false);}
+	
 	// 武器の攻撃力
 	public int power;
 	// 武器のID(必要かどうかは分からないけど…)

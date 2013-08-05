@@ -14,10 +14,18 @@ public class Arrow extends Weapon{
 	
 	private boolean stop;
 
-	public Arrow(){super(0,0);}
+	public Arrow(){
+		super(0,0);
+		power = 1;
+	}
 	public Arrow(int d){
 		super(0,0);
 		direction = d;
+		power = 1;
+		appear();
+	}
+	public void appear(){
+		frame = Data.frame;
 		if(direction <= DOWN){
 			width = 15;
 			height = 50;
@@ -25,8 +33,6 @@ public class Arrow extends Weapon{
 			width = 50;
 			height = 15;
 		}
-		power = 1;
-		frame = Data.frame;
 		switch(direction){
 		case UP:
 			this.x = Data.player.getX()+6;

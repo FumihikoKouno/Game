@@ -25,8 +25,8 @@ public class BrokenChip extends Sprite{
 		life = 1;
 		width = Data.CHIP_SIZE;
 		height = Data.CHIP_SIZE;
-		this.weapon = weapon;
-		this.element = element;
+		this.weapon = (1<<weapon);
+		this.element = (1<<element);
 	}
 	
 	public void update(MapData mapdata){
@@ -58,7 +58,6 @@ public class BrokenChip extends Sprite{
 			if(damageable(sprite)){
 				w = (Weapon)sprite;
 				life -= w.power;
-				System.out.println(life);
 			}
 		}
 	}
@@ -87,8 +86,14 @@ public class BrokenChip extends Sprite{
 	
 	// •`‰æˆ—
 	public void draw(Graphics g, int screenX, int screenY){
-		int ix = 0;
-		int iy = 0;
+		int w=-1;
+		int e=-1;
+		for(int i = 0; i < 32; i++){
+			if(((weapon>>i)&1)>0 && w<0) w = i;
+			if(((element>>i)&1)>0 && e<0) e = i;
+		}
+		int ix = width*w;
+		int iy = height*e;
 		g.drawImage(image,
 			x-screenX, y-screenY, x-screenX+width, y-screenY+height,
 			ix, iy, ix+width, iy+height,

@@ -12,10 +12,17 @@ import java.awt.Graphics;
 public class Sword extends Weapon{
 	public int frame;
 	
-	public Sword(){super(0,0);}
+	public Sword(){
+		super(0,0);
+		power = 1;
+	}
 	public Sword(int d){
 		super(0,0);
 		direction = d;
+		power = 1;
+	}
+	public void appear(){
+		frame = Data.frame;
 		if(direction <= DOWN){
 			width = 20;
 			height = 30;
@@ -23,8 +30,6 @@ public class Sword extends Weapon{
 			width = 30;
 			height = 20;
 		}
-		power = 1;
-		frame = Data.frame;
 		switch(direction){
 		case UP:
 			this.x = Data.player.getX()+6;
@@ -40,10 +45,11 @@ public class Sword extends Weapon{
 			break;
 		case RIGHT:
 			this.x = Data.player.getX()+Data.player.getWidth();
-			this.y += 6;
+			this.y = Data.player.getY()+6;
 			break;
 		}
 	}
+	
 	// 武器の状態のupdate(矢は飛ぶし、剣でも何フレーム出てるかとか)
 	public void update(MapData mapData){
 		if(Data.frame - frame >= 5) end = true;
