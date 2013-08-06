@@ -6,6 +6,7 @@ package Game.Sprite;
 
 import Game.Common.*;
 import Game.Sprite.Weapon.*;
+import Game.Body.*;
 
 import java.awt.Graphics;
 
@@ -27,9 +28,8 @@ public class Player extends Sprite{
 	public int element;
 	// 武器
 	public Weapon weapon;
-	/**
-	 * 方向と大きさの定義
-	 */
+	// 体の装備
+	public int bodyID;
 	
 	/**
 	 * 攻撃を受けた瞬間のフレーム数
@@ -53,9 +53,31 @@ public class Player extends Sprite{
 	 * 今はここに定義しているが
 	 * 将来的には全身装備のクラスを参照する
 	 */
-	private int movingSpeed = 6;
-	private int jumpSpeed = 15;
-	private static final int jumpMax = 2;
+	private int invisibleTime;
+	private int nockBackTime;
+	private int defence;
+	private int movingSpeed;
+	private int jumpSpeed;
+	private int jumpMax;
+	private int froat;
+	
+	public void equipBody(){
+		Body body = null;
+		switch(bodyID){
+		case 1:
+			body = new Body1();
+			break;
+		default:
+			break;
+		}
+		froat = body.getFroat();
+		invisibleTime = body.getInvisibleTime();
+		nockBackTime = body.getNockBackTime();
+		defence = body.getDefence();
+		movingSpeed = body.getMovingSpeed();
+		jumpMax = body.getJumpMax();
+		jumpSpeed = body.getJumpSpeed();
+	}
 	
 	public Player clone(){
 		Player newPlayer = new Player();
@@ -67,6 +89,9 @@ public class Player extends Sprite{
 		newPlayer.width = this.width;
 		newPlayer.height = this.height;
 		newPlayer.life = this.life;
+		newPlayer.weaponID = this.weaponID;
+		newPlayer.element = this.element;
+		newPlayer.bodyID = this.bodyID;
 		return newPlayer;
 	}
 
@@ -91,6 +116,10 @@ public class Player extends Sprite{
 		width = 32;
 		height = 32;
 		life = 10;
+		bodyID = 1;
+		weaponID = 0;
+		element = 0;
+		equipBody();
 	}
 	public void land(){
 		super.land();
@@ -109,6 +138,7 @@ public class Player extends Sprite{
 	public void fall(){
 		if(jumpCount == 0) jumpCount = 1;
 	}
+	
 	public void mapHit(int dir, int dest){
 		switch(dir){
 		case UP:
@@ -142,14 +172,14 @@ public class Player extends Sprite{
 			/**
 			 * ノックバック中、操作不能
 			 */
-			if(Data.frame - attackedFrame < 10){
+			if(Data.frame - attackedFrame < nockBackTime){
 				return;
 			}
 			/**
 			 * 無敵が切れる処理
 			 * ダメージくらってから45フレーム(処理落ちがなければ1.5秒)たったら無敵解除
 			 */
-			if(Data.frame - attackedFrame > 45){
+			if(Data.frame - attackedFrame > invisibleTime){
 				invisible = false;
 			}
 		}
@@ -177,7 +207,7 @@ public class Player extends Sprite{
 		 * 空中にData.CHIP_SIZEよりも小さいスクリプトがある場合、調整が必要そう
 		 */
 		if(vy == 0) vy = 1;
-		if((Data.frame&1)==0) vy += Data.gravity;
+		if((Data.frame%froat)==0) vy += Data.gravity;
 		if(vy > Data.CHIP_SIZE) vy = Data.CHIP_SIZE-1;
 		/**
 		 * 攻撃ボタンが押されたときの処理
@@ -220,8 +250,8 @@ public class Player extends Sprite{
 				jumpReleased = false;
 				jump = true;
 				jumpCount++;
-				// ジャンプ力+1(+1は直後に重力で減る分)
-				vy = -(jumpSpeed+Data.gravity);
+				// ジャンプ力
+				vy = -jumpSpeed;
 			}
 		}else{
 			jumpReleased = true;
@@ -297,7 +327,11 @@ public class Player extends Sprite{
 	 */
 	public void damage(int d){
 		if(invisible) return;
-		life -= d;
+		if(d>defence){
+			life -= (d-defence);
+		}else{
+			life -= 1;
+		}
 		if(weapon != null && weapon instanceof Sword){
 			weapon = null;
 		}

@@ -30,16 +30,20 @@ public class Enemy extends Sprite{
 				tmp.damage(power);
 			}else{
 				if((dir & (1 << UP)) > 0){
-					tmp.setVy(dest[UP]-tmp.getY()-1+vy);
+					tmp.setVy(y+vy-tmp.getY()+height-Data.CD_DIFF-2);
+//					tmp.setVy(dest[UP]-tmp.getY()-2+vy);
 				}
 				if((dir & (1 << DOWN)) > 0){
-					tmp.setVy(dest[DOWN]-tmp.getY()+1+vy);
+					tmp.setVy(y+vy-tmp.getY()-tmp.getHeight()+Data.CD_DIFF+2);
+//					tmp.setVy(dest[DOWN]-tmp.getY()+2+vy);
 				}
 				if((dir & (1 << LEFT)) > 0){
-					tmp.setVx(dest[LEFT]-tmp.getX()-1+vx);
+					tmp.setVx(x+vx-tmp.getX()-Data.CD_DIFF+width-2);
+//					tmp.setVx(dest[LEFT]-tmp.getX()-2+vx);
 				}
 				if((dir & (1 << RIGHT)) > 0){
-					tmp.setVx(dest[RIGHT]-tmp.getX()+1+vx);
+					tmp.setVx(x+vx-tmp.getX()-tmp.getWidth()+Data.CD_DIFF+2);
+//					tmp.setVx(dest[RIGHT]-tmp.getX()+2+vx);
 				}
 			}
 		}

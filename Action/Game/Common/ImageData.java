@@ -19,6 +19,8 @@ public class ImageData{
 	public final Image arrowImage = new ImageIcon(getClass().getResource("../Image/Weapon/arrow.gif")).getImage();
 	public final Image enemyImage = new ImageIcon(getClass().getResource("../Image/Sprite/enemy1.gif")).getImage();
 	public Image backgroundImage = new ImageIcon(getClass().getResource("../Image/Picture/background.jpg")).getImage();
+	// スプライトのイメージはまとめて一つのファイルにしてやってもいいと思う
+	// まぁ最終的には(TODO)
 	public final Image coinImage = new ImageIcon(getClass().getResource("../Image/Sprite/coin.gif")).getImage();
 	public final Image menuImage = new ImageIcon(getClass().getResource("../Image/Picture/menu.gif")).getImage();
 	public final Image rightUpSlopeImage = new ImageIcon(getClass().getResource("../Image/Sprite/RightUpSlope.gif")).getImage();
@@ -26,4 +28,6 @@ public class ImageData{
 	public final Image appearingChipImage = new ImageIcon(getClass().getResource("../Image/Sprite/appearingChip.gif")).getImage();
 	public final Image froatingStageImage = new ImageIcon(getClass().getResource("../Image/Sprite/froatingStage.gif")).getImage();
 	public final Image brokenChipImage = new ImageIcon(getClass().getResource("../Image/Sprite/broken.gif")).getImage();
+	public final Image elementIconImage = new ImageIcon(getClass().getResource("../Image/Icon/element.gif")).getImage();
+	public final Image weaponIconImage = new ImageIcon(getClass().getResource("../Image/Icon/weapon.gif")).getImage();
 }

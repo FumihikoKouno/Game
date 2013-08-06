@@ -11,8 +11,12 @@ public class Data{
 	public static int frame;
 	public static final int fps = 30;
 	public static int gravity = 1;
-	public static int CHIP_SIZE = 32;
+	public static final int CHIP_SIZE = 32;
 
+	public static final int ELEMENT_NUM = 4;
+	public static final int WEAPON_NUM = 2;
+	public static final int BODY_NUM = 0;
+	
 	public static Player player;
 
 	public static final int CD_DIFF = 2;
