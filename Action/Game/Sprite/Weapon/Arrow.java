@@ -4,7 +4,7 @@
 
 package Game.Sprite.Weapon;
 
-import Game.Common.Data;
+import Game.Common.*;
 import Game.MapData.MapData;
 
 import java.awt.Graphics;
@@ -35,26 +35,26 @@ public class Arrow extends Weapon{
 		}
 		switch(direction){
 		case UP:
-			this.x = Data.player.getX()+6;
-			this.y = Data.player.getY()-height;
+			this.x = StateData.player.getX()+6;
+			this.y = StateData.player.getY()-height;
 			vx = 0;
 			vy = -1;
 			break;
 		case DOWN:
-			this.x = Data.player.getX()+6;
-			this.y = Data.player.getY()+Data.player.getHeight();
+			this.x = StateData.player.getX()+6;
+			this.y = StateData.player.getY()+StateData.player.getHeight();
 			vx = 0;
 			vy = 1;
 			break;
 		case LEFT:
-			this.x = Data.player.getX()-width;
+			this.x = StateData.player.getX()-width;
 			vx = -18;
 			vy = 1;
-			this.y = Data.player.getY()+6;
+			this.y = StateData.player.getY()+6;
 			break;
 		case RIGHT:
-			this.x = Data.player.getX()+Data.player.getWidth();
-			this.y = Data.player.getY()+6;
+			this.x = StateData.player.getX()+StateData.player.getWidth();
+			this.y = StateData.player.getY()+6;
 			vx = 18;
 			vy = 1;
 			break;

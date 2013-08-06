@@ -226,10 +226,12 @@ public class Player extends Sprite{
 		 * ソードで切っている最中は動けないようにしている
 		 * ソードを出した位置で固定しているので、動けるとちょっとめり込む
 		 */
+		/*
 		if(weapon != null && weapon instanceof Sword){
 			vx = 0;
 			vy = 0;
 		}else{
+			*/
 			/**
 			 * 移動やジャンプの処理
 			 * 壁やスプライトに当たる判定はMapクラスで行う
@@ -237,7 +239,7 @@ public class Player extends Sprite{
 			 */
 			setMove();
 			setJump();
-		}
+//		}
 	}
 	
 	/**
@@ -293,8 +295,6 @@ public class Player extends Sprite{
 	 * 武器を振る処理
 	 */
 	public void attack(){
-		weaponID = 1-weaponID;
-		element = (element+1)%4;
 		switch(weaponID){
 		case Weapon.SWORD:
 			weapon = new Sword();

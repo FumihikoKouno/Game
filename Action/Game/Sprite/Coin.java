@@ -15,12 +15,14 @@ public class Coin extends Sprite{
 		height = 30;
 	}
 	// スプライトのupdate
-	public void update(MapData mapData){}
+	public void update(MapData mapData){
+	}
 	// プレイヤーがスプライトに触れたときの関数
 	public void touch(Sprite s, int dir, int[] dest){
 		if(s instanceof Player){
 			Player tmp = (Player)s;
 			tmp.coin++;
+			System.out.println("test");
 			end = true;
 			Data.se.coinSound.play();
 		}

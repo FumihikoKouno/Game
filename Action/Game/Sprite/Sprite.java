@@ -34,13 +34,13 @@ public class Sprite{
 	 * スプライトの位置
 	 * スプライトの一番左上の部分の座標を指す
 	 */
-	protected int x,y;
+	protected int x=0,y=0;
 	// スプライトの速度
-	protected int vx, vy;
+	protected int vx=0, vy=0;
 	// スプライトの向き
-	protected int direction;
+	protected int direction=0;
 	// スプライトの大きさ
-	protected int width, height;
+	protected int width=0, height=0;
 	// スプライトのID
 	protected int spriteID;
 	// スプライトのアニメーション用変数

@@ -50,7 +50,7 @@ public class Map{
 		pauseReleased = false;
 		pausing = false;
 		id = mapId;
-		Data.player = new Player(x, y);
+		StateData.player = new Player(x, y);
 		mapData = new MapData(id);
 	}
 	/**
@@ -60,8 +60,8 @@ public class Map{
 	 * これでは対応できない
 	 */
 	public void scroll(){
-		int npx = Data.player.getX() + Data.player.getVx();
-		int npy = Data.player.getY() + Data.player.getVy();
+		int npx = StateData.player.getX() + StateData.player.getVx();
+		int npy = StateData.player.getY() + StateData.player.getVy();
 		int nx = npx - Data.WIDTH/2;
 		int ny = npy - Data.HEIGHT/2;
 		if(nx < 0) nx = 0;
@@ -101,8 +101,8 @@ public class Map{
 				 * これがなくても落下はするんだけど、
 				 * 空中にいるという判定のために必要
 				 */
-				if(tmp instanceof Player && !Data.player.landing()){
-					Data.player.fall();
+				if(tmp instanceof Player && !StateData.player.landing()){
+					StateData.player.fall();
 				}
 			}
 		}
@@ -220,16 +220,7 @@ public class Map{
 		menu();
 		pause();
 		// プレイヤーの状態更新
-		Data.player.update();
-		/**
-		 * 武器と壁との衝突判定
-		 * 矢とかは刺さるか消えるかするよね？
-		 */
-		if(Data.player.weapon != null){
-			Data.player.weapon.update(mapData);
-			if(Data.player.weapon.end) Data.player.weapon = null;
-			else spriteAndMapHit(Data.player.weapon);
-		}
+		StateData.player.update();
 		// スプライトの衝突判定
 		// 壁・プレイヤー・武器との衝突判定を行う
 		for(int i = 0; i < mapData.spriteList.size(); i++){
@@ -237,9 +228,9 @@ public class Map{
 			// 画面外のスプライトについての計算は行わない
 			if(tmp.getX() < x - Data.SCREEN_OUT || tmp.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp.getY() < y - Data.SCREEN_OUT || tmp.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
 			tmp.update(mapData);
-			spriteAndSpriteHit(Data.player,tmp);
-			if(Data.player.weapon != null){
-				spriteAndSpriteHit(Data.player.weapon,tmp);
+			spriteAndSpriteHit(StateData.player,tmp);
+			if(StateData.player.weapon != null){
+				spriteAndSpriteHit(StateData.player.weapon,tmp);
 			}
 			for(int j = i+1; j < mapData.spriteList.size(); j++){
 				Sprite tmp2 = mapData.spriteList.get(j);
@@ -254,14 +245,23 @@ public class Map{
 			tmp.move();
 		}
 		// プレイヤーのマップとの衝突判定
-		spriteAndMapHit(Data.player);
+		spriteAndMapHit(StateData.player);
+		/**
+		 * 武器と壁との衝突判定
+		 * 矢とかは刺さるか消えるかするよね？
+		 */
+		if(StateData.player.weapon != null){
+			StateData.player.weapon.update(mapData);
+			if(StateData.player.weapon.end) StateData.player.weapon = null;
+			else spriteAndMapHit(StateData.player.weapon);
+		}
 		/**
 		 * ここまでで、マップとか敵とかにぶつかることによる
 		 * 速度変動の処理が全部終わったので、
 		 * 主人公の移動と、その移動先に合わせた画面スクロール
 		 */
 		scroll();
-		Data.player.move();
+		StateData.player.move();
 	}
 	
 	
@@ -303,7 +303,7 @@ public class Map{
 			mapData.spriteList.get(i).draw(g,x,y);
 		}
 		/* プレイヤーの描画 */
-		Data.player.draw(g,x,y);
+		StateData.player.draw(g,x,y);
 		// ポーズ中の場合、画面にポーズの文字を点滅させる
 		if(pausing && (Data.frame/30)%2 == 0) g.drawString("Pause",Data.WIDTH/2, Data.HEIGHT/2);
 	}
