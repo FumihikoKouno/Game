@@ -7,6 +7,7 @@
 
 package Game.Sprite.Enemy;
 
+import Game.Sprite.LifeGauge;
 import Game.Sprite.Player;
 import Game.Common.*;
 import Game.MapData.MapData;
@@ -18,6 +19,7 @@ import java.awt.Graphics;
 public class Enemy extends Sprite{
 	public int enemyID;
 	protected int life;
+	protected int lifeMax;
 	protected int attackedSpriteID = -1;
 	protected int power = 1;
 	public Enemy(int x, int y){
@@ -93,4 +95,10 @@ public class Enemy extends Sprite{
 			}
 		}
 	}
+	
+	public void draw(Graphics g, int screenX, int screenY){
+		super.draw(g,screenX,screenY);
+		LifeGauge.draw(g,x-screenX, y-screenY-15,life,lifeMax);
+	}
+	
 }

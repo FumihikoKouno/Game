@@ -16,7 +16,8 @@ public class Enemy1 extends Enemy{
 		height = 32;
 		vx = 0;
 		vy = 0;
-		life = 2;
+		life = 8;
+		lifeMax = 8;
 		direction = RIGHT;
 		
 	}

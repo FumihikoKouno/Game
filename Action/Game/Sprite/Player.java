@@ -9,6 +9,7 @@ import Game.Sprite.Weapon.*;
 import Game.Body.*;
 
 import java.awt.Graphics;
+import java.awt.Color;
 
 public class Player extends Sprite{
 	// このフレーム中に何かに着地したらtrue
@@ -40,6 +41,8 @@ public class Player extends Sprite{
 	
 	// ライフ(今はただ数値を保持してるだけ、マイナスになろうが関係なし)
 	private int life;
+	//
+	private int lifeMax;
 	
 	/**
 	 * 移動スピード
@@ -123,6 +126,7 @@ public class Player extends Sprite{
 		vx = 0; vy = 0;
 		width = 32;
 		height = 32;
+		lifeMax = 10;
 		life = 10;
 		weaponID = 0;
 		element = 0;
@@ -372,6 +376,9 @@ public class Player extends Sprite{
 		    super.draw(g,screenX,screenY);
 		}
 		if(weapon != null) weapon.draw(g, screenX, screenY);
+		g.setColor(Color.WHITE);
+
+		LifeGauge.draw(g, x-screenX-5, y-15-screenY, life, lifeMax);
 		g.drawString("life : " + life, 15,15);
 		g.drawString("player : " + x + ", " + y, 15, 30);
 		g.drawString("coin : " + coin, 15, 45);

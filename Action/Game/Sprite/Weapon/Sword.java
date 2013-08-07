@@ -14,7 +14,7 @@ public class Sword extends Weapon{
 	
 	public Sword(){
 		super(0,0);
-		power = 1;
+		power = 4;
 	}
 	public Sword(int d){
 		super(0,0);
