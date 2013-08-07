@@ -14,14 +14,14 @@ public class Enemy0 extends Enemy{
 		image = Data.image.enemyImage;
 		width = 32;
 		height = 32;
+		direction = LEFT;
 		vx = 0;
 		vy = 0;
 		life = 50;
 		lifeMax = 50;
-		direction = RIGHT;
-		
 	}
 	public void update(MapData mapData){
 		super.update(mapData);
+		if(Data.frame % 90 == 0) mapData.spriteList.add(new Shot(x,y+4,-12,-1,16));
 	}
 }

@@ -99,6 +99,9 @@ public class Sprite{
 	public int getDirection(){ return direction; }
 	public int getSpriteID(){ return spriteID; }
 
+	// ‰æ–ÊŠO‚Éo‚½‚Æ‚«‚Ìˆ—
+	public void screenOut(){}
+	
 	public void setVx(int vx){
 		setV(vx,this.vy);
 	}

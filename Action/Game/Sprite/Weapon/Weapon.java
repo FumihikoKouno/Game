@@ -27,4 +27,6 @@ public class Weapon extends Sprite{
 	public int weaponID;
 	// •Ší‚Ì‘®«
 	public int element;
+	// “G‚Ì•Ší‚©‚Ç‚¤‚©
+	protected boolean enemy;
 }

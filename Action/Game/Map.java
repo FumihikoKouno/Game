@@ -219,8 +219,15 @@ public class Map{
 		// 壁・プレイヤー・武器との衝突判定を行う
 		for(int i = 0; i < StateData.mapData.spriteList.size(); i++){
 			Sprite tmp = StateData.mapData.spriteList.get(i);
+			if(tmp.end){
+				StateData.mapData.spriteList.remove(tmp);
+				continue;
+			}
 			// 画面外のスプライトについての計算は行わない
-			if(tmp.getX() < x - Data.SCREEN_OUT || tmp.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp.getY() < y - Data.SCREEN_OUT || tmp.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
+			if(tmp.getX() < x - Data.SCREEN_OUT || tmp.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp.getY() < y - Data.SCREEN_OUT || tmp.getY() > y + Data.WIDTH + Data.SCREEN_OUT){
+				tmp.screenOut();
+				continue;
+			}
 			tmp.update(StateData.mapData);
 			spriteAndSpriteHit(StateData.player,tmp);
 			if(StateData.player.weapon != null){
@@ -230,10 +237,6 @@ public class Map{
 				Sprite tmp2 = StateData.mapData.spriteList.get(j);
 				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
 				spriteAndSpriteHit(tmp,tmp2);
-			}
-			if(tmp.end){
-				StateData.mapData.spriteList.remove(tmp);
-				continue;
 			}
 			spriteAndMapHit(tmp);
 			tmp.move();
