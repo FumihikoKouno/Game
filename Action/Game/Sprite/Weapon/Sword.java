@@ -24,28 +24,28 @@ public class Sword extends Weapon{
 	public void appear(){
 		frame = Data.frame;
 		if(direction <= DOWN){
-			width = 20;
-			height = 30;
+			width = 32;
+			height = 27;
 		}else{
-			width = 30;
-			height = 20;
+			width = 27;
+			height = 32;
 		}
 		switch(direction){
 		case UP:
-			this.x = StateData.player.getX()+6;
+			this.x = StateData.player.getX();
 			this.y = StateData.player.getY()-height;
 			break;
 		case DOWN:
-			this.x = StateData.player.getX()+6;
+			this.x = StateData.player.getX();
 			this.y = StateData.player.getY()+StateData.player.getHeight();
 			break;
 		case LEFT:
 			this.x = StateData.player.getX()-width;
-			this.y = StateData.player.getY()+6;
+			this.y = StateData.player.getY();
 			break;
 		case RIGHT:
 			this.x = StateData.player.getX()+StateData.player.getWidth();
-			this.y = StateData.player.getY()+6;
+			this.y = StateData.player.getY();
 			break;
 		}
 	}
