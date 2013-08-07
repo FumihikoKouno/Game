@@ -6,6 +6,7 @@
 
 package Game.Common;
 import Game.Sprite.Player;
+import Game.MapData.MapData;
 
 public class StateData{
 	// 各ビットがその武器を入手したかどうかのフラグ
@@ -14,5 +15,7 @@ public class StateData{
 	public static int[] gotElement =  new int[Data.ELEMENT_NUM];
 	// プレイヤー
 	public static Player player;
+	// マップデータ
+	public static MapData mapData;
 	
 }

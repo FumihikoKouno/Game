@@ -61,9 +61,17 @@ public class Player extends Sprite{
 	private int jumpMax;
 	private int froat;
 	
+	public void equipBody(int id){
+		bodyID = id;
+		equipBody();
+	}
+	
 	public void equipBody(){
 		Body body = null;
 		switch(bodyID){
+		case 0:
+			body = new Body0();
+			break;
 		case 1:
 			body = new Body1();
 			break;
@@ -116,10 +124,9 @@ public class Player extends Sprite{
 		width = 32;
 		height = 32;
 		life = 10;
-		bodyID = 1;
 		weaponID = 0;
 		element = 0;
-		equipBody();
+		equipBody(0);
 	}
 	public void land(){
 		super.land();

@@ -2,12 +2,12 @@ package Game.Body;
 
 public class Body1 extends Body{
 	public Body1(){
-		jumpMax = 3;
+		jumpMax = 5;
 		movingSpeed = 8;
-		jumpSpeed = 16;
-		froat = 3;
+		jumpSpeed = 20;
+		froat = 2;
 		defencePower = 0;
-		nockBackTime = 0;
-		invisibleTime = 10;
+		nockBackTime = 15;
+		invisibleTime = 15;
 	}
 }

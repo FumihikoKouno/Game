@@ -21,6 +21,11 @@ public class Menu{
 	private static final int SELECT_ELEMENT = 2;
 	private static final int SELECT_BODY = 3;
 	
+	private static final int LIFE = 0;
+	private static final int WEAPON = 1;
+	private static final int EXIT = 2;
+	
+	
 	private int cursorX = 0;
 	private int cursorY = 0;
 	
@@ -83,9 +88,12 @@ public class Menu{
 				switch(mode){
 				case SELECT_ALL:
 					switch(cursorY){
-					case 1:
+					case WEAPON:
 						mode = SELECT_WEAPON;
 						cursorX = StateData.player.weaponID;
+						break;
+					case EXIT:
+						exit();
 						break;
 					}
 					break;
@@ -101,7 +109,7 @@ public class Menu{
 					break;
 				case SELECT_BODY:
 					mode = SELECT_ALL;
-					StateData.player.bodyID = 1;
+					StateData.player.equipBody(cursorX%2);
 					cursorX = 0;
 					break;
 				}
@@ -111,14 +119,20 @@ public class Menu{
 		}
 	}
 	
+	private void exit(){
+		Data.gameStatus = Data.PLAYING;
+		menuReleased = false;
+		cursorX = 0;
+		cursorY = 0;
+		mode = SELECT_ALL;
+		KeyStatus.setAll(false);
+		return;
+	}
+	
 	public void update(){
 		if(!KeyStatus.menu) menuReleased = true;
 		if(menuReleased && KeyStatus.menu){
-			Data.gameStatus = Data.PLAYING;
-			menuReleased = false;
-			cursorX = 0;
-			cursorY = 0;
-			mode = SELECT_ALL;
+			exit();
 			return;
 		}
 		cursorMove();
@@ -296,14 +310,12 @@ public class Menu{
 				WEAPON_X+i*WEAPON_X_DIFF+Data.CHIP_SIZE, WEAPON_Y+Data.CHIP_SIZE,
 				i*Data.CHIP_SIZE,0,(i+1)*Data.CHIP_SIZE,Data.CHIP_SIZE,null);
 		}
-		/*
 		for(int i = 0; i < Data.BODY_NUM; i++){
 			g.drawImage(Data.image.bodyIconImage,
 				BODY_X+i*BODY_X_DIFF, BODY_Y,
 				BODY_X+i*BODY_X_DIFF+Data.CHIP_SIZE, BODY_Y+Data.CHIP_SIZE,
 				i*Data.CHIP_SIZE,0,(i+1)*Data.CHIP_SIZE,Data.CHIP_SIZE,null);
 		}
-		*/
 		drawCursor(g);
 		drawEquipment(g);
 	}

@@ -28,13 +28,6 @@ public class Map{
 	 */
 	private int x, y;
 	/**
-	 * マップデータ
-	 * マップに関する情報を保持する、マップ移動する際は
-	 * mapData.load(int id)を使いマップ情報を更新する
-	 * 但しload関数は今のところ未実装
-	 */
-	private MapData mapData;
-	/**
 	 * ポーズボタン、メニューボタンが離されたかどうかの変数
 	 */
 	private boolean pauseReleased;
@@ -51,7 +44,7 @@ public class Map{
 		pausing = false;
 		id = mapId;
 		StateData.player = new Player(x, y);
-		mapData = new MapData(id);
+		StateData.mapData = new MapData(id);
 	}
 	/**
 	 * マップのスクロール関数
@@ -66,8 +59,8 @@ public class Map{
 		int ny = npy - Data.HEIGHT/2;
 		if(nx < 0) nx = 0;
 		if(ny < 0) ny = 0;
-		if(nx > mapData.col*Data.CHIP_SIZE-Data.WIDTH) nx = mapData.col*Data.CHIP_SIZE-Data.WIDTH;
-		if(ny > mapData.row*Data.CHIP_SIZE-Data.HEIGHT) ny = mapData.row*Data.CHIP_SIZE-Data.HEIGHT;
+		if(nx > StateData.mapData.col*Data.CHIP_SIZE-Data.WIDTH) nx = StateData.mapData.col*Data.CHIP_SIZE-Data.WIDTH;
+		if(ny > StateData.mapData.row*Data.CHIP_SIZE-Data.HEIGHT) ny = StateData.mapData.row*Data.CHIP_SIZE-Data.HEIGHT;
 		x = nx;
 		y = ny;
 	}
@@ -160,11 +153,12 @@ public class Map{
 			else if(s1 instanceof Weapon) s2.attacked(s1);
 			else{
 				s2.touch(s1,hitDir,hitPosition1);
-				hitDir = hitDir & 16;
-				for(int i = 0; i < 4; i++){
-					if(hitPosition2[i] != Integer.MIN_VALUE) hitDir = hitDir | (1 << i);
-				}
-				s1.touch(s2,hitDir,hitPosition2);
+				int tmpHitDir = hitDir & (1<<Sprite.HIT_DIRECT);
+				tmpHitDir += (((hitDir & (1<<Sprite.UP)) >> Sprite.UP) << Sprite.DOWN);
+				tmpHitDir += (((hitDir & (1<<Sprite.DOWN)) >> Sprite.DOWN) << Sprite.UP);
+				tmpHitDir += (((hitDir & (1<<Sprite.LEFT)) >> Sprite.LEFT) << Sprite.RIGHT);
+				tmpHitDir += (((hitDir & (1<<Sprite.RIGHT)) >> Sprite.RIGHT) << Sprite.LEFT);
+				s1.touch(s2,tmpHitDir,hitPosition2);
 			}
 			return true;
 		}
@@ -223,22 +217,22 @@ public class Map{
 		StateData.player.update();
 		// スプライトの衝突判定
 		// 壁・プレイヤー・武器との衝突判定を行う
-		for(int i = 0; i < mapData.spriteList.size(); i++){
-			Sprite tmp = mapData.spriteList.get(i);
+		for(int i = 0; i < StateData.mapData.spriteList.size(); i++){
+			Sprite tmp = StateData.mapData.spriteList.get(i);
 			// 画面外のスプライトについての計算は行わない
 			if(tmp.getX() < x - Data.SCREEN_OUT || tmp.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp.getY() < y - Data.SCREEN_OUT || tmp.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
-			tmp.update(mapData);
+			tmp.update(StateData.mapData);
 			spriteAndSpriteHit(StateData.player,tmp);
 			if(StateData.player.weapon != null){
 				spriteAndSpriteHit(StateData.player.weapon,tmp);
 			}
-			for(int j = i+1; j < mapData.spriteList.size(); j++){
-				Sprite tmp2 = mapData.spriteList.get(j);
+			for(int j = i+1; j < StateData.mapData.spriteList.size(); j++){
+				Sprite tmp2 = StateData.mapData.spriteList.get(j);
 				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
 				spriteAndSpriteHit(tmp,tmp2);
 			}
 			if(tmp.end){
-				mapData.spriteList.remove(tmp);
+				StateData.mapData.spriteList.remove(tmp);
 				continue;
 			}
 			spriteAndMapHit(tmp);
@@ -251,7 +245,7 @@ public class Map{
 		 * 矢とかは刺さるか消えるかするよね？
 		 */
 		if(StateData.player.weapon != null){
-			StateData.player.weapon.update(mapData);
+			StateData.player.weapon.update(StateData.mapData);
 			if(StateData.player.weapon.end) StateData.player.weapon = null;
 			else spriteAndMapHit(StateData.player.weapon);
 		}
@@ -282,13 +276,13 @@ public class Map{
 			for(int j = 0; j <= col; j++){ 
 				int chipX = j + x / Data.CHIP_SIZE;
 				if(chipX < 0) chipX = 0;
-				if(chipX >= mapData.col) chipX = mapData.col-1;
+				if(chipX >= StateData.mapData.col) chipX = StateData.mapData.col-1;
 				int chipY = i + y / Data.CHIP_SIZE;
 				if(chipY < 0) chipY = 0;
-				if(chipY >= mapData.row) chipY = mapData.row-1;
-				if(mapData.data[chipY][chipX] == 0) continue;
-				int imageX = (mapData.data[chipY][chipX] % 16) * Data.CHIP_SIZE;
-				int imageY = (mapData.data[chipY][chipX] / 16) * Data.CHIP_SIZE;
+				if(chipY >= StateData.mapData.row) chipY = StateData.mapData.row-1;
+				if(StateData.mapData.data[chipY][chipX] == 0) continue;
+				int imageX = (StateData.mapData.data[chipY][chipX] % 16) * Data.CHIP_SIZE;
+				int imageY = (StateData.mapData.data[chipY][chipX] / 16) * Data.CHIP_SIZE;
 				g.drawImage(Data.image.mapImage,
 					j * Data.CHIP_SIZE - (x%Data.CHIP_SIZE), i * Data.CHIP_SIZE -(y%Data.CHIP_SIZE), 
 					j * Data.CHIP_SIZE -(x%Data.CHIP_SIZE)+Data.CHIP_SIZE, i * Data.CHIP_SIZE -(y%Data.CHIP_SIZE)+Data.CHIP_SIZE,
@@ -299,8 +293,8 @@ public class Map{
 		}
 		/* マップの描画終了 */
 		/* スプライトの描画 */
-		for(int i = 0; i < mapData.spriteList.size(); i++){
-			mapData.spriteList.get(i).draw(g,x,y);
+		for(int i = 0; i < StateData.mapData.spriteList.size(); i++){
+			StateData.mapData.spriteList.get(i).draw(g,x,y);
 		}
 		/* プレイヤーの描画 */
 		StateData.player.draw(g,x,y);
@@ -334,7 +328,7 @@ public class Map{
 		y1u += Data.CD_DIFF;
 		y1d -= Data.CD_DIFF;
 		if(x1l <= x2r && x1r >= x2l && y1u <= y2d && y1d >= y2u){
-			return 16;
+			return 1<<Sprite.HIT_DIRECT;
 		}
 		return 0;
 	}
@@ -484,8 +478,8 @@ public class Map{
 		int toY = dy/Data.CHIP_SIZE;
 		for(int i = toY; i >= fromY; i--){
 			for(int j = fromX; j <= toX; j++){
-				if(j<0||j>=mapData.col||i<0||i>=mapData.row) continue;
-				if(mapData.pass[i][j] == 1){
+				if(j<0||j>=StateData.mapData.col||i<0||i>=StateData.mapData.row) continue;
+				if(StateData.mapData.pass[i][j] == 1){
 					return (i+1)*Data.CHIP_SIZE-Data.CD_DIFF;
 				}
 			}
@@ -504,10 +498,10 @@ public class Map{
 		int fromY = uy/Data.CHIP_SIZE;
 		int toY = (dy+vy)/Data.CHIP_SIZE;
 		for(int i = fromY; i <= toY; i++){
-			if(i >= mapData.row) return mapData.row*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
+			if(i >= StateData.mapData.row) return StateData.mapData.row*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
 			for(int j = fromX; j <= toX; j++){
-				if(j<0||j>=mapData.col||i<0) continue;
-				if(mapData.pass[i][j] == 1){
+				if(j<0||j>=StateData.mapData.col||i<0) continue;
+				if(StateData.mapData.pass[i][j] == 1){
 					return i*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
 				}
 			}
@@ -527,8 +521,8 @@ public class Map{
 		int toY = dy/Data.CHIP_SIZE;
 		for(int i = toX; i >= fromX; i--){
 			for(int j = fromY; j <= toY; j++){
-				if(i<0||i>=mapData.col||j<0||j>=mapData.row) continue;
-				if(mapData.pass[j][i] == 1){
+				if(i<0||i>=StateData.mapData.col||j<0||j>=StateData.mapData.row) continue;
+				if(StateData.mapData.pass[j][i] == 1){
 					return (i+1)*Data.CHIP_SIZE-Data.CD_DIFF;
 				}
 			}
@@ -548,10 +542,10 @@ public class Map{
 		int fromY = uy/Data.CHIP_SIZE;
 		int toY = dy/Data.CHIP_SIZE;
 		for(int i = fromX; i <= toX; i++){
-			if(i >= mapData.col) return mapData.col*Data.CHIP_SIZE-s.getWidth()+Data.CD_DIFF;
+			if(i >= StateData.mapData.col) return StateData.mapData.col*Data.CHIP_SIZE-s.getWidth()+Data.CD_DIFF;
 			for(int j = fromY; j <= toY; j++){
-				if(i<0||j<0||j>=mapData.row) continue;
-				if(mapData.pass[j][i] == 1){
+				if(i<0||j<0||j>=StateData.mapData.row) continue;
+				if(StateData.mapData.pass[j][i] == 1){
 					return i*Data.CHIP_SIZE-s.getWidth()+Data.CD_DIFF;
 				}
 			}

@@ -23,18 +23,21 @@ public class MapData{
 	public ArrayList<Sprite> spriteList = new ArrayList<Sprite>();
 	public int[][] pass;
 	public int[][] data;
+	public int id;
 	/**
 	 * コンストラクタ
 	 * mapIDのIDを持つマップデータの読み込み
 	 */
 	public MapData(int mapID){
-		load(mapID);
+		id = mapID;
+		load(id);
 	}
 	/**
 	 * データ読み込み用関数
 	 * Map"id".dat("id"は具体的な数字)を読み込む
 	 */
 	public void load(int id){
+		this.id = id;
 		// 新たなマップに移動するのでspriteListはクリア
 		spriteList.clear();
 		// ファイル名の指定

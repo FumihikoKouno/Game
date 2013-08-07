@@ -22,7 +22,6 @@ public class Coin extends Sprite{
 		if(s instanceof Player){
 			Player tmp = (Player)s;
 			tmp.coin++;
-			System.out.println("test");
 			end = true;
 			Data.se.coinSound.play();
 		}

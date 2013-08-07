@@ -9,4 +9,15 @@ public class KeyStatus{
 	public static boolean menu;
 	public static boolean pause;
 	public static boolean dash;
+	public static void setAll(boolean b){
+		up = b;
+		down = b;
+		left = b;
+		right = b;
+		jump = b;
+		attack = b;
+		menu = b;
+		pause = b;
+		dash = b;
+	}
 }

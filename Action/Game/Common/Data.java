@@ -15,7 +15,7 @@ public class Data{
 
 	public static final int ELEMENT_NUM = 4;
 	public static final int WEAPON_NUM = 2;
-	public static final int BODY_NUM = 0;
+	public static final int BODY_NUM = 2;
 	
 	public static final int CD_DIFF = 2;
 	
