@@ -14,6 +14,9 @@ import java.awt.Color;
 public class Player extends Sprite{
 	// このフレーム中に何かに着地したらtrue
 	private boolean landing = false;
+	
+	private boolean shiftReleased = true;
+	
 	/**
 	 * プレイヤーのジャンプボタンが一度離されたかどうか
 	 * これがないとジャンプボタン押しっぱなしで何度もジャンプしてしまう
@@ -137,6 +140,19 @@ public class Player extends Sprite{
 		landing = true;
 	}
 	
+	public void testAtShift(){
+		if(KeyStatus.pause){
+			if(shiftReleased){
+				life+=5;
+				lifeMax+=5;
+				
+				shiftReleased = false;
+			}
+		}else{
+			shiftReleased = true;
+		}
+	}
+	
 	public boolean landing(){
 		return landing;
 	}
@@ -211,6 +227,10 @@ public class Player extends Sprite{
 		}else{
 			if(jumpCount == 0) speed = movingSpeed;
 		}
+		
+		// shiftボタンを押すことで何かをテストする
+		testAtShift();
+		
 		/**
 		 * 重力分を加算
 		 * 但しData.CHIP_SIZEを超えると床をすり抜ける現象が発生するので
@@ -378,7 +398,7 @@ public class Player extends Sprite{
 		if(weapon != null) weapon.draw(g, screenX, screenY);
 		g.setColor(Color.WHITE);
 
-		LifeGauge.draw(g, x-screenX-5, y-15-screenY, life, lifeMax);
+		LifeGauge.draw(g, x-screenX+width/2, y-screenY, life, lifeMax);
 		g.drawString("life : " + life, 15,15);
 		g.drawString("player : " + x + ", " + y, 15, 30);
 		g.drawString("coin : " + coin, 15, 45);

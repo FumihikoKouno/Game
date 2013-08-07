@@ -113,6 +113,11 @@ public class MapData{
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
 					spriteList.add(new LeftUpSlope(x,y));
 				}
+				if(tmp[0].equals("Enemy0")){
+					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
+					spriteList.add(new Enemy0(x,y));
+				}
 				if(tmp[0].equals("Enemy1")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;

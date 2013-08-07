@@ -15,12 +15,15 @@ public class LifeGauge{
 		g.setColor(Color.WHITE);
 		int w = lifeMax<<1;
 		int h = 8;
-		g.drawRect(x,y,w,h);
-		if(100*life/lifeMax <= 25){
+		g.drawRect(x-lifeMax,y-15,w,h);
+		int ratio = (100*life)/lifeMax;
+		if(ratio <= 25){
 			g.setColor(Color.RED);
-		}else{
+		}else if(ratio <= 50){
 			g.setColor(Color.ORANGE);
+		}else{
+			g.setColor(Color.GREEN);
 		}
-		g.fillRect(x+1,y+1,(w-1)*life/lifeMax,h-1);
+		g.fillRect(x-lifeMax+1,y-14,(w-1)*life/lifeMax,h-1);
 	}
 }

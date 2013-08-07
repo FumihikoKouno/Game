@@ -98,7 +98,7 @@ public class Enemy extends Sprite{
 	
 	public void draw(Graphics g, int screenX, int screenY){
 		super.draw(g,screenX,screenY);
-		LifeGauge.draw(g,x-screenX, y-screenY-15,life,lifeMax);
+		LifeGauge.draw(g,x-screenX+width/2, y-screenY,life,lifeMax);
 	}
 	
 }
