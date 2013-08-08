@@ -20,7 +20,8 @@ import javax.swing.ImageIcon;
 public class MapData{
 	public int col;
 	public int row;
-	public ArrayList<Sprite> spriteList = new ArrayList<Sprite>();
+	public ArrayList<Sprite> passSpriteList = new ArrayList<Sprite>();
+	public ArrayList<Sprite> unpassSpriteList = new ArrayList<Sprite>();
 	public int[][] pass;
 	public int[][] data;
 	public int id;
@@ -39,7 +40,8 @@ public class MapData{
 	public void load(int id){
 		this.id = id;
 		// 新たなマップに移動するのでspriteListはクリア
-		spriteList.clear();
+		passSpriteList.clear();
+		unpassSpriteList.clear();
 		// ファイル名の指定
 		String fileName = "./Game/MapData/Map" + id + ".dat";
 		String s;
@@ -96,32 +98,32 @@ public class MapData{
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
 					int weapon = Integer.parseInt(tmp[3]);
 					int element = Integer.parseInt(tmp[4]);
-					spriteList.add(new BrokenChip(x,y,weapon,element));
+					unpassSpriteList.add(new BrokenChip(x,y,weapon,element));
 				}
 				if(tmp[0].equals("Coin")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
-					spriteList.add(new Coin(x,y));
+					passSpriteList.add(new Coin(x,y));
 				}
 				if(tmp[0].equals("RightUpSlope")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
-					spriteList.add(new RightUpSlope(x,y));
+					unpassSpriteList.add(new RightUpSlope(x,y));
 				}
 				if(tmp[0].equals("LeftUpSlope")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
-					spriteList.add(new LeftUpSlope(x,y));
+					unpassSpriteList.add(new LeftUpSlope(x,y));
 				}
 				if(tmp[0].equals("Enemy0")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
-					spriteList.add(new Enemy0(x,y));
+					passSpriteList.add(new Enemy0(x,y));
 				}
 				if(tmp[0].equals("Enemy1")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
-					spriteList.add(new Enemy1(x,y));
+					passSpriteList.add(new Enemy1(x,y));
 				}
 				if(tmp[0].equals("AppearingChip")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
@@ -129,7 +131,7 @@ public class MapData{
 					int start = Integer.parseInt(tmp[3]);
 					int end = Integer.parseInt(tmp[4]);
 					int limit = Integer.parseInt(tmp[5]);
-					spriteList.add(new AppearingChip(x,y,start,end,limit));
+					unpassSpriteList.add(new AppearingChip(x,y,start,end,limit));
 				}
 				if(tmp[0].equals("FroatingStage")){
 					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
@@ -137,7 +139,7 @@ public class MapData{
 					int kind = Integer.parseInt(tmp[3]);
 					int scale = Integer.parseInt(tmp[4]);
 					int dir = Integer.parseInt(tmp[5]);
-					spriteList.add(new FroatingStage(x,y,kind,scale,dir));
+					unpassSpriteList.add(new FroatingStage(x,y,kind,scale,dir));
 				}
 				if(tmp[0].equals("MapChange")){
 					int newMapID = Integer.parseInt(tmp[1]);
@@ -145,7 +147,13 @@ public class MapData{
 					int py = Integer.parseInt(tmp[3]) * Data.CHIP_SIZE;
 					int x = Integer.parseInt(tmp[4]) * Data.CHIP_SIZE;
 					int y = Integer.parseInt(tmp[5]) * Data.CHIP_SIZE;
-					spriteList.add(new MapChange(newMapID,px,py,x,y));
+					passSpriteList.add(new MapChange(newMapID,px,py,x,y));
+				}
+				if(tmp[0].equals("Needle")){
+					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
+					int d = Integer.parseInt(tmp[3]);
+					unpassSpriteList.add(new Needle(x,y,d));
 				}
 			}
 		}catch(FileNotFoundException e){

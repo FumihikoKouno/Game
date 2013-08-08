@@ -136,8 +136,6 @@ public class Sprite{
 	public void mapHit(int dir, int dest){}
 	// プレイヤーがスプライトに触れたときの関数
 	public void touch(Sprite s, int dir, int[] dest){}
-	// プレイヤーがスプライトにかさなったときの関数
-	public void over(){}
 	// このスプライトに対してspriteが攻撃したときの関数
 	public void attacked(Sprite sprite){}
 	// 描画処理

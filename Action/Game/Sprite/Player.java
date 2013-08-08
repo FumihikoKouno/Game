@@ -143,8 +143,7 @@ public class Player extends Sprite{
 	public void testAtShift(){
 		if(KeyStatus.pause){
 			if(shiftReleased){
-				life+=5;
-				lifeMax+=5;
+				StateData.mapData.unpassSpriteList.add(new BrokenChip(x+1,y,0,0)); 
 				
 				shiftReleased = false;
 			}

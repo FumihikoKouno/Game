@@ -22,6 +22,8 @@ public class AppearingChip extends Sprite{
 	}
 	// スプライトのupdate
 	public void update(MapData mapData){
+		vx = 0;
+		vy = 0;
 		int f = Data.frame%limit;
 		if(start < f && f < end){
 			appear = true;
@@ -35,18 +37,22 @@ public class AppearingChip extends Sprite{
 		int px = s.getX()+s.getWidth()-Data.CD_DIFF;
 		int py = s.getY()+s.getHeight()-Data.CD_DIFF;
 		if((dir & (1 << DOWN)) > 0){
-			s.setVy(dest[DOWN]-s.getY());
-			s.land();
+			s.mapHit(DOWN,dest[DOWN]);
+			// s.setVy(dest[DOWN]-s.getY());
+			// s.land();
 			return;
 		}
 		if((dir & (1 << LEFT)) > 0){
-			s.setVx(dest[LEFT]-s.getX());
+			s.mapHit(LEFT,dest[LEFT]);
+//			s.setVx(dest[LEFT]-s.getX());
 		}
 		if((dir & (1 << RIGHT)) > 0){
-			s.setVx(dest[RIGHT]-s.getX());
+			s.mapHit(RIGHT,dest[RIGHT]);
+//			s.setVx(dest[RIGHT]-s.getX());
 		}
 		if((dir & (1 << UP)) > 0){
-			s.setVy(dest[UP]-s.getY());
+			s.mapHit(UP,dest[UP]);
+//			s.setVy(dest[UP]-s.getY());
 		}
 	}
 	

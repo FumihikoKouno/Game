@@ -53,7 +53,7 @@ public class Enemy extends Sprite{
 	public void update(MapData mapData){
 		if(life <= 0){
 			end = true;
-			mapData.spriteList.add(new Coin(x+1,y+1));
+			mapData.passSpriteList.add(new Coin(x+1,y+1));
 			return;
 		}
 		animationUpdate(15);

@@ -38,6 +38,9 @@ class Key implements KeyListener{
 		case KeyEvent.VK_M:
 			KeyStatus.menu = true;
 			break;
+		case KeyEvent.VK_X:
+			KeyStatus.pause = true;
+			break;
 		}
 	}
 	public void keyReleased(KeyEvent e){
@@ -69,6 +72,9 @@ class Key implements KeyListener{
 			break;
 		case KeyEvent.VK_M:
 			KeyStatus.menu = false;
+			break;
+		case KeyEvent.VK_X:
+			KeyStatus.pause = false;
 			break;
 		}
 	}

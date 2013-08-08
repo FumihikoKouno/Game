@@ -95,7 +95,6 @@ public class Shot extends Weapon{
 	
 	public void screenOut(){
 		end = true;
-			System.out.println("end");
 	}
 	
 	// •`‰æˆ—

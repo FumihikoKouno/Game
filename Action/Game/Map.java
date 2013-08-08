@@ -212,15 +212,15 @@ public class Map{
 	 */
 	public void update(){
 		menu();
-		pause();
+		// pause();
 		// プレイヤーの状態更新
 		StateData.player.update();
 		// スプライトの衝突判定
-		// 壁・プレイヤー・武器との衝突判定を行う
-		for(int i = 0; i < StateData.mapData.spriteList.size(); i++){
-			Sprite tmp = StateData.mapData.spriteList.get(i);
+		// 通過可能なスプライトと壁・プレイヤー・武器との衝突判定を行う
+		for(int i = 0; i < StateData.mapData.passSpriteList.size(); i++){
+			Sprite tmp = StateData.mapData.passSpriteList.get(i);
 			if(tmp.end){
-				StateData.mapData.spriteList.remove(tmp);
+				StateData.mapData.passSpriteList.remove(tmp);
 				continue;
 			}
 			// 画面外のスプライトについての計算は行わない
@@ -233,8 +233,38 @@ public class Map{
 			if(StateData.player.weapon != null){
 				spriteAndSpriteHit(StateData.player.weapon,tmp);
 			}
-			for(int j = i+1; j < StateData.mapData.spriteList.size(); j++){
-				Sprite tmp2 = StateData.mapData.spriteList.get(j);
+			for(int j = i+1; j < StateData.mapData.passSpriteList.size(); j++){
+				Sprite tmp2 = StateData.mapData.passSpriteList.get(j);
+				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
+				spriteAndSpriteHit(tmp,tmp2);
+			}
+			for(int j = 0; j < StateData.mapData.unpassSpriteList.size(); j++){
+				Sprite tmp2 = StateData.mapData.unpassSpriteList.get(j);
+				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
+				spriteAndSpriteHit(tmp,tmp2);
+			}
+			spriteAndMapHit(tmp);
+			tmp.move();
+		}
+		// 通過不可能なスプライトと壁・プレイヤー・武器との衝突判定を行う
+		for(int i = 0; i < StateData.mapData.unpassSpriteList.size(); i++){
+			Sprite tmp = StateData.mapData.unpassSpriteList.get(i);
+			if(tmp.end){
+				StateData.mapData.unpassSpriteList.remove(tmp);
+				continue;
+			}
+			// 画面外のスプライトについての計算は行わない
+			if(tmp.getX() < x - Data.SCREEN_OUT || tmp.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp.getY() < y - Data.SCREEN_OUT || tmp.getY() > y + Data.WIDTH + Data.SCREEN_OUT){
+				tmp.screenOut();
+				continue;
+			}
+			tmp.update(StateData.mapData);
+			spriteAndSpriteHit(StateData.player,tmp);
+			if(StateData.player.weapon != null){
+				spriteAndSpriteHit(StateData.player.weapon,tmp);
+			}
+			for(int j = i+1; j < StateData.mapData.unpassSpriteList.size(); j++){
+				Sprite tmp2 = StateData.mapData.unpassSpriteList.get(j);
 				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
 				spriteAndSpriteHit(tmp,tmp2);
 			}
@@ -296,8 +326,11 @@ public class Map{
 		}
 		/* マップの描画終了 */
 		/* スプライトの描画 */
-		for(int i = 0; i < StateData.mapData.spriteList.size(); i++){
-			StateData.mapData.spriteList.get(i).draw(g,x,y);
+		for(int i = 0; i < StateData.mapData.passSpriteList.size(); i++){
+			StateData.mapData.passSpriteList.get(i).draw(g,x,y);
+		}
+		for(int i = 0; i < StateData.mapData.unpassSpriteList.size(); i++){
+			StateData.mapData.unpassSpriteList.get(i).draw(g,x,y);
 		}
 		/* プレイヤーの描画 */
 		StateData.player.draw(g,x,y);
@@ -330,7 +363,7 @@ public class Map{
 		x1r -= Data.CD_DIFF;
 		y1u += Data.CD_DIFF;
 		y1d -= Data.CD_DIFF;
-		if(x1l <= x2r && x1r >= x2l && y1u <= y2d && y1d >= y2u){
+		if(x1l < x2r && x1r > x2l && y1u < y2d && y1d > y2u){
 			return 1<<Sprite.HIT_DIRECT;
 		}
 		return 0;

@@ -31,6 +31,8 @@ public class BrokenChip extends Sprite{
 	
 	public void update(MapData mapdata){
 		if(life <= 0) end = true;
+		vx = 0;
+		vy = 0;
 	}
 	
 	private boolean damageable(Sprite sprite){
@@ -42,6 +44,8 @@ public class BrokenChip extends Sprite{
 			weaponTmp = Weapon.SWORD;
 		}else if(sprite instanceof Arrow){
 			weaponTmp = Weapon.ARROW;
+		}else if(sprite instanceof Shot){
+			weaponTmp = Weapon.SHOT;
 		}
 		return elem && ((weapon&(1<<weaponTmp))>0);
 	}
@@ -65,20 +69,24 @@ public class BrokenChip extends Sprite{
 	// プレイヤーがスプライトに触れたときの関数
 	public void touch(Sprite s, int dir, int[] dest){
 		if((dir & (1 << DOWN)) > 0){
-			s.setVy(dest[DOWN]-s.getY());
-			s.land();
+			s.mapHit(DOWN,dest[DOWN]);
+//			s.setVy(dest[DOWN]-s.getY());
+//			s.land();
 			return;
 		}
 		if((dir & (1 << LEFT)) > 0){
-			s.setVx(dest[LEFT]-s.getX());
+			s.mapHit(LEFT,dest[LEFT]);
+//			s.setVx(dest[LEFT]-s.getX());
 			return;
 		}
 		if((dir & (1 << RIGHT)) > 0){
-			s.setVx(dest[RIGHT]-s.getX());
+			s.mapHit(RIGHT,dest[RIGHT]);
+//			s.setVx(dest[RIGHT]-s.getX());
 			return;
 		}
 		if((dir & (1 << UP)) > 0){
-			s.setVy(dest[UP]-s.getY());
+			s.mapHit(UP,dest[UP]);
+//			s.setVy(dest[UP]-s.getY());
 			return;
 		}
 	}

@@ -15,7 +15,9 @@ public class RightUpSlope extends Sprite{
 		height = Data.CHIP_SIZE;
 	}
 	// スプライトのupdate
-	public void update(MapData mapData){}
+	public void update(MapData mapData){
+		vx = vy = 0;
+	}
 	// プレイヤーがスプライトに触れたときの関数
 	public void touch(Sprite s, int dir, int[] dest){
 		int px = s.getX()+s.getWidth()-Data.CD_DIFF;

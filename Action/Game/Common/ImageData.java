@@ -31,4 +31,5 @@ public class ImageData{
 	public final Image elementIconImage = new ImageIcon(getClass().getResource("../Image/Icon/element.gif")).getImage();
 	public final Image weaponIconImage = new ImageIcon(getClass().getResource("../Image/Icon/weapon.gif")).getImage();
 	public final Image bodyIconImage = new ImageIcon(getClass().getResource("../Image/Icon/body.gif")).getImage();
+	public final Image needleImage = new ImageIcon(getClass().getResource("../Image/Sprite/needle.gif")).getImage();
 }
