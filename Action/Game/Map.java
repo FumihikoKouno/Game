@@ -240,7 +240,7 @@ public class Map{
 			}
 			for(int j = 0; j < StateData.mapData.unpassSpriteList.size(); j++){
 				Sprite tmp2 = StateData.mapData.unpassSpriteList.get(j);
-				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
+//				if(tmp2.getX() < x - Data.SCREEN_OUT || tmp2.getX() > x + Data.WIDTH + Data.SCREEN_OUT || tmp2.getY() < y - Data.SCREEN_OUT || tmp2.getY() > y + Data.WIDTH + Data.SCREEN_OUT) continue;
 				spriteAndSpriteHit(tmp,tmp2);
 			}
 			spriteAndMapHit(tmp);

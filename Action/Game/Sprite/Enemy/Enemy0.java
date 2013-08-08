@@ -22,6 +22,6 @@ public class Enemy0 extends Enemy{
 	}
 	public void update(MapData mapData){
 		super.update(mapData);
-		if(Data.frame % 90 == 0) mapData.passSpriteList.add(new Shot(x,y+4,-12,-1,16));
+		if(Data.frame % 90 == 0) mapData.passSpriteList.add(new Shot(x,y,(StateData.player.getX()-x)/30,(StateData.player.getY()-y)/30,16));
 	}
 }

@@ -67,18 +67,31 @@ public class Shot extends Weapon{
 			if((dir & (1<<HIT_DIRECT)) > 0){
 				StateData.player.damage(power);
 				end = true;
-			}else{
+			}
+			else{
 				if((dir & (1<<UP))>0){
-					vy = dest[UP]-y-height+Data.CD_DIFF+2;
+					s.setVy(y+vy+height-s.getY()-Data.CD_DIFF-2);
+//					vy = dest[UP]-y-height+Data.CD_DIFF+2;
+//					StateData.player.damage(power);
+//					end = true;
 				}
 				if((dir & (1<<DOWN))>0){
-					vy = dest[DOWN]-y+s.getHeight()-Data.CD_DIFF-2;
+					s.setVy(y+vy-s.getHeight()-s.getY()+Data.CD_DIFF+2);
+//					vy = dest[DOWN]-y+s.getHeight()-Data.CD_DIFF-2;
+//					StateData.player.damage(power);
+//					end = true;
 				}
 				if((dir & (1<<LEFT))>0){
-					vx = dest[LEFT]-x-width+Data.CD_DIFF+2;
+					s.setVx(x+vx+width-s.getX()-Data.CD_DIFF-2);
+//					vx = dest[LEFT]-x-width+Data.CD_DIFF+2;
+//					StateData.player.damage(power);
+//					end = true;
 				}
 				if((dir & (1<<RIGHT))>0){
-					vx = dest[RIGHT]-x+s.getWidth()-Data.CD_DIFF-2;
+					s.setVx(x+vx-s.getWidth()-s.getX()+Data.CD_DIFF+2);
+//					vx = dest[RIGHT]-x+s.getWidth()-Data.CD_DIFF-2;
+//					StateData.player.damage(power);
+//					end = true;
 				}
 			}
 		}
