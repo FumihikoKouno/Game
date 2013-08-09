@@ -203,7 +203,7 @@ public class Player extends Sprite{
 			}
 			/**
 			 * –³“G‚ªØ‚ê‚éˆ—
-			 * ƒ_ƒ[ƒW‚­‚ç‚Á‚Ä‚©‚ç45ƒtƒŒ[ƒ€(ˆ——Ž‚¿‚ª‚È‚¯‚ê‚Î1.5•b)‚½‚Á‚½‚ç–³“G‰ðœ
+			* ƒ_ƒ[ƒW‚­‚ç‚Á‚Ä‚©‚çinvisibleFrame•ª‚ÌƒtƒŒ[ƒ€(ˆ——Ž‚¿‚ª‚È‚¯‚ê‚Î1.5•b)‚½‚Á‚½‚ç–³“G‰ðœ
 			 */
 			if(Data.frame - attackedFrame > invisibleTime){
 				invisible = false;

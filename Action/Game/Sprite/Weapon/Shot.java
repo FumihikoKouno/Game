@@ -63,6 +63,7 @@ public class Shot extends Weapon{
 	
 	public void touch(Sprite s, int dir, int[] dest){
 		if(!enemy) return;
+		if(s.isInvisible()) return;
 		if(s instanceof Player){
 			if((dir & (1<<HIT_DIRECT)) > 0){
 				StateData.player.damage(power);

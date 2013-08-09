@@ -59,7 +59,7 @@ public class Enemy extends Sprite{
 		animationUpdate(15);
 		if((Data.frame&1)==0) vy += Data.gravity;
 		if(vy >= Data.CHIP_SIZE) vy = Data.CHIP_SIZE - 1;
-		if(vy < 0) vy = 0;
+//		if(vy < 0) vy = 0;
 	}
 	
 	public void mapHit(int dir, int dest){
