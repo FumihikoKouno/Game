@@ -1,6 +1,7 @@
 package Game.MapData;
 
 import Game.Sprite.*;
+import Game.Sprite.Item.*;
 import Game.Sprite.Enemy.*;
 import Game.Common.Data;
 

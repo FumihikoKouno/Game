@@ -25,7 +25,7 @@ public class Player extends Sprite{
 	// 上のジャンプが離されたかどうかの攻撃ボタン版
 	public boolean attackReleased = true;
 	// コイン枚数
-	public int coin;
+	public byte coin;
 	// どの武器を装備しているか
 	public int weaponID;
 	// どの属性を装備しているか
@@ -52,20 +52,19 @@ public class Player extends Sprite{
 	 * (今は下に定義されている)速度の値を用いて
 	 * 実際に主人公がどのくらいのスピードで動くのかを表わす
 	 */
-	private int speed;
+	private byte speed;
 	
 	/**
 	 * 移動速度関係
-	 * 今はここに定義しているが
-	 * 将来的には全身装備のクラスを参照する
+	 * 全身装備のクラスを参照する
 	 */
-	private int invisibleTime;
-	private int nockBackTime;
-	private int defence;
-	private int movingSpeed;
-	private int jumpSpeed;
-	private int jumpMax;
-	private int froat;
+	private byte invisibleTime;
+	private byte nockBackTime;
+	private byte defence;
+	private byte movingSpeed;
+	private byte jumpSpeed;
+	private byte jumpMax;
+	private byte froat;
 	
 	public void equipBody(int id){
 		bodyID = id;
@@ -143,8 +142,11 @@ public class Player extends Sprite{
 	public void testAtShift(){
 		if(KeyStatus.pause){
 			if(shiftReleased){
-				StateData.mapData.unpassSpriteList.add(new BrokenChip(x+1,y,0,0)); 
-				
+				StateData.gotElement[1]++;
+				StateData.gotElement[2]++;
+				StateData.gotElement[3]++;
+				StateData.flag.gotWeapon=3;
+				StateData.flag.gotBody=3;
 				shiftReleased = false;
 			}
 		}else{
@@ -222,9 +224,9 @@ public class Player extends Sprite{
 		 * 例えばData.CHIP_SIZEより大きいと壁を抜けるようになる
 		 */
 		if(KeyStatus.dash){
-			if(jumpCount == 0) speed = movingSpeed<<1;
+			if(jumpCount == 0) speed = (byte)(movingSpeed<<1);
 		}else{
-			if(jumpCount == 0) speed = movingSpeed;
+			if(jumpCount == 0) speed = (byte)movingSpeed;
 		}
 		
 		// shiftボタンを押すことで何かをテストする
@@ -349,6 +351,10 @@ public class Player extends Sprite{
 		}
 		weapon.element = element;
 		weapon.appear();
+		StateData.gotElement[element]--;
+		if(StateData.gotElement[element] == 0){
+			element = Element.NONE;
+		}
 	}
 	
 	/**

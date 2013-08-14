@@ -1,8 +1,5 @@
 /**
- * すべてのイベントの基盤クラス
- * 敵、仕掛け(スイッチとか？)、扉とか
- * プレイヤーの行動によって何か変化が生じるものは
- * このクラスを継承して作る
+ * すべての敵の基盤クラス
  */
 
 package Game.Sprite.Enemy;
@@ -53,7 +50,6 @@ public class Enemy extends Sprite{
 	public void update(MapData mapData){
 		if(life <= 0){
 			end = true;
-			mapData.passSpriteList.add(new Coin(x+1,y+1));
 			return;
 		}
 		animationUpdate(15);

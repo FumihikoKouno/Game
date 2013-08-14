@@ -1,5 +1,6 @@
-package Game.Sprite;
+package Game.Sprite.Item;
 
+import Game.Sprite.Sprite;
 import Game.Sprite.Player;
 import Game.MapData.MapData;
 import Game.Common.Data;

@@ -13,7 +13,7 @@ import java.awt.Graphics;
 import java.awt.Color;
 
 public class Shot extends Weapon{
-	public int frame;
+	public long frame;
 	
 	public Shot(){
 		super(0,0);
@@ -113,6 +113,7 @@ public class Shot extends Weapon{
 	
 	// ï`âÊèàóù
 	public void draw(Graphics g, int screenX, int screenY){
+		super.draw(g,screenX,screenY);
 		g.setColor(Color.WHITE);
 		g.fillOval(x-screenX,y-screenY,width,height);
 	}

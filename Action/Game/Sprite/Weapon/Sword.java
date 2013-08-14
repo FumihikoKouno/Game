@@ -60,6 +60,7 @@ public class Sword extends Weapon{
 	// •`‰æˆ—
 	public void draw(Graphics g, int screenX, int screenY){
 		int sx, sy;
+		super.draw(g,screenX,screenY);
 		if(direction <= DOWN){
 			sx = (Data.frame-frame)*width;
 			sy = direction * height;

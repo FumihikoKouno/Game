@@ -69,11 +69,11 @@ public class Arrow extends Weapon{
 		switch(dir){
 		case UP:
 		case DOWN:
-			vy = dest - y;
+			vy=dest-y;
 			break;
 		case LEFT:
 		case RIGHT:
-			vx = dest - x;
+			vx=dest-x;
 			break;
 		}
 	}
@@ -89,6 +89,7 @@ public class Arrow extends Weapon{
 	// •`‰æˆ—
 	public void draw(Graphics g, int screenX, int screenY){
 		int sx, sy;
+		super.draw(g,screenX,screenY);
 		if(direction <= DOWN){
 			sx = 0;
 			sy = direction * height;

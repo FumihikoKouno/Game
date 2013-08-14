@@ -4,6 +4,7 @@ import Game.Common.*;
 
 import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Font;
 
 public class Menu{
 	private static final int WEAPON_X = 241;
@@ -16,20 +17,20 @@ public class Menu{
 	private static final int BODY_Y = 260;
 	private static final int BODY_X_DIFF = 59;
 	
-	private static final int SELECT_ALL = 0;
-	private static final int SELECT_WEAPON = 1;
-	private static final int SELECT_ELEMENT = 2;
-	private static final int SELECT_BODY = 3;
+	private static final byte SELECT_ALL = 0;
+	private static final byte SELECT_WEAPON = 1;
+	private static final byte SELECT_ELEMENT = 2;
+	private static final byte SELECT_BODY = 3;
 	
-	private static final int LIFE = 0;
-	private static final int WEAPON = 1;
-	private static final int EXIT = 2;
+	private static final byte LIFE = 0;
+	private static final byte WEAPON = 1;
+	private static final byte EXIT = 2;
 	
 	
 	private int cursorX = 0;
 	private int cursorY = 0;
 	
-	private int mode = SELECT_ALL;
+	private byte mode = SELECT_ALL;
 	
 	private boolean menuReleased = false;
 	private boolean upReleased = false;
@@ -61,9 +62,12 @@ public class Menu{
 		case SELECT_WEAPON:
 		case SELECT_ELEMENT:
 		case SELECT_BODY:
+			boolean moved = false;
+			boolean moveLeft = false;
+			boolean moveRight = false;
 			if(KeyStatus.left){
 				if(leftReleased){
-					cursorX = (cursorX+3)%4;
+					moveLeft = true;
 					leftReleased = false;
 				}
 			}else{
@@ -71,11 +75,26 @@ public class Menu{
 			}
 			if(KeyStatus.right){
 				if(rightReleased){
-					cursorX = (cursorX+1)%4;
+					moveRight = true;
 					rightReleased = false;
 				}
 			}else{
 				rightReleased = true;
+			}
+			while(!moved){
+				if(moveLeft) cursorX = (cursorX+3)%4;
+				if(moveRight) cursorX = (cursorX+1)%4;
+				switch(mode){
+				case SELECT_WEAPON:
+					if((StateData.flag.gotWeapon & (1<<cursorX)) > 0) moved = true;
+					break;
+				case SELECT_ELEMENT:
+					if(StateData.gotElement[cursorX] > 0 || cursorX == 0) moved = true;
+					break;
+				case SELECT_BODY:
+					if((StateData.flag.gotBody & (1<<cursorX)) > 0) moved = true;
+					break;
+				}
 			}
 			break;
 		}
@@ -303,14 +322,20 @@ public class Menu{
 				ELEMENT_X+i*ELEMENT_X_DIFF, ELEMENT_Y,
 				ELEMENT_X+i*ELEMENT_X_DIFF+Data.CHIP_SIZE, ELEMENT_Y+Data.CHIP_SIZE,
 				i*Data.CHIP_SIZE,0,(i+1)*Data.CHIP_SIZE,Data.CHIP_SIZE,null);
+			if(i>0){
+//				g.setFont(new Font("Dialog",Font.BOLD,18));
+				g.drawString("Å~" + StateData.gotElement[i],ELEMENT_X+i*ELEMENT_X_DIFF+Data.CHIP_SIZE, ELEMENT_Y+Data.CHIP_SIZE+5);
+			}
 		}
 		for(int i = 0; i < Data.WEAPON_NUM; i++){
+			if((StateData.flag.gotWeapon & (1 << i)) == 0) continue;
 			g.drawImage(Data.image.weaponIconImage,
 				WEAPON_X+i*WEAPON_X_DIFF, WEAPON_Y,
 				WEAPON_X+i*WEAPON_X_DIFF+Data.CHIP_SIZE, WEAPON_Y+Data.CHIP_SIZE,
 				i*Data.CHIP_SIZE,0,(i+1)*Data.CHIP_SIZE,Data.CHIP_SIZE,null);
 		}
 		for(int i = 0; i < Data.BODY_NUM; i++){
+			if((StateData.flag.gotBody & (1 << i)) == 0) continue;
 			g.drawImage(Data.image.bodyIconImage,
 				BODY_X+i*BODY_X_DIFF, BODY_Y,
 				BODY_X+i*BODY_X_DIFF+Data.CHIP_SIZE, BODY_Y+Data.CHIP_SIZE,
