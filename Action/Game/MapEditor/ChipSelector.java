@@ -12,17 +12,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
-	public static final int WIDTH = 160;
-	public static final int HEIGHT = 480;
 	public final Image image = new ImageIcon(getClass().getResource("./mapImage.gif")).getImage();
 	private final int CHIP_SIZE = 32;
 	private final int CHIP_COL = 16;
 	
+	private int col = CHIP_COL;
+	private int row = CHIP_COL;
+	
 	private boolean mouseInThis;
 	private int mouseX;
 	private int mouseY;
-	private int row;
-	private int col;
 	public int selectedChip;
 	private int x;
 	private int y;
@@ -35,13 +34,12 @@ class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
 		x = y = 0;
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		update();
+		setPreferredSize(new Dimension(col*CHIP_SIZE,row*CHIP_SIZE));
 	}
 	
 	public void update() {
 		while(dbImage == null){
-			dbImage = createImage(WIDTH,HEIGHT);
+			dbImage = createImage(col*CHIP_SIZE,row*CHIP_SIZE);
 			if(dbImage == null){
 				System.out.println("dbImage is null");
 				return;
@@ -54,16 +52,19 @@ class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
 	}
 	
 	public void draw(){
+		/*
 		dbg.drawImage(image,
 			0,0,WIDTH,HEIGHT,
 			x*CHIP_SIZE,y*CHIP_SIZE,
 			x*CHIP_SIZE+WIDTH,y*CHIP_SIZE+HEIGHT,
 			null);
+		*/
+		dbg.drawImage(image,0,0,null);
 		dbg.setColor(Color.WHITE);
-		int ox = ((selectedChip%CHIP_COL)-x)*CHIP_SIZE;
-		int oy = ((selectedChip/CHIP_COL)-y)*CHIP_SIZE;
+		int ox = (selectedChip%CHIP_COL)*CHIP_SIZE;
+		int oy = (selectedChip/CHIP_COL)*CHIP_SIZE;
 		for(int i = 0; i < 3; i++){
-			dbg.drawRect(ox-i,oy-i,CHIP_SIZE+(i<<1),CHIP_SIZE+(i<<1));
+			dbg.drawRect(ox,oy,CHIP_SIZE+(i<<1),CHIP_SIZE+(i<<1));
 		}
 	}
 	
@@ -99,12 +100,16 @@ class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
 		if(!mouseInThis) return;
 		mouseX = e.getX()/CHIP_SIZE;
 		mouseY = e.getY()/CHIP_SIZE;
+		if(mouseX < 0 || mouseX >= col) return;
+		if(mouseY < 0 || mouseY >= row) return;
 		selectChip();
 	}
 	public void mouseDragged(MouseEvent e){
 		if(!mouseInThis) return;
 		mouseX = e.getX()/CHIP_SIZE;
 		mouseY = e.getY()/CHIP_SIZE;
+		if(mouseX < 0 || mouseX >= col) return;
+		if(mouseY < 0 || mouseY >= row) return;
 		selectChip();
 	}
 	public void mouseEntered(MouseEvent e){
