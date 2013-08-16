@@ -12,11 +12,13 @@ public class Coin extends Sprite{
 	public Coin(int x, int y){
 		super(x,y);
 		image = Data.image.coinImage;
-		width = 30;
-		height = 30;
+		width = 32;
+		height = 32;
 	}
 	// スプライトのupdate
 	public void update(MapData mapData){
+		vx = 0; vy = 0;
+		animationUpdate(15);
 	}
 	// プレイヤーがスプライトに触れたときの関数
 	public void touch(Sprite s, int dir, int[] dest){
