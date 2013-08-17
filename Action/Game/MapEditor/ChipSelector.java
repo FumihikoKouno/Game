@@ -19,19 +19,18 @@ class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
 	private int col = CHIP_COL;
 	private int row = CHIP_COL;
 	
-	private boolean mouseInThis;
+	private MapEditor me;
+	
 	private int mouseX;
 	private int mouseY;
 	public int selectedChip;
-	private int x;
-	private int y;
 	
 	private Image dbImage;
 	private Graphics dbg;
 	private ChipSelector cs;
 	
-	public ChipSelector() {
-		x = y = 0;
+	public ChipSelector(MapEditor me) {
+		this.me = me;
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		setPreferredSize(new Dimension(col*CHIP_SIZE,row*CHIP_SIZE));
@@ -70,12 +69,12 @@ class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
 	
 	public void selectChip(int num){
 		selectedChip = num;
-		update();
+		me.update();
 	}
 	
 	public void selectChip(){
-		selectedChip = (x+mouseX)+(y+mouseY)*CHIP_COL;
-		update();
+		selectedChip = (mouseX)+(mouseY)*CHIP_COL;
+		me.update();
 	}
 	
 	public void paintScreen(){
@@ -97,7 +96,6 @@ class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
 	
 	// こっからマウス関係のメソッド
 	public void mousePressed(MouseEvent e){
-		if(!mouseInThis) return;
 		mouseX = e.getX()/CHIP_SIZE;
 		mouseY = e.getY()/CHIP_SIZE;
 		if(mouseX < 0 || mouseX >= col) return;
@@ -105,7 +103,6 @@ class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
 		selectChip();
 	}
 	public void mouseDragged(MouseEvent e){
-		if(!mouseInThis) return;
 		mouseX = e.getX()/CHIP_SIZE;
 		mouseY = e.getY()/CHIP_SIZE;
 		if(mouseX < 0 || mouseX >= col) return;
@@ -113,10 +110,8 @@ class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
 		selectChip();
 	}
 	public void mouseEntered(MouseEvent e){
-		mouseInThis = true;
 	}
 	public void mouseExited(MouseEvent e){
-		mouseInThis = false;
 	}
 	public void mouseReleased(MouseEvent e){
 	}

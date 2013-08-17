@@ -6,30 +6,37 @@ import java.awt.Toolkit;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.awt.BorderLayout;
 
 import javax.swing.ImageIcon;
 
 import javax.swing.JPanel;
+
+
 
 class StageViewer extends JPanel implements MouseListener, MouseMotionListener{
 	private final Image image = new ImageIcon(getClass().getResource("./mapImage.gif")).getImage();
 	private final int CHIP_SIZE = 32;
 	private final int CHIP_COL = 16;
 	
+	private MapEditor me;
+	public boolean updated;
+	
 	public static final int GRAPHIC = 0;
 	public static final int PASS = 1;
 	
-	public String backGroundName;
+	public int gravity = 1;
 	
-	public int mode = 1;
+	public String backGroundName = "defaultBackGround.gif";
 	
-	private boolean mouseInThis;
-	private int mouseX;
-	private int mouseY;
-	private int row;
-	private int col;
-	private int[][] data;
-	private boolean[][] notPass;
+	public int mode = GRAPHIC;
+	
+	public int mouseX;
+	public int mouseY;
+	public int row;
+	public int col;
+	public int[][] data;
+	public boolean[][] notPass;
 	
 	private boolean setPass;
 	
@@ -38,13 +45,21 @@ class StageViewer extends JPanel implements MouseListener, MouseMotionListener{
 	private Graphics dbg;
 	private ChipSelector cs;
 	
-	public StageViewer(ChipSelector cs) {
+	public StageViewer(ChipSelector cs, MapEditor me) {
+		this.me = me;
 		this.cs = cs;
 		back = null;
 		createNewMap(20,15);
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		setBackGround(backGroundName);
 		setPreferredSize(new Dimension(col*CHIP_SIZE, row*CHIP_SIZE));
+		updated = false;
+	}
+	
+	public void setGravity(int g){
+		gravity = g;
+		updated = true;
 	}
 	
 	public void makeNewDBImage(){
@@ -56,6 +71,13 @@ class StageViewer extends JPanel implements MouseListener, MouseMotionListener{
 			dbg = dbImage.getGraphics();
 		}
 		setPreferredSize(new Dimension(col*CHIP_SIZE, row*CHIP_SIZE));
+		updated = true;
+	}
+	
+	public void readEnd(){
+		makeNewDBImage();
+		setBackGround(backGroundName);
+		updated = false;
 	}
 	
 	public void update() {
@@ -77,15 +99,16 @@ class StageViewer extends JPanel implements MouseListener, MouseMotionListener{
 		this.col = col;
 		data = new int[row][col];
 		notPass = new boolean[row][col];
-		back = null;
+		backGroundName = "defaultBackGround.gif";
+		setBackGround(backGroundName);
 		makeNewDBImage();
-		mode = 1-mode;
 	}
 	
 	public boolean setBackGround(String file){
 		try{
 			back = new ImageIcon(getClass().getResource("./"+file)).getImage();
 			backGroundName = file;
+			updated = true;
 			return true;
 		}catch(NullPointerException e){
 			return false;
@@ -93,41 +116,41 @@ class StageViewer extends JPanel implements MouseListener, MouseMotionListener{
 	}
 	
 	public void draw(){
-		if(back == null){
-			dbg.setColor(Color.GRAY);
-			dbg.fillRect(0,0,col*CHIP_SIZE,row*CHIP_SIZE);
-		}else{
-			dbg.drawImage(back,0,0,null);
-		}
+		dbg.setColor(Color.GRAY);
+		dbg.fillRect(0,0,col*CHIP_SIZE,row*CHIP_SIZE);
+		dbg.drawImage(back,0,0,null);
 		for(int i = 0; i < row; i++){
 			for(int j = 0; j < col; j++){
+				int ix = (data[i][j]%CHIP_COL);
+				int iy = (data[i][j]/CHIP_COL);
+				if(ix != 0 || iy != 0){
+					dbg.drawImage(image,
+						j*CHIP_SIZE,i*CHIP_SIZE,
+						(j+1)*CHIP_SIZE, (i+1)*CHIP_SIZE,
+						ix*CHIP_SIZE,iy*CHIP_SIZE,
+						(ix+1)*CHIP_SIZE,(iy+1)*CHIP_SIZE,
+						null);
+				}
 				if(mode == PASS){
 					dbg.setColor(Color.WHITE);
 					if(!notPass[i][j]){
 						dbg.drawOval(j*CHIP_SIZE+8,i*CHIP_SIZE+8,16,16);
 					}
 				}
-				int ix = (data[i][j]%CHIP_COL);
-				int iy = (data[i][j]/CHIP_COL);
-				if(ix == 0 && iy == 0) continue;
-				dbg.drawImage(image,
-					j*CHIP_SIZE,i*CHIP_SIZE,
-					(j+1)*CHIP_SIZE, (i+1)*CHIP_SIZE,
-					ix*CHIP_SIZE,iy*CHIP_SIZE,
-					(ix+1)*CHIP_SIZE,(iy+1)*CHIP_SIZE,
-					null);
 			}
 		}
 	}
 	
 	public void setChip(){
+		updated = true;
 		data[mouseY][mouseX] = cs.selectedChip;
-		update();
+		me.update();
 	}
 	
 	public void changePass(){
+		updated = true;
 		notPass[mouseY][mouseX] = setPass;
-		update();
+		me.update();
 	}
 	
 	public void paintScreen(){
@@ -145,9 +168,10 @@ class StageViewer extends JPanel implements MouseListener, MouseMotionListener{
 		}
 	}
 	
-	// こっからマウス関係のメソッド
+	/**
+	 * こっからマウス関係のメソッド
+	 */
 	public void mousePressed(MouseEvent e){
-		if(!mouseInThis) return;
 		mouseX = e.getX()/CHIP_SIZE;
 		mouseY = e.getY()/CHIP_SIZE;
 		if(mouseX < 0 || mouseX >= col) return;
@@ -178,7 +202,6 @@ class StageViewer extends JPanel implements MouseListener, MouseMotionListener{
 		}
 	}
 	public void mouseDragged(MouseEvent e){
-		if(!mouseInThis) return;
 		mouseX = e.getX()/CHIP_SIZE;
 		mouseY = e.getY()/CHIP_SIZE;
 		if(mouseX < 0 || mouseX >= col) return;
@@ -207,14 +230,15 @@ class StageViewer extends JPanel implements MouseListener, MouseMotionListener{
 		}
 	}
 	public void mouseEntered(MouseEvent e){
-		mouseInThis = true;
 	}
 	public void mouseExited(MouseEvent e){
-		mouseInThis = false;
 	}
 	public void mouseReleased(MouseEvent e){
 	}
 	public void mouseMoved(MouseEvent e){
+		mouseX = e.getX()/CHIP_SIZE;
+		mouseY = e.getY()/CHIP_SIZE;
+		me.update();
 	}
 	public void mouseClicked(MouseEvent e){
 	}
