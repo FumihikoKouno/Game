@@ -5,7 +5,6 @@
 package Game.Sprite.Weapon;
 
 import Game.Common.*;
-import Game.MapData.MapData;
 
 import java.awt.Graphics;
 
@@ -78,7 +77,7 @@ public class Arrow extends Weapon{
 		}
 	}
 	// 武器の状態のupdate(矢は飛ぶし、剣でも何フレーム出てるかとか)
-	public void update(MapData mapData){
+	public void update(){
 		move();
 		if(Data.frame - frame >= 15) end = true;
 		if(stop){

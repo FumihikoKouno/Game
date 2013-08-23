@@ -7,7 +7,6 @@
 package Game.Sprite;
 
 import Game.Sprite.Player;
-import Game.MapData.MapData;
 import Game.Common.Data;
 import Game.Sprite.Weapon.*;
 
@@ -29,7 +28,7 @@ public class BrokenChip extends Sprite{
 		this.element = (1<<element);
 	}
 	
-	public void update(MapData mapdata){
+	public void update(){
 		if(life <= 0) end = true;
 		vx = 0;
 		vy = 0;

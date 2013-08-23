@@ -43,8 +43,7 @@ public class Map{
 		pauseReleased = false;
 		pausing = false;
 		id = mapId;
-		StateData.player = new Player(x, y);
-		StateData.mapData = new MapData(id);
+		StateData.mapData = new MapData(id,x,y);
 	}
 	/**
 	 * マップのスクロール関数
@@ -228,7 +227,7 @@ public class Map{
 				tmp.screenOut();
 				continue;
 			}
-			tmp.update(StateData.mapData);
+			tmp.update();
 			spriteAndSpriteHit(StateData.player,tmp);
 			if(StateData.player.weapon != null){
 				spriteAndSpriteHit(StateData.player.weapon,tmp);
@@ -258,7 +257,7 @@ public class Map{
 				tmp.screenOut();
 				continue;
 			}
-			tmp.update(StateData.mapData);
+			tmp.update();
 			spriteAndSpriteHit(StateData.player,tmp);
 			if(StateData.player.weapon != null){
 				spriteAndSpriteHit(StateData.player.weapon,tmp);
@@ -278,7 +277,7 @@ public class Map{
 		 * 矢とかは刺さるか消えるかするよね？
 		 */
 		if(StateData.player.weapon != null){
-			StateData.player.weapon.update(StateData.mapData);
+			StateData.player.weapon.update();
 			if(StateData.player.weapon.end) StateData.player.weapon = null;
 			else spriteAndMapHit(StateData.player.weapon);
 		}
@@ -289,6 +288,9 @@ public class Map{
 		 */
 		scroll();
 		StateData.player.move();
+		if(StateData.player.getX() < x - Data.SCREEN_OUT || StateData.player.getX()+StateData.player.getWidth() > x + Data.WIDTH + Data.SCREEN_OUT || StateData.player.getY() < y - Data.SCREEN_OUT || StateData.player.getY()+StateData.player.getHeight() > y + Data.WIDTH + Data.SCREEN_OUT){
+			StateData.player.screenOut();
+		}
 	}
 	
 	
@@ -534,7 +536,10 @@ public class Map{
 		int fromY = uy/Data.CHIP_SIZE;
 		int toY = (dy+vy)/Data.CHIP_SIZE;
 		for(int i = fromY; i <= toY; i++){
-			if(i >= StateData.mapData.row) return StateData.mapData.row*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
+			if(i >= StateData.mapData.row){
+//				return StateData.mapData.row*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
+				return Integer.MIN_VALUE;
+			}
 			for(int j = fromX; j <= toX; j++){
 				if(j<0||j>=StateData.mapData.col||i<0) continue;
 				if(StateData.mapData.pass[i][j] == 1){

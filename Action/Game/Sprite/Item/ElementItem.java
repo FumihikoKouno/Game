@@ -2,7 +2,6 @@ package Game.Sprite.Item;
 
 import Game.Sprite.Sprite;
 import Game.Sprite.Player;
-import Game.MapData.MapData;
 import Game.Common.Data;
 import Game.Common.StateData;
 import Game.Sprite.Weapon.Element;
@@ -21,7 +20,8 @@ public class ElementItem extends Sprite{
 		height = Data.CHIP_SIZE;
 	}
 	// スプライトのupdate
-	public void update(MapData mapData){
+	public void update(){
+		vx = vy = 0;
 	}
 	// プレイヤーがスプライトに触れたときの関数
 	public void touch(Sprite s, int dir, int[] dest){

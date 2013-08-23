@@ -1,7 +1,6 @@
 package Game.Sprite;
 
 import Game.Sprite.Player;
-import Game.MapData.MapData;
 import Game.Common.Data;
 
 import java.awt.Graphics;
@@ -46,7 +45,7 @@ public class FroatingStage extends Sprite{
 		}
 	}
 	// スプライトのupdate
-	public void update(MapData mapData){
+	public void update(){
 		switch(kind){
 		case UP_DOWN:
 			if(offset > scale || offset < 0){
@@ -63,10 +62,18 @@ public class FroatingStage extends Sprite{
 		}
 		switch(kind){
 		case UP_DOWN:
-			offset += vy;
+			if(dir == UP){
+				offset -= vy;
+			}else{
+				offset += vy;
+			}
 			break;
 		case LEFT_RIGHT:
-			offset += vx;
+			if(dir == LEFT){
+				offset -= vx;
+			}else{
+				offset += vx;
+			}
 			break;
 		default:
 			break;

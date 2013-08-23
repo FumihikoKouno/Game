@@ -7,7 +7,6 @@ package Game.Sprite.Enemy;
 import Game.Sprite.LifeGauge;
 import Game.Sprite.Player;
 import Game.Common.*;
-import Game.MapData.MapData;
 import Game.Sprite.*;
 import Game.Sprite.Weapon.*;
 
@@ -47,7 +46,7 @@ public class Enemy extends Sprite{
 			}
 		}
 	}
-	public void update(MapData mapData){
+	public void update(){
 		if(life <= 0){
 			end = true;
 			return;
@@ -61,8 +60,11 @@ public class Enemy extends Sprite{
 	public void mapHit(int dir, int dest){
 		switch(dir){
 		case UP:
+			vy = dest - y;
+			break;
 		case DOWN:
 			vy = dest - y;
+			land();
 			break;
 		case LEFT:
 			direction = Sprite.RIGHT;

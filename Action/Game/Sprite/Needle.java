@@ -7,7 +7,6 @@
 package Game.Sprite;
 
 import Game.Sprite.Player;
-import Game.MapData.MapData;
 import Game.Common.Data;
 import Game.Sprite.Weapon.*;
 
@@ -23,7 +22,7 @@ public class Needle extends Sprite{
 		direction = d;
 	}
 	
-	public void update(MapData mapdata){
+	public void update(){
 		vx = 0;
 		vy = 0;
 	}

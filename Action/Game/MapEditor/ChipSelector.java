@@ -63,7 +63,7 @@ class ChipSelector extends JPanel implements MouseListener, MouseMotionListener{
 		int ox = (selectedChip%CHIP_COL)*CHIP_SIZE;
 		int oy = (selectedChip/CHIP_COL)*CHIP_SIZE;
 		for(int i = 0; i < 3; i++){
-			dbg.drawRect(ox,oy,CHIP_SIZE+(i<<1),CHIP_SIZE+(i<<1));
+			dbg.drawRect(ox-i,oy-i,CHIP_SIZE+(i<<1),CHIP_SIZE+(i<<1));
 		}
 	}
 	

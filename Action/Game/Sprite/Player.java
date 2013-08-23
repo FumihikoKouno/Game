@@ -128,6 +128,7 @@ public class Player extends Sprite{
 		vx = 0; vy = 0;
 		width = 32;
 		height = 32;
+		direction = RIGHT;
 		lifeMax = 10;
 		life = 10;
 		weaponID = 0;
@@ -188,10 +189,21 @@ public class Player extends Sprite{
 	public boolean jumping(){
 		return jump;
 	}
+	
+	public void screenOut(){
+		life -= 1000;
+	}
+	
 	/**
 	 * 各フレームでのupdate用関数
 	 */
 	public void update(){
+		if(life <= 0){
+			x = StateData.mapData.getFirstX();
+			y = StateData.mapData.getFirstY();
+			life = lifeMax;
+			return;
+		}
 		landing = false;
 		/**
 		 * 無敵状態およびノックバックの処理

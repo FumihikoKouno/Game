@@ -1,7 +1,6 @@
 package Game.Sprite;
 
 import Game.Sprite.Player;
-import Game.MapData.MapData;
 import Game.Common.Data;
 
 import java.awt.Graphics;
@@ -21,7 +20,7 @@ public class AppearingChip extends Sprite{
 		height = Data.CHIP_SIZE;
 	}
 	// スプライトのupdate
-	public void update(MapData mapData){
+	public void update(){
 		vx = 0;
 		vy = 0;
 		int f = Data.frame%limit;

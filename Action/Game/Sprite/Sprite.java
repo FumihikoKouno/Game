@@ -8,7 +8,6 @@
 package Game.Sprite;
 
 import Game.Sprite.Player;
-import Game.MapData.MapData;
 import Game.Common.Data;
 import Game.Sprite.Weapon.Weapon;
 
@@ -90,6 +89,8 @@ public class Sprite{
 	public void land(){ jumpCount = 0; jump = false; }
 	public boolean isInvisible(){ return invisible; }
 	
+	public void setX(int x){ this.x = x; }
+	public void setY(int y){ this.y = y; } 
 	public int getX(){ return x; }
 	public int getY(){ return y; }
 	public int getVx(){ return vx; }
@@ -115,7 +116,7 @@ public class Sprite{
 	}
 
 	// スプライトのupdate
-	public void update(MapData mapData){}
+	public void update(){}
 	/**
 	 * スプライトのアニメーションのupdate
 	 * f フレームごとに画像が切り替わる

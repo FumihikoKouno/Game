@@ -1,7 +1,6 @@
 package Game.Sprite;
 
 import Game.Sprite.Player;
-import Game.MapData.MapData;
 import Game.Common.Data;
 
 import java.awt.Graphics;
@@ -15,7 +14,7 @@ public class LeftUpSlope extends Sprite{
 		height = Data.CHIP_SIZE;
 	}
 	// スプライトのupdate
-	public void update(MapData mapData){
+	public void update(){
 		vx = vy = 0;
 	}
 	// プレイヤーがスプライトに触れたときの関数

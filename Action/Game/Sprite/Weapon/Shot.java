@@ -5,7 +5,6 @@
 package Game.Sprite.Weapon;
 
 import Game.Common.*;
-import Game.MapData.MapData;
 import Game.Sprite.Player;
 import Game.Sprite.Sprite;
 
@@ -103,7 +102,7 @@ public class Shot extends Weapon{
 //		end = true;
 	}
 	// 武器の状態のupdate(矢は飛ぶし、剣でも何フレーム出てるかとか)
-	public void update(MapData mapData){
+	public void update(){
 		if(!enemy) move();
 	}
 	

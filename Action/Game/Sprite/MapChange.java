@@ -1,8 +1,8 @@
 package Game.Sprite;
 
 import Game.Sprite.Player;
-import Game.MapData.MapData;
 import Game.Common.Data;
+import Game.Common.StateData;
 
 import java.awt.Graphics;
 
@@ -10,7 +10,6 @@ public class MapChange extends Sprite{
 	private int newID;
 	private int px, py;
 	private boolean touched = false;
-	private Player player;
 
 	public MapChange(int newID, int px, int py, int x, int y){
 		super(x,y);
@@ -22,19 +21,15 @@ public class MapChange extends Sprite{
 		height = Data.CHIP_SIZE;
 	}
 	// スプライトのupdate
-	public void update(MapData mapData){
-		if(touched){
-			player.x = px;
-			player.y = py;
-			mapData.load(newID);
-			end = true;
-		}
+	public void update(){
+		vx=vy=0;
 	}
+	
 	// プレイヤーがスプライトに触れたときの関数
 	public void touch(Sprite s, int dir, int[] dest){
 		if(s instanceof Player){
-			player = (Player)s;
-			touched = true;
+			StateData.mapData.load(newID,px,py);
+			end = true;
 		}
 	}
 }

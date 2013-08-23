@@ -23,7 +23,7 @@ class MainPanel extends JPanel{
 	
 	public MainPanel(){
 		// mapIDと主人公の初期位置(x,y)
-		map = new Map(0,15*Data.CHIP_SIZE,20*Data.CHIP_SIZE);
+		map = new Map(0,0,28*Data.CHIP_SIZE);
 		menu = new Menu();
 		title = new Title();
 		/* keyイベントの作成 */

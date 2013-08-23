@@ -4,6 +4,7 @@ import Game.Sprite.*;
 import Game.Sprite.Item.*;
 import Game.Sprite.Enemy.*;
 import Game.Common.Data;
+import Game.Common.StateData;
 
 import java.awt.Image;
 
@@ -26,20 +27,31 @@ public class MapData{
 	public int[][] pass;
 	public int[][] data;
 	public int id;
+	
+	public int firstX;
+	public int firstY;
 	/**
 	 * コンストラクタ
 	 * mapIDのIDを持つマップデータの読み込み
 	 */
-	public MapData(int mapID){
+	public MapData(int mapID, int x, int y){
+		StateData.player = new Player(x,y);
 		id = mapID;
-		load(id);
+		load(id,x,y);
 	}
+	public int getFirstX(){return firstX;}
+	public int getFirstY(){return firstY;}
+	
 	/**
 	 * データ読み込み用関数
 	 * Map"id".dat("id"は具体的な数字)を読み込む
 	 */
-	public void load(int id){
+	public void load(int id, int newx, int newy){
 		this.id = id;
+		StateData.player.setX(newx);
+		StateData.player.setY(newy);
+		firstX = newx;
+		firstY = newy;
 		// 新たなマップに移動するのでspriteListはクリア
 		passSpriteList.clear();
 		unpassSpriteList.clear();
