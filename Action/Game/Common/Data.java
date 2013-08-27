@@ -1,5 +1,7 @@
 package Game.Common;
 
+import Game.MessageWindow;
+
 public class Data{
 	public static final byte TITLE = 0;
 	public static final byte PLAYING = 1;
@@ -22,6 +24,8 @@ public class Data{
 	public static final byte SCREEN_OUT = 32;
 	
 	public static byte gameStatus = PLAYING;
+	
+	public static MessageWindow mw;
 	
 	public static final ImageData image = new ImageData();
 	public static final SEData se = new SEData();

@@ -34,7 +34,7 @@ public class Map{
 	private boolean menuReleased;
 	// ポーズ中
 	private boolean pausing;
-
+	
 	/**
 	 * コンストラクタ
 	 * 初期設定してる
@@ -210,6 +210,12 @@ public class Map{
 	 * 壁にめり込まない方が大事など
 	 */
 	public void update(){
+//		if(Data.frame % 500 == 499) Data.mw = new MessageWindow("abcdefghijklmnopqrstuvwxyz",10,3);
+		if(Data.mw != null){
+			Data.mw.update();
+			if(Data.mw.end()) Data.mw = null;
+			return;
+		}
 		menu();
 		// pause();
 		// プレイヤーの状態更新
@@ -338,8 +344,10 @@ public class Map{
 		StateData.player.draw(g,x,y);
 		// ポーズ中の場合、画面にポーズの文字を点滅させる
 		if(pausing && (Data.frame/30)%2 == 0) g.drawString("Pause",Data.WIDTH/2, Data.HEIGHT/2);
+		
+		
+		if(Data.mw != null) Data.mw.draw(g,0,0);
 	}
-	
 	
 	
 	/**

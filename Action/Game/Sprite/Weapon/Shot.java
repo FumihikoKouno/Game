@@ -1,5 +1,5 @@
 /**
- * 武器の基盤クラス
+ * ショットクラス
  */
 
 package Game.Sprite.Weapon;
@@ -115,5 +115,7 @@ public class Shot extends Weapon{
 		super.draw(g,screenX,screenY);
 		g.setColor(Color.WHITE);
 		g.fillOval(x-screenX,y-screenY,width,height);
+		g.setColor(Color.BLACK);
+		g.drawOval(x-screenX,y-screenY,width,height);
 	}
 }

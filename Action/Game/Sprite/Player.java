@@ -17,6 +17,11 @@ public class Player extends Sprite{
 	
 	private boolean shiftReleased = true;
 	
+	private final int END_TIME = 30;
+	
+	// やられたときのライフ(やられたエフェクト用に)
+	private int endedLife;
+	
 	/**
 	 * プレイヤーのジャンプボタンが一度離されたかどうか
 	 * これがないとジャンプボタン押しっぱなしで何度もジャンプしてしまう
@@ -125,6 +130,7 @@ public class Player extends Sprite{
 	public Player(int x, int y){
 		super(x,y);
 		image = Data.image.playerImage;
+		endedLife = 1;
 		vx = 0; vy = 0;
 		width = 32;
 		height = 32;
@@ -143,9 +149,10 @@ public class Player extends Sprite{
 	public void testAtShift(){
 		if(KeyStatus.pause){
 			if(shiftReleased){
-				StateData.gotElement[1]++;
-				StateData.gotElement[2]++;
-				StateData.gotElement[3]++;
+				life -= 100;
+				StateData.gotElement[1]+=99;
+				StateData.gotElement[2]+=99;
+				StateData.gotElement[3]+=99;
 				StateData.flag.gotWeapon=3;
 				StateData.flag.gotBody=3;
 				shiftReleased = false;
@@ -191,7 +198,7 @@ public class Player extends Sprite{
 	}
 	
 	public void screenOut(){
-		life -= 1000;
+		if(life > 0) life -= 1000;
 	}
 	
 	/**
@@ -199,9 +206,7 @@ public class Player extends Sprite{
 	 */
 	public void update(){
 		if(life <= 0){
-			x = StateData.mapData.getFirstX();
-			y = StateData.mapData.getFirstY();
-			life = lifeMax;
+			dead();
 			return;
 		}
 		landing = false;
@@ -405,19 +410,56 @@ public class Player extends Sprite{
 		attackedFrame = Data.frame;
 	}
 
+	private void dead(){
+		if(endedLife > 0){
+			vx = vy = 0;
+			endedLife = life;
+		}else if(life <= endedLife-END_TIME){
+			x = StateData.mapData.getFirstX();
+			y = StateData.mapData.getFirstY();
+			life = lifeMax;
+			endedLife = 1;
+		}else{
+			life--;
+		}
+	}
+	
 	/**
 	 * 描画処理
 	 */
 	public void draw(Graphics g, int screenX, int screenY){
-		if(!invisible || Data.frame % 2 != 0){
-		    super.draw(g,screenX,screenY);
-		}
-		if(weapon != null) weapon.draw(g, screenX, screenY);
-		g.setColor(Color.WHITE);
+		if(endedLife > 0){
+			if(!invisible || Data.frame % 2 != 0){
+				super.draw(g,screenX,screenY);
+			}
+			if(weapon != null) weapon.draw(g, screenX, screenY);
+			g.setColor(Color.WHITE);
 
-		LifeGauge.draw(g, x-screenX+width/2, y-screenY, life, lifeMax);
-		g.drawString("life : " + life, 15,15);
-		g.drawString("player : " + x + ", " + y, 15, 30);
-		g.drawString("coin : " + coin, 15, 45);
+			LifeGauge.draw(g, x-screenX+width/2, y-screenY, life, lifeMax);
+			g.drawString("life : " + life, 15,15);
+			g.drawString("player : " + x + ", " + y, 15, 30);
+			g.drawString("coin : " + coin, 15, 45);
+		}else{
+			int endFrame = ((endedLife - life) << 2);
+			int dx = x - screenX;
+			int dy = y - screenY;
+			int size;
+			if(Data.frame % 8 < 4){
+				size = 8;
+				dx += 4;
+				dy += 4;
+			}else{
+				size = 16;
+			}
+			g.setColor(Color.WHITE);
+			g.fillOval(dx,dy-endFrame*3/2,size,size);
+			g.fillOval(dx-endFrame,dy-endFrame,size,size);
+			g.fillOval(dx-endFrame*3/2,dy,size,size);
+			g.fillOval(dx-endFrame,dy+endFrame,size,size);
+			g.fillOval(dx,dy+endFrame*3/2,size,size);
+			g.fillOval(dx+endFrame,dy+endFrame,size,size);
+			g.fillOval(dx+endFrame*3/2,dy,size,size);
+			g.fillOval(dx+endFrame,dy-endFrame,size,size);
+		}
 	}
 }

@@ -26,6 +26,7 @@ public class Menu{
 	private static final byte WEAPON = 1;
 	private static final byte EXIT = 2;
 	
+	private int startFrame = 0;
 	
 	private int cursorX = 0;
 	private int cursorY = 0;
@@ -143,12 +144,15 @@ public class Menu{
 		menuReleased = false;
 		cursorX = 0;
 		cursorY = 0;
+		Data.frame = startFrame;
+		startFrame = 0;
 		mode = SELECT_ALL;
 		KeyStatus.setAll(false);
 		return;
 	}
 	
 	public void update(){
+		if(startFrame == 0) startFrame = Data.frame;
 		if(!KeyStatus.menu) menuReleased = true;
 		if(menuReleased && KeyStatus.menu){
 			exit();
