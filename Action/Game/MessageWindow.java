@@ -8,27 +8,34 @@ import Game.Common.*;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 
 
 public class MessageWindow{
-	private int colSize;
-	private int rowSize;
-	private String message;
-	private int messageSize;
+	private boolean skip;
+	private String[] message;
 	private int showSize;
+	private int width;
+	private int messageSize;
 	
 	private int showFrame = 0;
 	
-	private final int MESSAGE_X_SIZE = 18;
 	private final int MESSAGE_Y_SIZE = 24;
-
+	
+	private int dir;
+	public static final int CENTER = 0;
+	public static final int LEFT = 1;
+	public static final int RIGHT = 2;
+	
 	// ï\é¶Ç∑ÇÈï∂éöóÒÇ∆â°ï∂éöêîÇ∆ècï∂éöêî
-	public MessageWindow(String s,int c, int r){
+	public MessageWindow(String[] s, int dir){
+		this.dir = dir;
 		message = s;
-		messageSize = message.length();
-		colSize = c;
-		rowSize = r+1;
+		messageSize = 0;
 		showFrame = Data.frame;
+		for(int i = 0; i < message.length; i++){
+			messageSize += message[i].length();
+		}
 	}
 	
 	// â∫å¸Ç´éOäpå`Çï`âÊÇ∑ÇÈ1,2,3Ç™éOäpå`ÇÃäeí∏ì_ÇÃç¿ïW
@@ -40,14 +47,26 @@ public class MessageWindow{
 	}
 	
 	public void update(){
-		if((Data.frame&1)==0) return;
-		showSize++;
-		if(showSize > messageSize) showSize = messageSize;
+		if((Data.frame&1)==0){
+			showSize++;
+			if(showSize > messageSize) showSize = messageSize;
+		}
+		if(KeyStatus.attack){
+			if(showSize < messageSize){
+				skip = true;
+				showSize = messageSize;
+			}
+			if(skip){
+				skip = true;
+			}
+		}else{
+			skip = false;
+		}
 	}
 	
 	public boolean end(){
 		if(showSize == messageSize){
-			if(KeyStatus.attack){
+			if(KeyStatus.attack && !skip){
 				Data.frame = showFrame;
 				return true;
 			}
@@ -56,21 +75,33 @@ public class MessageWindow{
 	}
 	
 	// ï`âÊ
-	public void draw(Graphics g, int x, int y){
+	public void draw(Graphics g){
+		int width = 0;
+		int height = (message.length+1)*MESSAGE_Y_SIZE+3;
+		FontMetrics fm = g.getFontMetrics();
+		for(int i = 0; i < message.length; i++){
+			int tmp = fm.stringWidth(message[i]);
+			if(tmp > width){ width = tmp; }
+		}
+		width += 12;
+		
+		int x = (Data.WIDTH-width)/2;
+		int y = (Data.HEIGHT-height)/2;
+		
 		g.setColor(Color.WHITE);
-		g.fillRect(x,y,colSize*MESSAGE_X_SIZE+12,rowSize*MESSAGE_Y_SIZE+12);
+		g.fillRect(x,y,width+12,height+12);
 		g.setColor(Color.BLUE);
-		g.fillRect(x+2,y+2,colSize*MESSAGE_X_SIZE+8,rowSize*MESSAGE_Y_SIZE+8);
+		g.fillRect(x+2,y+2,width+8,height+8);
 		g.setColor(Color.WHITE);
-		g.fillRect(x+4,y+4,colSize*MESSAGE_X_SIZE+4,rowSize*MESSAGE_Y_SIZE+4);
+		g.fillRect(x+4,y+4,width+4,height+4);
 		g.setColor(Color.BLACK);
-		g.fillRect(x+6,y+6,colSize*MESSAGE_X_SIZE,rowSize*MESSAGE_Y_SIZE);
+		g.fillRect(x+6,y+6,width,height);
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("ÇlÇr ÇoÉSÉVÉbÉN",0, 18));
 		
 		if(showSize == messageSize){
-			int x1 = x+colSize*MESSAGE_X_SIZE-12;
-			int y1 = y+rowSize*MESSAGE_Y_SIZE-12;
+			int x1 = x+width-12;
+			int y1 = y+height-12;
 			int x2 = x1+12;
 			int y2 = y1;
 			int x3 = x1+6;
@@ -87,17 +118,31 @@ public class MessageWindow{
 		int end = 0;
 		int drawX;
 		int drawY;
+		int tmpCharSize = showSize;
 		
-		for(int i = 0; i < rowSize; i++){
-			start = i * colSize;
-			end = (i+1) * colSize;
-			drawX = (x+16);
+		for(int i = 0; i < message.length; i++){
+			int tmpWidth = fm.stringWidth(message[i]);
+			switch(dir){
+			case CENTER:
+				drawX = (Data.WIDTH-tmpWidth)/2+6;
+				break;
+			case LEFT:
+				drawX = x + 12;
+				break;
+			case RIGHT:
+				drawX = x + width - tmpWidth;
+				break;
+			default:
+				drawX = (Data.WIDTH-tmpWidth)/2+6;
+				break;
+			}
 			drawY = (y+i*MESSAGE_Y_SIZE+28);
-			if(start > showSize) break;
-			if(end > showSize){
-				g.drawString(message.substring(i*colSize,showSize),drawX,drawY);
-			}else{
-				g.drawString(message.substring(i*colSize,(i+1)*colSize),drawX,drawY);
+			if(message[i].length() < tmpCharSize){
+				g.drawString(message[i],drawX,drawY);
+				tmpCharSize -= message[i].length();
+			}else if(tmpCharSize > 0){
+				g.drawString(message[i].substring(0,tmpCharSize),drawX,drawY);
+				break;
 			}
 		}
 	}

@@ -32,4 +32,5 @@ public class ImageData{
 	public final Image weaponIconImage = new ImageIcon(getClass().getResource("../Image/Icon/weapon.gif")).getImage();
 	public final Image bodyIconImage = new ImageIcon(getClass().getResource("../Image/Icon/body.gif")).getImage();
 	public final Image needleImage = new ImageIcon(getClass().getResource("../Image/Sprite/needle.gif")).getImage();
+	public final Image signboardImage = new ImageIcon(getClass().getResource("../Image/Sprite/signboard.gif")).getImage();
 }

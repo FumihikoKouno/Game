@@ -28,6 +28,8 @@ public class MapData{
 	public int[][] data;
 	public int id;
 	
+	private boolean fit;
+	
 	public int firstX;
 	public int firstY;
 	/**
@@ -42,11 +44,15 @@ public class MapData{
 	public int getFirstX(){return firstX;}
 	public int getFirstY(){return firstY;}
 	
+	public boolean getFit(){ return fit; }
+	public void setFit(boolean b){ fit = b; }
+	
 	/**
 	 * データ読み込み用関数
 	 * Map"id".dat("id"は具体的な数字)を読み込む
 	 */
 	public void load(int id, int newx, int newy){
+		fit = false;
 		this.id = id;
 		StateData.player.setX(newx);
 		StateData.player.setY(newy);
@@ -167,6 +173,19 @@ public class MapData{
 					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
 					int d = Integer.parseInt(tmp[3]);
 					unpassSpriteList.add(new Needle(x,y,d));
+				}
+				if(tmp[0].equals("Signboard")){
+					int size = tmp.length;
+					String[] message = new String[size-4];
+					int i;
+					for(i = 0; i < size-4; i++){
+						message[i] = tmp[i+1];
+					}
+					i++;
+					int x = Integer.parseInt(tmp[i++]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[i++]) * Data.CHIP_SIZE;
+					int dir = Integer.parseInt(tmp[i]);
+					passSpriteList.add(new Signboard(message,x,y,dir));
 				}
 			}
 		}catch(FileNotFoundException e){

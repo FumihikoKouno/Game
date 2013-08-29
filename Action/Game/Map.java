@@ -35,6 +35,9 @@ public class Map{
 	// ポーズ中
 	private boolean pausing;
 	
+	// 最初に自動スクロールしたかどうか
+	private boolean firstScroll;
+	
 	/**
 	 * コンストラクタ
 	 * 初期設定してる
@@ -62,6 +65,16 @@ public class Map{
 		if(ny > StateData.mapData.row*Data.CHIP_SIZE-Data.HEIGHT) ny = StateData.mapData.row*Data.CHIP_SIZE-Data.HEIGHT;
 		x = nx;
 		y = ny;
+	}
+	
+	public void autoScroll(int x, int y){
+		if(!StateData.mapData.getFit()){
+			scroll();
+			StateData.mapData.setFit(true);
+			return;
+		}
+		this.x += x;
+		this.y += y;
 	}
 	
 	/**
@@ -293,8 +306,10 @@ public class Map{
 		 * 主人公の移動と、その移動先に合わせた画面スクロール
 		 */
 		scroll();
+//		autoScroll(1,0);
 		StateData.player.move();
-		if(StateData.player.getX() < x - Data.SCREEN_OUT || StateData.player.getX()+StateData.player.getWidth() > x + Data.WIDTH + Data.SCREEN_OUT || StateData.player.getY() < y - Data.SCREEN_OUT || StateData.player.getY()+StateData.player.getHeight() > y + Data.WIDTH + Data.SCREEN_OUT){
+//		if(StateData.player.getX() < x - Data.SCREEN_OUT || StateData.player.getX()+StateData.player.getWidth() > x + Data.WIDTH + Data.SCREEN_OUT || StateData.player.getY() < y - Data.SCREEN_OUT || StateData.player.getY()+StateData.player.getHeight() > y + Data.WIDTH + Data.SCREEN_OUT){
+		if(StateData.player.getY()+StateData.player.getHeight() > y + Data.WIDTH + Data.SCREEN_OUT){
 			StateData.player.screenOut();
 		}
 	}
@@ -346,7 +361,7 @@ public class Map{
 		if(pausing && (Data.frame/30)%2 == 0) g.drawString("Pause",Data.WIDTH/2, Data.HEIGHT/2);
 		
 		
-		if(Data.mw != null) Data.mw.draw(g,0,0);
+		if(Data.mw != null) Data.mw.draw(g);
 	}
 	
 	

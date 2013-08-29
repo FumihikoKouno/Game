@@ -149,7 +149,6 @@ public class Player extends Sprite{
 	public void testAtShift(){
 		if(KeyStatus.pause){
 			if(shiftReleased){
-				life -= 100;
 				StateData.gotElement[1]+=99;
 				StateData.gotElement[2]+=99;
 				StateData.gotElement[3]+=99;
@@ -417,6 +416,7 @@ public class Player extends Sprite{
 		}else if(life <= endedLife-END_TIME){
 			x = StateData.mapData.getFirstX();
 			y = StateData.mapData.getFirstY();
+			StateData.mapData.setFit(false);
 			life = lifeMax;
 			endedLife = 1;
 		}else{
