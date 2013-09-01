@@ -54,8 +54,12 @@ public class Sprite{
 	 * ダメージくらって点滅しているあの状態を表わす
 	 */
 	protected boolean invisible = false;
+	
+	// スプライトの画像の左上座標
+	protected int IMAGE_X;
+	protected int IMAGE_Y;
 	// スプライトのイメージ
-	protected Image image;
+	protected Image image = Data.image.spriteImage;
 	/**
 	 * こっからメソッド
 	 */
@@ -141,8 +145,8 @@ public class Sprite{
 	public void attacked(Sprite sprite){}
 	// 描画処理
 	public void draw(Graphics g, int screenX, int screenY){
-		int ix = animationStatus * width;
-		int iy = direction * height;
+		int ix = IMAGE_X+animationStatus * width;
+		int iy = IMAGE_Y+direction * height;
 		g.drawImage(image,
 			x-screenX, y-screenY, x-screenX+width, y-screenY+height,
 			ix, iy, ix+width, iy+height,

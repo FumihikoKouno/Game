@@ -20,8 +20,6 @@ public class Signboard extends Sprite{
 	
 	private int just;
 	
-	private static int COL_SIZE = 30;
-	
 	/**
 	 * コンストラクタ
 	 * 座標を決めている
@@ -30,6 +28,8 @@ public class Signboard extends Sprite{
 		this.just = just;
 		message = s;
 		size = s.length;
+		IMAGE_X = 64;
+		IMAGE_Y = 0;
 		width = 32;
 		height = 32;
 		this.x = x;
@@ -49,6 +49,7 @@ public class Signboard extends Sprite{
 	}
 	
 	// 描画処理
+	/*
 	public void draw(Graphics g, int screenX, int screenY){
 		g.drawImage(Data.image.signboardImage,
 			x-screenX, y-screenY, x-screenX+width, y-screenY+height,
@@ -56,4 +57,5 @@ public class Signboard extends Sprite{
 			null
 		);
 	}
+	*/
 }

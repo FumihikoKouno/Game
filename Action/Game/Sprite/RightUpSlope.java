@@ -9,7 +9,8 @@ public class RightUpSlope extends Sprite{
 
 	public RightUpSlope(int x, int y){
 		super(x,y);
-		image = Data.image.rightUpSlopeImage;
+		IMAGE_X = 32;
+		IMAGE_Y = 45;
 		width = Data.CHIP_SIZE;
 		height = Data.CHIP_SIZE;
 	}

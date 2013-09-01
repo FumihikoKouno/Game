@@ -11,7 +11,8 @@ public class Coin extends Sprite{
 
 	public Coin(int x, int y){
 		super(x,y);
-		image = Data.image.coinImage;
+		IMAGE_X = 0;
+		IMAGE_Y = 0;
 		width = 32;
 		height = 32;
 	}

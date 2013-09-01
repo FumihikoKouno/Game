@@ -90,7 +90,9 @@ public class Menu{
 					if((StateData.flag.gotWeapon & (1<<cursorX)) > 0) moved = true;
 					break;
 				case SELECT_ELEMENT:
-					if(StateData.gotElement[cursorX] > 0 || cursorX == 0) moved = true;
+					if((StateData.flag.gotElement & (1<<cursorX)) > 0){
+						if(cursorX == 0 || StateData.gotElement[cursorX] > 0) moved = true;
+					}
 					break;
 				case SELECT_BODY:
 					if((StateData.flag.gotBody & (1<<cursorX)) > 0) moved = true;
@@ -119,7 +121,8 @@ public class Menu{
 					break;
 				case SELECT_WEAPON:
 					mode = SELECT_ELEMENT;
-					StateData.player.weaponID = cursorX%2;
+					StateData.player.weaponID = cursorX;
+					mode = SELECT_ELEMENT;
 					cursorX = StateData.player.element;
 					break;
 				case SELECT_ELEMENT:
@@ -277,6 +280,9 @@ public class Menu{
 		case 3:
 			cx = 413;
 			break;
+		default:
+			cx = Integer.MIN_VALUE;
+			break;
 		}
 		g.fillRect(cx,cy,cw,ch);
 		// element
@@ -295,6 +301,9 @@ public class Menu{
 			break;
 		case 3:
 			cx = 413;
+			break;
+		default:
+			cx = Integer.MIN_VALUE;
 			break;
 		}
 		g.fillRect(cx,cy,cw,ch);
@@ -322,12 +331,13 @@ public class Menu{
 	public void draw(Graphics g){
 		g.drawImage(Data.image.menuImage,0,0,null);
 		for(int i = 0; i < Data.ELEMENT_NUM; i++){
+			if((StateData.flag.gotElement & (1 << i)) == 0) continue;
 			g.drawImage(Data.image.elementIconImage,
 				ELEMENT_X+i*ELEMENT_X_DIFF, ELEMENT_Y,
 				ELEMENT_X+i*ELEMENT_X_DIFF+Data.CHIP_SIZE, ELEMENT_Y+Data.CHIP_SIZE,
 				i*Data.CHIP_SIZE,0,(i+1)*Data.CHIP_SIZE,Data.CHIP_SIZE,null);
-			if(i>0){
-//				g.setFont(new Font("Dialog",Font.BOLD,18));
+			if((StateData.flag.gotElement & (1<<i)) > 0 && i > 0 && StateData.gotElement[i] > 0){
+				g.setFont(new Font("dialog",Font.PLAIN,12));
 				g.drawString("Å~" + StateData.gotElement[i],ELEMENT_X+i*ELEMENT_X_DIFF+Data.CHIP_SIZE, ELEMENT_Y+Data.CHIP_SIZE+5);
 			}
 		}

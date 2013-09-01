@@ -76,6 +76,7 @@ public class MessageWindow{
 	
 	// •`‰æ
 	public void draw(Graphics g){
+		g.setFont(new Font("serif", Font.PLAIN, 18));
 		int width = 0;
 		int height = (message.length+1)*MESSAGE_Y_SIZE+3;
 		FontMetrics fm = g.getFontMetrics();
@@ -97,7 +98,7 @@ public class MessageWindow{
 		g.setColor(Color.BLACK);
 		g.fillRect(x+6,y+6,width,height);
 		g.setColor(Color.WHITE);
-		g.setFont(new Font("‚l‚r ‚oƒSƒVƒbƒN",0, 18));
+//		g.setFont(new Font("‚l‚r ‚oƒSƒVƒbƒN",0, 18));
 		
 		if(showSize == messageSize){
 			int x1 = x+width-12;

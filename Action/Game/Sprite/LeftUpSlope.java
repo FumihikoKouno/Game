@@ -9,7 +9,8 @@ public class LeftUpSlope extends Sprite{
 
 	public LeftUpSlope(int x, int y){
 		super(x,y);
-		image = Data.image.leftUpSlopeImage;
+		IMAGE_X = 0;
+		IMAGE_Y = 45;
 		width = Data.CHIP_SIZE;
 		height = Data.CHIP_SIZE;
 	}

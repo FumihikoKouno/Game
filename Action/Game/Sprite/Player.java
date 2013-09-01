@@ -10,6 +10,7 @@ import Game.Body.*;
 
 import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Font;
 
 public class Player extends Sprite{
 	// このフレーム中に何かに着地したらtrue
@@ -137,7 +138,6 @@ public class Player extends Sprite{
 		direction = RIGHT;
 		lifeMax = 10;
 		life = 10;
-		weaponID = 0;
 		element = 0;
 		equipBody(0);
 	}
@@ -149,12 +149,16 @@ public class Player extends Sprite{
 	public void testAtShift(){
 		if(KeyStatus.pause){
 			if(shiftReleased){
-				StateData.gotElement[1]+=99;
-				StateData.gotElement[2]+=99;
-				StateData.gotElement[3]+=99;
+				StateData.gotElement[1]=5;
+				StateData.gotElement[2]=5;
+				StateData.gotElement[3]=5;
+				lifeMax += 5;
+				life += 5;
 				StateData.flag.gotWeapon=3;
+				StateData.flag.gotElement=7;
 				StateData.flag.gotBody=3;
 				shiftReleased = false;
+				StateData.mapData.passSpriteList.add(new BrokenChip(x,y,Weapon.SWORD,Element.NONE));
 			}
 		}else{
 			shiftReleased = true;
@@ -350,6 +354,8 @@ public class Player extends Sprite{
 		case Weapon.ARROW:
 			weapon = new Arrow();
 			break;
+		default:
+			return;
 		}
 		switch(direction){
 		case UP:
@@ -367,9 +373,11 @@ public class Player extends Sprite{
 		}
 		weapon.element = element;
 		weapon.appear();
-		StateData.gotElement[element]--;
-		if(StateData.gotElement[element] == 0){
-			element = Element.NONE;
+		if(element > 0){
+			StateData.gotElement[element]--;
+			if(StateData.gotElement[element] == 0){
+				element = Element.NONE;
+			}
 		}
 	}
 	
@@ -428,17 +436,29 @@ public class Player extends Sprite{
 	 * 描画処理
 	 */
 	public void draw(Graphics g, int screenX, int screenY){
+		g.setColor(Color.BLACK);
+		g.fillRect(5,5,(Data.CHIP_SIZE<<1)+10,Data.CHIP_SIZE+10);
+		
+		g.setColor(Color.WHITE);
+		g.drawRect(5,5,(Data.CHIP_SIZE<<1)+10,Data.CHIP_SIZE+10);
+		
+		g.drawRect(10,10,Data.CHIP_SIZE,Data.CHIP_SIZE);
+		g.drawImage(Data.image.weaponIconImage,
+			10,10,10+Data.CHIP_SIZE,10+Data.CHIP_SIZE,
+			(weaponID<<Data.CHIP_BIT),0,(weaponID<<Data.CHIP_BIT)+Data.CHIP_SIZE,Data.CHIP_SIZE,
+			null);
+		
+		g.drawRect(10+Data.CHIP_SIZE,10,Data.CHIP_SIZE,Data.CHIP_SIZE);
+		g.drawImage(Data.image.elementIconImage,
+			10+Data.CHIP_SIZE,10,10+(Data.CHIP_SIZE<<1),10+Data.CHIP_SIZE,
+			(element<<Data.CHIP_BIT),0,(element<<Data.CHIP_BIT)+Data.CHIP_SIZE,Data.CHIP_SIZE,
+			null);
+		
 		if(endedLife > 0){
 			if(!invisible || Data.frame % 2 != 0){
 				super.draw(g,screenX,screenY);
 			}
 			if(weapon != null) weapon.draw(g, screenX, screenY);
-			g.setColor(Color.WHITE);
-
-			LifeGauge.draw(g, x-screenX+width/2, y-screenY, life, lifeMax);
-			g.drawString("life : " + life, 15,15);
-			g.drawString("player : " + x + ", " + y, 15, 30);
-			g.drawString("coin : " + coin, 15, 45);
 		}else{
 			int endFrame = ((endedLife - life) << 2);
 			int dx = x - screenX;
@@ -461,5 +481,18 @@ public class Player extends Sprite{
 			g.fillOval(dx+endFrame*3/2,dy,size,size);
 			g.fillOval(dx+endFrame,dy-endFrame,size,size);
 		}
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("dialog", Font.BOLD, 10));
+		g.drawString("Player",5,Data.HEIGHT-20);
+// ライフゲージをプレイヤーの上に表示する場合
+//		LifeGauge.draw(g, x-screenX+width/2, y-screenY, life, lifeMax);
+		LifeGauge.draw(g, lifeMax+15, Data.HEIGHT, life, lifeMax);
+		
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("dialog", Font.PLAIN, 12));
+		
+		g.drawString("life : " + life, 10,60);
+		g.drawString("player : " + x + ", " + y, 10, 75);
+		g.drawString("coin : " + coin, 10, 90);
 	}
 }

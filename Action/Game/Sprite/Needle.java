@@ -16,7 +16,8 @@ import java.awt.Image;
 public class Needle extends Sprite{
 	public Needle(int x, int y, int d){
 		super(x,y);
-		image = Data.image.needleImage;
+		IMAGE_X = 128;
+		IMAGE_Y = 0;
 		width = Data.CHIP_SIZE;
 		height = Data.CHIP_SIZE;
 		direction = d;

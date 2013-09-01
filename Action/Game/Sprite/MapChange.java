@@ -13,7 +13,8 @@ public class MapChange extends Sprite{
 
 	public MapChange(int newID, int px, int py, int x, int y){
 		super(x,y);
-		image = Data.image.coinImage;
+		IMAGE_X = 0;
+		IMAGE_Y = 0;
 		this.newID = newID;
 		this.px = px;
 		this.py = py;

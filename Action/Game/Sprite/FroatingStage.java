@@ -18,7 +18,8 @@ public class FroatingStage extends Sprite{
 		this.kind = kind;
 		this.scale = scale;
 		this.dir = dir;
-		image = Data.image.froatingStageImage;
+		IMAGE_X = 0;
+		IMAGE_Y = 32;
 		width = 40;
 		height = 13;
 		switch(kind){
@@ -46,6 +47,7 @@ public class FroatingStage extends Sprite{
 	}
 	// スプライトのupdate
 	public void update(){
+		animationUpdate(15);
 		switch(kind){
 		case UP_DOWN:
 			if(offset > scale || offset < 0){
@@ -104,6 +106,7 @@ public class FroatingStage extends Sprite{
 	}
 	
 	// 描画処理
+	/*
 	public void draw(Graphics g, int screenX, int screenY){
 		int ix = 0;
 		int iy = 0;
@@ -116,4 +119,5 @@ public class FroatingStage extends Sprite{
 			null
 		);
 	}
+	*/
 }

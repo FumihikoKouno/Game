@@ -61,8 +61,8 @@ public class Map{
 		int ny = npy - Data.HEIGHT/2;
 		if(nx < 0) nx = 0;
 		if(ny < 0) ny = 0;
-		if(nx > StateData.mapData.col*Data.CHIP_SIZE-Data.WIDTH) nx = StateData.mapData.col*Data.CHIP_SIZE-Data.WIDTH;
-		if(ny > StateData.mapData.row*Data.CHIP_SIZE-Data.HEIGHT) ny = StateData.mapData.row*Data.CHIP_SIZE-Data.HEIGHT;
+		if(nx > (StateData.mapData.col<<Data.CHIP_BIT)-Data.WIDTH) nx = (StateData.mapData.col<<Data.CHIP_BIT)-Data.WIDTH;
+		if(ny > (StateData.mapData.row<<Data.CHIP_BIT)-Data.HEIGHT) ny = (StateData.mapData.row<<Data.CHIP_BIT)-Data.HEIGHT;
 		x = nx;
 		y = ny;
 	}
@@ -326,22 +326,22 @@ public class Map{
 		/* ”wŒi•`‰æ */
 		g.drawImage(Data.image.backgroundImage,0,0,null);
 		/* ƒ}ƒbƒv‚Ì•`‰æŠJŽn */
-		int row = Data.HEIGHT / Data.CHIP_SIZE;
-		int col = Data.WIDTH / Data.CHIP_SIZE;
+		int row = (Data.HEIGHT >> Data.CHIP_BIT);
+		int col = (Data.WIDTH >> Data.CHIP_BIT);
 		for(int i = 0; i <= row; i++){
 			for(int j = 0; j <= col; j++){ 
-				int chipX = j + x / Data.CHIP_SIZE;
+				int chipX = j + (x >> Data.CHIP_BIT);
 				if(chipX < 0) chipX = 0;
 				if(chipX >= StateData.mapData.col) chipX = StateData.mapData.col-1;
-				int chipY = i + y / Data.CHIP_SIZE;
+				int chipY = i + (y >> Data.CHIP_BIT);
 				if(chipY < 0) chipY = 0;
 				if(chipY >= StateData.mapData.row) chipY = StateData.mapData.row-1;
 				if(StateData.mapData.data[chipY][chipX] == 0) continue;
-				int imageX = (StateData.mapData.data[chipY][chipX] % 16) * Data.CHIP_SIZE;
-				int imageY = (StateData.mapData.data[chipY][chipX] / 16) * Data.CHIP_SIZE;
+				int imageX = ((StateData.mapData.data[chipY][chipX] % 16) << Data.CHIP_BIT);
+				int imageY = ((StateData.mapData.data[chipY][chipX] / 16) << Data.CHIP_BIT);
 				g.drawImage(Data.image.mapImage,
-					j * Data.CHIP_SIZE - (x%Data.CHIP_SIZE), i * Data.CHIP_SIZE -(y%Data.CHIP_SIZE), 
-					j * Data.CHIP_SIZE -(x%Data.CHIP_SIZE)+Data.CHIP_SIZE, i * Data.CHIP_SIZE -(y%Data.CHIP_SIZE)+Data.CHIP_SIZE,
+					(j << Data.CHIP_BIT) - (x%Data.CHIP_SIZE), (i << Data.CHIP_BIT) -(y%Data.CHIP_SIZE), 
+					(j << Data.CHIP_BIT) -(x%Data.CHIP_SIZE)+Data.CHIP_SIZE, (i << Data.CHIP_BIT) -(y%Data.CHIP_SIZE)+Data.CHIP_SIZE,
 					imageX, imageY, imageX + Data.CHIP_SIZE, imageY + Data.CHIP_SIZE,
 					null
 				);
@@ -533,19 +533,22 @@ public class Map{
 		int uy = s.getY()+Data.CD_DIFF;
 		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF;
 		int vy = s.getVy();
-		int fromX = lx/Data.CHIP_SIZE;
-		int toX = rx/Data.CHIP_SIZE;
-		int fromY = (uy+vy)/Data.CHIP_SIZE;
-		int toY = dy/Data.CHIP_SIZE;
+		int fromX = (lx >> Data.CHIP_BIT);
+		int toX = (rx >> Data.CHIP_BIT);
+		int fromY = ((uy+vy) >> Data.CHIP_BIT);
+		int toY = (dy >> Data.CHIP_BIT);
 		for(int i = toY; i >= fromY; i--){
+			if(i<0){
+//				return -Data.CD_DIFF;
+				return Integer.MIN_VALUE;
+			}
 			for(int j = fromX; j <= toX; j++){
-				if(j<0||j>=StateData.mapData.col||i<0||i>=StateData.mapData.row) continue;
+				if(j<0||j>=StateData.mapData.col||i>=StateData.mapData.row) continue;
 				if(StateData.mapData.pass[i][j] == 1){
-					return (i+1)*Data.CHIP_SIZE-Data.CD_DIFF;
+					return ((i+1) << Data.CHIP_BIT)-Data.CD_DIFF;
 				}
 			}
 		}
-		if(uy+vy < 0) return -Data.CD_DIFF;
 		return Integer.MIN_VALUE;
 	}
 	public int mapHitDown(Sprite s){
@@ -554,19 +557,19 @@ public class Map{
 		int uy = s.getY()+Data.CD_DIFF;
 		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF;
 		int vy = s.getVy();
-		int fromX = lx/Data.CHIP_SIZE;
-		int toX = rx/Data.CHIP_SIZE;
-		int fromY = uy/Data.CHIP_SIZE;
-		int toY = (dy+vy)/Data.CHIP_SIZE;
+		int fromX = (lx >> Data.CHIP_BIT);
+		int toX = (rx >> Data.CHIP_BIT);
+		int fromY = (uy >> Data.CHIP_BIT);
+		int toY = ((dy+vy) >> Data.CHIP_BIT);
 		for(int i = fromY; i <= toY; i++){
 			if(i >= StateData.mapData.row){
-//				return StateData.mapData.row*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
+				//				return (StateData.mapData.row<<Data.CHIP_BIT)-s.getHeight()+Data.CD_DIFF;
 				return Integer.MIN_VALUE;
 			}
 			for(int j = fromX; j <= toX; j++){
 				if(j<0||j>=StateData.mapData.col||i<0) continue;
 				if(StateData.mapData.pass[i][j] == 1){
-					return i*Data.CHIP_SIZE-s.getHeight()+Data.CD_DIFF;
+					return (i << Data.CHIP_BIT)-s.getHeight()+Data.CD_DIFF;
 				}
 			}
 		}
@@ -579,19 +582,19 @@ public class Map{
 		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
 		int uy = s.getY()+Data.CD_DIFF+vy;
 		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF+vy;
-		int fromX = (lx+vx)/Data.CHIP_SIZE;
-		int toX = rx/Data.CHIP_SIZE;
-		int fromY = uy/Data.CHIP_SIZE;
-		int toY = dy/Data.CHIP_SIZE;
+		int fromX = ((lx+vx) >> Data.CHIP_BIT);
+		int toX = (rx >> Data.CHIP_BIT);
+		int fromY = (uy >> Data.CHIP_BIT);
+		int toY = (dy >> Data.CHIP_BIT);
 		for(int i = toX; i >= fromX; i--){
+			if(i<0) return -Data.CD_DIFF;
 			for(int j = fromY; j <= toY; j++){
-				if(i<0||i>=StateData.mapData.col||j<0||j>=StateData.mapData.row) continue;
+				if(i>=StateData.mapData.col||j<0||j>=StateData.mapData.row) continue;
 				if(StateData.mapData.pass[j][i] == 1){
-					return (i+1)*Data.CHIP_SIZE-Data.CD_DIFF;
+					return ((i+1)<<Data.CHIP_BIT)-Data.CD_DIFF;
 				}
 			}
 		}
-		if(lx+vx < 0) return -Data.CD_DIFF;
 		return Integer.MIN_VALUE;
 	}
 	public int mapHitRight(Sprite s){
@@ -601,16 +604,16 @@ public class Map{
 		int rx = s.getX()+s.getWidth()-1-Data.CD_DIFF;
 		int uy = s.getY()+Data.CD_DIFF+vy;
 		int dy = s.getY()+s.getHeight()-1-Data.CD_DIFF+vy;
-		int fromX = lx/Data.CHIP_SIZE;
-		int toX = (rx+vx)/Data.CHIP_SIZE;
-		int fromY = uy/Data.CHIP_SIZE;
-		int toY = dy/Data.CHIP_SIZE;
+		int fromX = (lx >> Data.CHIP_BIT);
+		int toX = ((rx+vx) >> Data.CHIP_BIT);
+		int fromY = (uy >> Data.CHIP_BIT);
+		int toY = (dy >> Data.CHIP_BIT);
 		for(int i = fromX; i <= toX; i++){
-			if(i >= StateData.mapData.col) return StateData.mapData.col*Data.CHIP_SIZE-s.getWidth()+Data.CD_DIFF;
+			if(i >= StateData.mapData.col) return (StateData.mapData.col<<Data.CHIP_BIT)-s.getWidth()+Data.CD_DIFF;
 			for(int j = fromY; j <= toY; j++){
 				if(i<0||j<0||j>=StateData.mapData.row) continue;
 				if(StateData.mapData.pass[j][i] == 1){
-					return i*Data.CHIP_SIZE-s.getWidth()+Data.CD_DIFF;
+					return (i<<Data.CHIP_BIT)-s.getWidth()+Data.CD_DIFF;
 				}
 			}
 		}

@@ -187,6 +187,12 @@ public class MapData{
 					int dir = Integer.parseInt(tmp[i]);
 					passSpriteList.add(new Signboard(message,x,y,dir));
 				}
+				if(tmp[0].equals("TreasureBox")){
+					int x = Integer.parseInt(tmp[1]) * Data.CHIP_SIZE;
+					int y = Integer.parseInt(tmp[2]) * Data.CHIP_SIZE;
+					int kind = Integer.parseInt(tmp[3]);
+					passSpriteList.add(new TreasureBox(x,y,kind));
+				}
 			}
 		}catch(FileNotFoundException e){
 			e.printStackTrace();

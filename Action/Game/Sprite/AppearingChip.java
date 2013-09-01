@@ -12,10 +12,11 @@ public class AppearingChip extends Sprite{
 	public int end;
 	public AppearingChip(int x, int y, int start, int end, int limit){
 		super(x,y);
+		IMAGE_X = 96;
+		IMAGE_Y = 0;
 		this.start = start;
 		this.end = end;
 		this.limit = limit;
-		image = Data.image.appearingChipImage;
 		width = Data.CHIP_SIZE;
 		height = Data.CHIP_SIZE;
 	}
@@ -58,6 +59,8 @@ public class AppearingChip extends Sprite{
 	// •`‰æˆ—
 	public void draw(Graphics g, int screenX, int screenY){
 		if(!appear) return;
+		super.draw(g,screenX,screenY);
+		/*
 		int ix = 0;
 		int iy = 0;
 		g.drawImage(image,
@@ -65,5 +68,6 @@ public class AppearingChip extends Sprite{
 			ix, iy, ix+width, iy+height,
 			null
 		);
+		*/
 	}
 }

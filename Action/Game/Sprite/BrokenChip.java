@@ -20,7 +20,8 @@ public class BrokenChip extends Sprite{
 	private int life;
 	public BrokenChip(int x, int y, int weapon, int element){
 		super(x,y);
-		image = Data.image.brokenChipImage;
+		IMAGE_X = 0;
+		IMAGE_Y = 77;
 		life = 1;
 		width = Data.CHIP_SIZE;
 		height = Data.CHIP_SIZE;
@@ -99,8 +100,8 @@ public class BrokenChip extends Sprite{
 			if(((weapon>>i)&1)>0 && w<0) w = i;
 			if(((element>>i)&1)>0 && e<0) e = i;
 		}
-		int ix = width*w;
-		int iy = height*e;
+		int ix = IMAGE_X+width*w;
+		int iy = IMAGE_Y+height*e;
 		g.drawImage(image,
 			x-screenX, y-screenY, x-screenX+width, y-screenY+height,
 			ix, iy, ix+width, iy+height,
