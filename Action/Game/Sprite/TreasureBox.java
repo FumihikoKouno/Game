@@ -1,5 +1,5 @@
 /**
- * 看板のクラス
+ * 宝箱のクラス
  */
 
 package Game.Sprite;
@@ -69,18 +69,44 @@ public class TreasureBox extends Sprite{
 	}
 
 	// スプライトのupdate
-	public void update(){}
+	public void update(){
+		boolean opened = false;
+		switch(kind){
+		case SWORD:
+			opened = ((StateData.flag.gotWeapon & 1) > 0);
+			break;
+		case ARROW:
+			opened = ((StateData.flag.gotWeapon & 2) > 0);
+			break;
+		case FIRE:
+			break;
+		case WATER:
+			break;
+		case THUNDER:
+			break;
+		default:
+			break;
+		}
+		if(opened){
+			IMAGE_X = 192;
+			IMAGE_Y = 0;
+		}else{
+			IMAGE_X = 160;
+			IMAGE_Y = 0;
+		}
+	}
 	
 	// プレイヤーがスプライトに触れたときの関数
 	public void touch(Sprite s, int dir, int[] dest){
 		if((dir & (1 << HIT_DIRECT)) > 0){
 			if(KeyStatus.up){
-				Data.mw = new MessageWindow(message,MessageWindow.CENTER);
 				switch(kind){
 				case SWORD:
+					if((StateData.flag.gotWeapon & 1) > 0) return;
 					StateData.flag.gotWeapon |= 1;
 					break;
 				case ARROW:
+					if((StateData.flag.gotWeapon & 2) > 0) return;
 					StateData.flag.gotWeapon |= 2;
 					break;
 				case FIRE:
@@ -92,6 +118,7 @@ public class TreasureBox extends Sprite{
 				default:
 					break;
 				}
+				Data.mw = new MessageWindow(message,MessageWindow.CENTER);
 			}
 		}
 	}
