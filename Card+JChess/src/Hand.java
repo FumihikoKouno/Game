@@ -1,8 +1,12 @@
 import java.awt.FlowLayout;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BoxLayout;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
+import Card.Card;
 import Common.Data;
 
 
@@ -41,4 +45,16 @@ public class Hand extends JPanel{
 			add(boxes[i]);
 		}
 	}
+
+	public void clickHand(MouseEvent e){
+		int selectingPoint = 0;
+		Card selectingCard = boxes[selectingPoint].getCard();
+		if(selectingCard==null) return;
+		JPopupMenu popup = new JPopupMenu();
+		int summonCost = selectingCard.getSummonCost();
+		JMenuItem summon = new JMenuItem("Attack : Cost"+summonCost);
+		if(summonCost!=0) popup.add(summon);
+		popup.show(e.getComponent(), e.getX(),e.getY());
+	}
+	
 }

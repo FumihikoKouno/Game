@@ -6,8 +6,15 @@ import Common.Data;
 
 public abstract class Card {
 	
-	public static int SOUTH = 0;
-	public static int NORTH = 1;
+	public enum ELEMENT{
+		SOUTH,
+		NORTH,
+	}
+	
+	public enum ATTACK_KIND{
+		ATTACK,
+		SKILL,
+	}
 	
 	protected class Status{
 		public int friendsForASkill;
@@ -27,7 +34,7 @@ public abstract class Card {
 		public int summon;
 	}
 	
-	protected int user;
+	protected ELEMENT user;
 	protected int ID;
 	protected Cost normalCost = new Cost();
 	protected Cost evolvedCost = new Cost();
@@ -41,12 +48,13 @@ public abstract class Card {
 	public Card(){
 		init();
 	}
-	public Card(int uid){
+	public Card(ELEMENT uid){
 		user = uid; 
 		init();
 	}
 	public abstract void init();
 	public abstract int doActiveSkill(Card[] friends, Card[] enemies);
+	public abstract int passiveDiffence(ATTACK_KIND ak, int damage);
 
 	public int getAttackCost(){
 		if(evolved) return evolvedCost.attack;
@@ -69,7 +77,7 @@ public abstract class Card {
 		else return normalCost.move;
 	}
 	
-	public int getUser(){
+	public ELEMENT getUser(){
 		return user;
 	}
 	
@@ -102,17 +110,22 @@ public abstract class Card {
 	
 	public boolean isDead(){
 		return (power<=0);
-	}
+	}	
 	
-	public void damage(Data.ELEMENT element, int d){
+	public void damage(ATTACK_KIND ak, Data.ELEMENT element, int d){
 		Status status;
 		int damage = d;
 		if(evolved) status = evolvedStatus;
 		else status = normalStatus;
 		if(Data.WEAKER.get(status.element) == element) damage = (damage << 1);
 		if(Data.STRONGER.get(status.element) == element) damage = (damage >> 1);
+		damage = passiveDiffence(ak,damage);
 		power -= damage;
 		if(power < 0) power = 0;
+	}
+	
+	public int getPower(){
+		return power;
 	}
 	
 	public int doAttack(Card enemy){
@@ -126,7 +139,7 @@ public abstract class Card {
 			status = normalStatus;
 			ret = normalCost.attack;
 		}
-		enemy.damage(status.element, power);
+		enemy.damage(ATTACK_KIND.ATTACK,status.element, power);
 		return ret;
 	}
 

@@ -4,8 +4,14 @@ import Common.Data;
 
 public class Player extends Card {
 
+	public Player(Card.ELEMENT e){super(e);}
 	
-	public Player(int i){super(i);}
+	public int passiveDiffence(Card.ATTACK_KIND ak, int damage){
+		if(ak==Card.ATTACK_KIND.SKILL){
+			return 0;
+		}
+		return damage;
+	}
 	
 	@Override
 	public void init() {
