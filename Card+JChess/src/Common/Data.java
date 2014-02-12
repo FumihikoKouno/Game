@@ -8,6 +8,7 @@ public class Data {
 	public static final int FIELD_X = 9;
 	public static final int FIELD_Y = 9;
 	public static final int FPS = 30;
+	public static final int AREA_ROW = 3;
 	public enum ELEMENT{
 		NONE,
 		FIRE,
@@ -35,5 +36,6 @@ public class Data {
 				put(ELEMENT.LIGHT,ELEMENT.DARK);
 				put(ELEMENT.DARK,ELEMENT.LIGHT);
 			}};
-	public static int HAND_NUMBER = 5;
+	public static final int DECK_SIZE = 30;
+	public static final int HAND_NUMBER = 5;
 }

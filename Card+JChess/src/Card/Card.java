@@ -1,8 +1,10 @@
 package Card;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 import Common.Data;
+
 
 public abstract class Card {
 	
@@ -17,11 +19,13 @@ public abstract class Card {
 	}
 	
 	protected class Status{
+		public int fieldsForASkill;
 		public int friendsForASkill;
 		public int enemiesForASkill;
 		public String aSkillDescription;
 		public String pSkillDescription;
 		public Data.ELEMENT element;
+		public boolean selectForASkill;
 		public boolean[][] attackRange;
 		public boolean[][] activeSkillRange;
 		public boolean[][] moveRange;
@@ -53,7 +57,7 @@ public abstract class Card {
 		init();
 	}
 	public abstract void init();
-	public abstract int doActiveSkill(Card[] friends, Card[] enemies);
+	public abstract int doActiveSkill(ArrayList<Box> fields, ArrayList<Card> friends, ArrayList<Card> enemies);
 	public abstract int passiveDiffence(ATTACK_KIND ak, int damage);
 
 	public int getAttackCost(){
@@ -89,6 +93,16 @@ public abstract class Card {
 		evolved = true;
 	}
 	
+	public boolean getSelectForActiveSkill(){
+		if(evolved) return evolvedStatus.selectForASkill;
+		else return normalStatus.selectForASkill;
+	}
+	
+	public int getFieldsForActiveSkill(){
+		if(evolved) return evolvedStatus.fieldsForASkill;
+		else return normalStatus.fieldsForASkill;
+	}
+
 	public int getFriendsForActiveSkill(){
 		if(evolved) return evolvedStatus.friendsForASkill;
 		else return normalStatus.friendsForASkill;
@@ -171,15 +185,31 @@ public abstract class Card {
 		}
 		boolean[][] ret;
 		ret = new boolean[Data.FIELD_Y][Data.FIELD_X];
+		boolean[][] tmpRange;
+		tmpRange = new boolean[range.length][range[0].length];
+
+		switch(user){
+		case NORTH:
+			for(int i = 0; i < range.length; i++){
+				tmpRange[i] = range[range.length-i-1];
+			}
+			break;
+		case SOUTH:
+			tmpRange = range;
+			break;
+		default:
+			break;
+		}
 		
-		for(int i = 0; i < range.length; i++){
-			for(int j = 0; j < range[i].length; j++){
-				int y = i+self.y-range.length/2;
-				int x = j+self.x-range[i].length/2;
+		for(int i = 0; i < tmpRange.length; i++){
+			for(int j = 0; j < tmpRange[i].length; j++){
+				int y = i+self.y-tmpRange.length/2;
+				int x = j+self.x-tmpRange[i].length/2;
 				if(x < 0 || x >= Data.FIELD_X || y < 0 || y >= Data.FIELD_Y) continue;
-				ret[y][x] = range[i][j];
+				ret[y][x] = tmpRange[i][j];
 			}
 		}
+		
 		return ret;
 	}
 }

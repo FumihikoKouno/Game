@@ -1,3 +1,5 @@
+package Card;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -6,7 +8,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
-import Card.Card;
 import Common.Data;
 
 public class Box extends JPanel{
@@ -18,7 +19,7 @@ public class Box extends JPanel{
 	private Color defaultColor;
 	
 	
-	enum ELEMENT{
+	public enum ELEMENT{
 		CENTER_FIELD,
 		SOUTH_FIELD,
 		NORTH_FIELD,
@@ -70,18 +71,20 @@ public class Box extends JPanel{
 	public boolean getSelectable(){ return selectable; }
 	public void setSelectable(boolean b){ selectable = b; }
 	
-	public void paintComponent(Graphics g){
+	public void draw(Graphics g, double x, double y){
+		int dx = (int)(x * Data.BOX_SIZE);
+		int dy = (int)(y * Data.BOX_SIZE);
 		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, Data.BOX_SIZE, Data.BOX_SIZE);
+		g.fillRect(dx, dy, Data.BOX_SIZE, Data.BOX_SIZE);
 		g.setColor(Color.WHITE);
-		g.fillRect(1, 1, Data.BOX_SIZE-2, Data.BOX_SIZE-2);
+		g.fillRect(dx+1, dy+1, Data.BOX_SIZE-2, Data.BOX_SIZE-2);
 		g.setColor(defaultColor);
-		g.fillRect(1, 1, Data.BOX_SIZE-2, Data.BOX_SIZE-2);
+		g.fillRect(dx+1, dy+1, Data.BOX_SIZE-2, Data.BOX_SIZE-2);
 		if(selectable){
 			g.setColor(SELECTABLE_COLOR);
-			g.fillRect(1, 1, Data.BOX_SIZE-2, Data.BOX_SIZE-2);
+			g.fillRect(dx+1, dy+1, Data.BOX_SIZE-2, Data.BOX_SIZE-2);
 		}
 		g.setColor(Color.BLACK);
-		if(card != null) g.fillOval(1,1,Data.BOX_SIZE-2,Data.BOX_SIZE-2);
+		if(card != null) g.fillOval(dx+1,dy+1,Data.BOX_SIZE-2,Data.BOX_SIZE-2);
 	}
 }

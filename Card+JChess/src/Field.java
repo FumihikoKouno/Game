@@ -1,10 +1,14 @@
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -19,32 +23,49 @@ public class Field extends JPanel implements MouseListener{
 	private Point selectingPoint = new Point();
 	
 	private COMMAND selecting = COMMAND.NONE;
-	private Card[] enemies;
-	private Card[] friends;
+	private ArrayList<Card> enemies = new ArrayList<Card>();
+	private ArrayList<Card> friends = new ArrayList<Card>();
+	private ArrayList<Box> fields = new ArrayList<Box>();
+	private boolean selectForASkill;
+	
+	private StatusPanel statusPanel;
+	
+	private PrivateArea[] areas;
+	private static final int Y_OFFSET = 1;
 	
 	enum COMMAND{
 		NONE,
 		ATTACK,
 		ACTIVE_SKILL,
 		EVOLVE,
+		SUMMON_SOUTH,
+		SUMMON_NORTH,
 		MOVE,
 	}
 	
 	public Field(){
+		setPreferredSize(new Dimension(Data.BOX_SIZE*Data.FIELD_X, Data.BOX_SIZE*Data.FIELD_Y+(Data.BOX_SIZE<<1)));
 		setLayout(new GridLayout(Data.FIELD_Y,Data.FIELD_X));
+		addMouseListener(this);
 		for(int i = 0; i < Data.FIELD_Y; i++){
 			for(int j = 0; j < Data.FIELD_X; j++){
 				boxes[i][j] = new Box();
-				boxes[i][j].addMouseListener(this);
-				if(i<3) boxes[i][j].setElement(Box.ELEMENT.NORTH_FIELD);
-				else if(i>=Data.FIELD_Y-3) boxes[i][j].setElement(Box.ELEMENT.SOUTH_FIELD);
+				if(i<Data.AREA_ROW) boxes[i][j].setElement(Box.ELEMENT.NORTH_FIELD);
+				else if(i>=Data.FIELD_Y-Data.AREA_ROW) boxes[i][j].setElement(Box.ELEMENT.SOUTH_FIELD);
 				else boxes[i][j].setElement(Box.ELEMENT.CENTER_FIELD);
-				add(boxes[i][j]);
 				if(i==Data.FIELD_Y-1 && (j==0 || j==5)){
 					boxes[i][j].setCard(new Player(Card.ELEMENT.SOUTH));
 				}
 			}
 		}
+	}
+	
+	public void setStatusPanel(StatusPanel status){
+		statusPanel = status;
+	}
+	
+	public void setAreas(PrivateArea[] area){
+		areas = area;
 	}
 
 	public void resetSelect(){
@@ -59,23 +80,86 @@ public class Field extends JPanel implements MouseListener{
 		}
 	}
 	
-	public void clickSelect(MouseEvent e){
-		Box box = (Box)e.getSource();
+	public void clickSelect(MouseEvent e, int x, int y){
+		Box box = boxes[y][x];
 		Card card = box.getCard();
 		Card selectingCard = boxes[selectingPoint.y][selectingPoint.x].getCard();
 		switch(selecting){
 		case ACTIVE_SKILL:
+			if(box.getSelectable()){
+				if(card == null){
+					if(fields.contains(box))
+						fields.remove(box);
+					else
+						fields.add(box);
+				}else{
+					if(card.getUser()==selectingCard.getUser()){
+						if(friends.contains(card))
+							friends.remove(card);
+						else
+							friends.add(card);
+					}else{
+						if(enemies.contains(card))
+							enemies.remove(card);
+						else
+							enemies.add(card);
+					}
+				}
+				if(fields.size()==selectingCard.getFieldsForActiveSkill() &&
+				   friends.size()==selectingCard.getFriendsForActiveSkill() &&
+				   enemies.size()==selectingCard.getEnemiesForActiveSkill()
+				){
+					selectingCard.doActiveSkill(fields,friends,enemies);
+				}
+			}
+			if(!selectForASkill){
+				for(int i = 0; i < Data.FIELD_Y; i++){
+					for(int j = 0; j < Data.FIELD_X; j++){
+						if(boxes[i][j].getSelectable()){
+							fields.add(boxes[i][j]);
+						}
+					}
+				}
+			}
+			card.doActiveSkill(fields, friends, enemies);
 			break;
 		case ATTACK:
+			if(!box.getSelectable()) break;
 			if(card == null) break;
-			selectingCard.doAttack(card);
+			if(card.getUser() != selectingCard.getUser()){
+				selectingCard.doAttack(card);
+				if(card.getPower()<=0){
+					box.setCard(null);
+				}
+			}
 			break;
 		case EVOLVE:
 			break;
 		case MOVE:
-			if(card != null || !box.getSelectable()) break;
+			if(!box.getSelectable()) break;
+			if(card != null) break;
 			box.setCard(selectingCard);
 			boxes[selectingPoint.y][selectingPoint.x].setCard(null);
+			break;
+		case SUMMON_SOUTH:
+			if(!box.getSelectable()) break;
+			if(card != null) break;
+			for(int i = 0; i < areas.length; i++){
+				if(areas[i].getElement() == PrivateArea.ELEMENT.SOUTH){
+					box.setCard(areas[i].getHand().summonCard());
+					break;
+				}
+			}
+			break;
+		case SUMMON_NORTH:
+			if(!box.getSelectable()) break;
+			if(card != null);
+			for(int i = 0; i < areas.length; i++){
+				if(areas[i].getElement() == PrivateArea.ELEMENT.NORTH){
+					box.setCard(areas[i].getHand().summonCard());
+					break;
+				}
+			}
 			break;
 		default:
 			break;
@@ -88,7 +172,7 @@ public class Field extends JPanel implements MouseListener{
 		selectingPoint.y = y;
 	}
 	
-	private void resetSelectableRange(){
+	public void resetSelectableRange(){
 		for(int i = 0; i < Data.FIELD_Y; i++){
 			for(int j = 0; j < Data.FIELD_X; j++){
 				boxes[i][j].setSelectable(false);
@@ -96,7 +180,15 @@ public class Field extends JPanel implements MouseListener{
 		}
 	}
 	
-	private void setSelectableRange(COMMAND com){
+	public void setSelectableRange(boolean[][] range){
+		for(int i = 0; i < Data.FIELD_Y; i++){
+			for(int j = 0; j < Data.FIELD_X; j++){
+				if(range[i][j]) boxes[i][j].setSelectable(true);
+			}
+		}
+	}
+	
+	public void setSelectableRange(COMMAND com){
 		Card card = boxes[selectingPoint.y][selectingPoint.x].getCard();
 		boolean[][] range;
 		switch(com){
@@ -112,11 +204,7 @@ public class Field extends JPanel implements MouseListener{
 		default:
 			return;
 		}
-		for(int i = 0; i < Data.FIELD_Y; i++){
-			for(int j = 0; j < Data.FIELD_X; j++){
-				if(range[i][j]) boxes[i][j].setSelectable(true);
-			}
-		}
+		setSelectableRange(range);
 	}
 	
 	public void selectCommand(COMMAND com){
@@ -124,8 +212,10 @@ public class Field extends JPanel implements MouseListener{
 		Card card = boxes[selectingPoint.y][selectingPoint.x].getCard();
 		switch(com){
 		case ACTIVE_SKILL:
-			enemies = new Card[card.getEnemiesForActiveSkill()];
-			friends = new Card[card.getFriendsForActiveSkill()];
+			selectForASkill = card.getSelectForActiveSkill();
+			break;
+		case EVOLVE:
+			card.evolve();
 			break;
 		default:
 			return;
@@ -222,23 +312,21 @@ public class Field extends JPanel implements MouseListener{
 		Box selectingBox = boxes[selectingPoint.y][selectingPoint.x];
 		Card selectingCard = selectingBox.getCard();
 		if(selectingCard==null) return;
-		System.out.println(""+selectingCard.getPower());
+		statusPanel.setCard(selectingCard);
 		createCommandPopup(selectingBox,selectingCard,e);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Object comp = e.getSource();
 		int x=0;
 		int y=0;
 		for(int i = 0; i < Data.FIELD_Y; i++){
+			if(e.getY()<(i+Y_OFFSET)*Data.BOX_SIZE || e.getY()>=(i+1+Y_OFFSET)*Data.BOX_SIZE) continue;
 			for(int j = 0; j < Data.FIELD_X; j++){
-				if(boxes[i][j] == comp){
-					y = i;
-					x = j;
-					i = Data.FIELD_Y;
-					break;
-				}
+				if(e.getX()<j*Data.BOX_SIZE || e.getX()>=(j+1)*Data.BOX_SIZE) continue;
+				y = i;
+				x = j;
+				i = Data.FIELD_Y;
 			}
 		}
 		Box box = boxes[selectingPoint.y][selectingPoint.x];
@@ -250,7 +338,7 @@ public class Field extends JPanel implements MouseListener{
 			case SOUTH_FIELD:
 			case NORTH_FIELD:
 			case CENTER_FIELD:
-				if(selecting != COMMAND.NONE) clickSelect(e);
+				if(selecting != COMMAND.NONE) clickSelect(e,x,y);
 				else{
 					setSelecting(x,y);
 					clickFirstCard(e);
@@ -278,5 +366,12 @@ public class Field extends JPanel implements MouseListener{
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-	}	
+	}
+	public void paintComponent(Graphics g){
+		for(int i = 0; i < Data.FIELD_Y; i++){
+			for(int j = 0; j < Data.FIELD_X; j++){
+				boxes[i][j].draw(g,j,i+Y_OFFSET);
+			}
+		}
+	}
 }

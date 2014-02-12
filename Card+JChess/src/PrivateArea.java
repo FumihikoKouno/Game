@@ -32,4 +32,23 @@ public class PrivateArea extends JPanel{
 		}
 		add(hand,BorderLayout.CENTER);
 	}
+	
+	public Hand getHand(){
+		return hand;
+	}
+	public Deck getDeck(){
+		return deck;
+	}
+	public ELEMENT getElement(){
+		return element;
+	}
+	
+	public void setStatusPanel(StatusPanel pane){
+		hand.setStatusPanel(pane);
+		deck.setStatusPanel(pane);
+	}
+	public void setField(Field field){
+		hand.setField(field);
+		deck.setField(field);
+	}
 }

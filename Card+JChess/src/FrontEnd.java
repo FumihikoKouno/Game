@@ -19,6 +19,13 @@ public class FrontEnd extends JFrame{
 	}
 	private void init(){
 		this.setLayout(new BorderLayout());
+		PrivateArea[] areas = {southArea, northArea};
+		field.setAreas(areas);
+		field.setStatusPanel(statusPanel);
+		southArea.setField(field);
+		southArea.setStatusPanel(statusPanel);
+		northArea.setField(field);
+		northArea.setStatusPanel(statusPanel);
 		JPanel cardPanel = new JPanel();
 		cardPanel.setLayout(new BorderLayout());
 		cardPanel.add(northArea,BorderLayout.NORTH);
