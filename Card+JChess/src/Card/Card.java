@@ -18,47 +18,26 @@ public abstract class Card {
 		SKILL,
 	}
 	
-	protected class Status{
-		public int fieldsForASkill;
-		public int friendsForASkill;
-		public int enemiesForASkill;
-		public String aSkillDescription;
-		public String pSkillDescription;
-		public Data.ELEMENT element;
-		public boolean selectForASkill;
-		public boolean[][] attackRange;
-		public boolean[][] activeSkillRange;
-		public boolean[][] moveRange;
-	}
-	protected class Cost{
-		public int attack;
-		public int move;
-		public int evolution;
-		public int activeSkill;
-		public int summon;
-	}
-	
 	protected ELEMENT user;
 	protected int ID;
-	protected Cost normalCost = new Cost();
-	protected Cost evolvedCost = new Cost();
-	protected Status normalStatus = new Status();
-	protected Status evolvedStatus = new Status();
-	protected int power;
+	protected Cost normalCost;
+	protected Cost evolvedCost;
+	protected StatusData normalStatus;
+	protected StatusData evolvedStatus;
 	protected boolean evolved = false;
-	protected String activeSkillDescription;
-	protected String passiveSkillDescription;
 	
-	public Card(){
-		init();
-	}
 	public Card(ELEMENT uid){
 		user = uid; 
 		init();
+		normalStatus = new StatusData(ID,false);
+		evolvedStatus = new StatusData(ID,true);
+		normalCost = new Cost(ID,false);
+		evolvedCost = new Cost(ID,true);
 	}
 	public abstract void init();
-	public abstract int doActiveSkill(ArrayList<Box> fields, ArrayList<Card> friends, ArrayList<Card> enemies);
-	public abstract int passiveDiffence(ATTACK_KIND ak, int damage);
+	public void doActiveSkill(ArrayList<Box> fields, ArrayList<Card> friends, ArrayList<Card> enemies){
+		ActiveSkillData.doActiveSkill(ID, evolved, fields, friends, enemies);
+	}
 
 	public int getAttackCost(){
 		if(evolved) return evolvedCost.attack;
@@ -94,56 +73,67 @@ public abstract class Card {
 	}
 	
 	public boolean getSelectForActiveSkill(){
-		if(evolved) return evolvedStatus.selectForASkill;
-		else return normalStatus.selectForASkill;
+		if(evolved) return evolvedStatus.aSkill.selectForASkill;
+		else return normalStatus.aSkill.selectForASkill;
 	}
 	
 	public int getFieldsForActiveSkill(){
-		if(evolved) return evolvedStatus.fieldsForASkill;
-		else return normalStatus.fieldsForASkill;
+		if(evolved) return evolvedStatus.aSkill.fieldsForASkill;
+		else return normalStatus.aSkill.fieldsForASkill;
 	}
 
 	public int getFriendsForActiveSkill(){
-		if(evolved) return evolvedStatus.friendsForASkill;
-		else return normalStatus.friendsForASkill;
+		if(evolved) return evolvedStatus.aSkill.friendsForASkill;
+		else return normalStatus.aSkill.friendsForASkill;
 	}
 	public int getEnemiesForActiveSkill(){
-		if(evolved) return evolvedStatus.enemiesForASkill;
-		else return normalStatus.enemiesForASkill;
+		if(evolved) return evolvedStatus.aSkill.enemiesForASkill;
+		else return normalStatus.aSkill.enemiesForASkill;
 	}
 	
 	public String getActiveSkillDescription(){
-		if(evolved) return evolvedStatus.aSkillDescription;
-		else return normalStatus.aSkillDescription;
+		if(evolved) return evolvedStatus.aSkill.aSkillDescription;
+		else return normalStatus.aSkill.aSkillDescription;
 	}
 	
 	public String getPassiveSkillDescription(){
-		if(evolved) return evolvedStatus.pSkillDescription;
-		else return normalStatus.pSkillDescription;
+		if(evolved) return evolvedStatus.pSkill.pSkillDescription;
+		else return normalStatus.pSkill.pSkillDescription;
+	}
+	
+	public int getLife(){
+		if(evolved) return evolvedStatus.life;
+		else return normalStatus.life;
+	}
+	
+	public void setLife(int l){
+		if(evolved) evolvedStatus.life = l;
+		else normalStatus.life = l;
 	}
 	
 	public boolean isDead(){
-		return (power<=0);
+		return (getLife()<=0);
 	}	
 	
 	public void damage(ATTACK_KIND ak, Data.ELEMENT element, int d){
-		Status status;
+		StatusData status;
 		int damage = d;
 		if(evolved) status = evolvedStatus;
 		else status = normalStatus;
 		if(Data.WEAKER.get(status.element) == element) damage = (damage << 1);
 		if(Data.STRONGER.get(status.element) == element) damage = (damage >> 1);
-		damage = passiveDiffence(ak,damage);
-		power -= damage;
-		if(power < 0) power = 0;
+		damage = PassiveSkillData.passiveDiffence(ID,evolved,ak,element,damage);
+		setLife(getLife()-damage);
+		if(getLife() < 0) setLife(0);
 	}
 	
 	public int getPower(){
-		return power;
+		if(evolved) return evolvedStatus.power;
+		else return normalStatus.power;
 	}
 	
 	public int doAttack(Card enemy){
-		Status status;
+		StatusData status;
 		int ret;
 		if(evolved){
 			status = evolvedStatus;
@@ -153,7 +143,7 @@ public abstract class Card {
 			status = normalStatus;
 			ret = normalCost.attack;
 		}
-		enemy.damage(ATTACK_KIND.ATTACK,status.element, power);
+		enemy.damage(ATTACK_KIND.ATTACK,status.element, getPower());
 		return ret;
 	}
 
@@ -166,8 +156,8 @@ public abstract class Card {
 
 	public boolean[][] getActiveSkillRange(Point self){
 		boolean[][] range;
-		if(evolved)	range = evolvedStatus.activeSkillRange;
-		else range = normalStatus.activeSkillRange;
+		if(evolved)	range = evolvedStatus.aSkill.activeSkillRange;
+		else range = normalStatus.aSkill.activeSkillRange;
 		return getRange(self,range);
 	}
 	

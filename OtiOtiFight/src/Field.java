@@ -46,6 +46,10 @@ public class Field extends JPanel {
 		chara.update();
 	}
 	
+	public boolean blockExists(int x, int y){
+		return blocks[y][x].falled();
+	}
+	
 	public void attack(int x, int y){
 		blocks[y][x].attacked();
 	}

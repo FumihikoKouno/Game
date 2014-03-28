@@ -9,6 +9,7 @@ public class Block extends JPanel {
 	public static final int SIZE = 32;
 	public int otiTime;
 	public int attackedTime;
+	public boolean fall;
 	
 	public Block(){
 		setPreferredSize(new Dimension(SIZE+2,SIZE+2));
@@ -20,6 +21,10 @@ public class Block extends JPanel {
 	
 	public void attacked(){
 		attackedTime = 1;
+	}
+	
+	public boolean falled(){
+		return fall;
 	}
 	
 	public void update(){

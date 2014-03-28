@@ -2,16 +2,20 @@ import javax.swing.JFrame;
 
 
 public class FrontEnd extends JFrame {
+	public Deck deck;
 	public FrontEnd(){
 		init();
 	}
 	public void init(){
+		deck = new Deck();
+		add(deck);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
+		pack();
 		gameLoop();
 	}
 	public void update(){
-		System.out.println("test");
+		deck.repaint();
 	}
 	public void gameLoop(){
 		long SPF = 1000/Data.FPS;
