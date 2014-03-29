@@ -1,14 +1,13 @@
+import java.awt.Graphics;
 import java.util.Random;
 
 public class Deck {
-	private Card[] cards;
-	private int idx;
+	private Card[] cards = new Card[52];
+	private int idx = 0;
 	public Deck(){
 		init();
 	}
 	public void init(){
-		idx = 0;
-		cards = new Card[52];
 		for(int i = 0; i < 13; i++){
 			cards[i] = new Card(Card.Mark.SPADES,i);
 			cards[i+13] = new Card(Card.Mark.CLUBS,i);
@@ -38,5 +37,12 @@ public class Deck {
 			tmp[i] = cards[tmpIdx];
 		}
 		cards = tmp;
+	}
+	public void draw(Graphics g, int x, int y){
+		for(int i = 0; i < 52-idx; i++){
+			g.drawImage(Data.images.reverseImage,
+					x,y+52-i,Card.WIDTH,Card.HEIGHT,
+					null);
+		}
 	}
 }

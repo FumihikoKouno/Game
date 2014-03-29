@@ -23,6 +23,9 @@ public class Field extends JPanel implements MouseListener{
 	public static final int MONSTER_PARTS_ZONE_Y0 = 10;
 	public static final int MONSTER_PARTS_ZONE_X1 = 10;
 	public static final int MONSTER_PARTS_ZONE_Y1 = 10;
+	public static final int DECK_X = 300;
+	public static final int DECK_Y = 20;
+	
 	
 	public enum Mode{
 		ATTACK,
@@ -62,6 +65,8 @@ public class Field extends JPanel implements MouseListener{
 	public void paintComponent(Graphics g){
 		g.setColor(Color.WHITE);
 		g.fillRect(0,0,WIDTH,HEIGHT);
+		g.setColor(Color.BLACK);
+		deck.draw(g,DECK_X,DECK_Y);
 		monsterPartsZones[0].draw(g,MONSTER_PARTS_ZONE_X0,MONSTER_PARTS_ZONE_Y0);
 		forceZones[0].draw(g,FORCE_ZONE_X0,FORCE_ZONE_Y0);
 		players[0].draw(g,PLAYER_X0,PLAYER_Y0);
