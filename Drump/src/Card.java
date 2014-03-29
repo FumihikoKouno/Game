@@ -21,6 +21,14 @@ public class Card {
 		this.number = number;
 	}
 	
+	public Mark getMark(){
+		return mark;
+	}
+	
+	public int getNumber(){
+		return number;
+	}
+	
 	public void draw(Graphics g, int x, int y, boolean show){
 		if(show){
 			int dy = 0;
