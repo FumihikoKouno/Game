@@ -26,7 +26,7 @@ public class Card {
 	}
 	
 	public int getNumber(){
-		return number;
+		return number+1;
 	}
 	
 	public void draw(Graphics g, int x, int y, boolean show){

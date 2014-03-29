@@ -15,10 +15,35 @@ public class Player {
 			hand[i] = field.drawCard();
 		}
 	}
+	public void drawCard(Card card){
+		for(int i = 0; i < hand.length; i++){
+			if(hand[i]==null){
+				hand[i] = card;
+				return;
+			}
+		}
+	}
+	public Card getCard(int i){
+		return hand[i];
+	}
+	public void removeCard(int i){
+		hand[i] = null;
+		for(int j = 0; j < hand.length; j++){
+			if(hand[j]==null){
+				for(int k = j+1; k < hand.length; k++){
+					if(hand[k]!=null){
+						hand[j] = hand[k];
+						hand[k] = null;
+						break;
+					}
+				}
+			}
+		}
+	}
 	public void draw(Graphics g, int x, int y){
 		for(int i = 0; i < hand.length; i++){
 			if(hand[i]!=null){
-				hand[i].draw(g,x,y,true);
+				hand[i].draw(g,x+Card.WIDTH*i,y,true);
 			}
 		}
 	}

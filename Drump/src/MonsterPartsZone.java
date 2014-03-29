@@ -8,23 +8,20 @@ public class MonsterPartsZone {
 		BODY,
 		TAIL,
 	};
-	public int[] parts = new int[4];
+	public Card[] parts = new Card[4];
 	
 	public MonsterPartsZone(){
 		init();
 	}
 	public void init(){
-		for(int i = 0; i < parts.length; i++){
-			parts[i] = -1;
-		}
 	}
 	
 	public int drump(){
 		int ret = 0;
 		int[] count = new int[4];
 		for(int i = 0; i < parts.length; i++){
-			if(parts[i]<0) return 0;
-			count[parts[i]-10]++;
+			if(parts[i].getNumber()<0) return 0;
+			count[parts[i].getNumber()-10]++;
 		}
 		for(int i = 0; i < count.length; i++){
 			// TODO implement yaku
@@ -35,16 +32,16 @@ public class MonsterPartsZone {
 	public boolean set(Card card){
 		switch(card.getMark()){
 		case SPADES:
-			parts[0] = card.getNumber();
+			parts[0] = card;
 			break;
 		case CLUBS:
-			parts[1] = card.getNumber();
+			parts[1] = card;
 			break;
 		case HEARTS:
-			parts[2] = card.getNumber();
+			parts[2] = card;
 			break;
 		case DIAMONDS:
-			parts[3] = card.getNumber();
+			parts[3] = card;
 			break;
 		default:
 			break;
@@ -56,7 +53,8 @@ public class MonsterPartsZone {
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < 2; j++){
 				g.drawRect(x+j*Card.WIDTH,y+i*Card.HEIGHT,Card.WIDTH,Card.HEIGHT);
-				g.drawString(""+parts[i*2+j],x+j*Card.WIDTH,y+i*Card.HEIGHT+Card.HEIGHT);
+				if(parts[i*2+j] == null) continue;
+				parts[i*2+j].draw(g,x+j*Card.WIDTH,y+i*Card.HEIGHT,true);
 			}
 		}
 	}
