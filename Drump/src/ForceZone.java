@@ -5,10 +5,13 @@ import java.util.ArrayList;
 public class ForceZone {
 	private class CardArray extends ArrayList<Card>{}
 	private CardArray[] forces = new CardArray[4];
-	public ForceZone(){
-		init();
+	private Field field;
+	
+	public ForceZone(Field f){
+		init(f);
 	}
-	public void init(){
+	public void init(Field f){
+		field = f;
 		for(int i = 0; i < 4; i++){
 			forces[i] = new CardArray();
 		}
@@ -20,7 +23,12 @@ public class ForceZone {
 		for(int i = 0; i < forces[position].size(); i++){
 			sum += forces[position].get(i).getNumber();
 		}
-		if(sum > 13) forces[position].clear();
+		if(sum > 13){
+			for(int i = 0; i < forces[position].size(); i++){
+				field.removeCard(forces[position].get(i));
+			}
+			forces[position].clear();
+		}
 		return true;
 	}
 	public void draw(Graphics g, int x, int y){

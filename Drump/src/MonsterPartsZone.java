@@ -9,11 +9,13 @@ public class MonsterPartsZone {
 		TAIL,
 	};
 	public Card[] parts = new Card[4];
+	private Field field;
 	
-	public MonsterPartsZone(){
-		init();
+	public MonsterPartsZone(Field f){
+		init(f);
 	}
-	public void init(){
+	public void init(Field f){
+		field = f;
 	}
 	
 	public int drump(){
