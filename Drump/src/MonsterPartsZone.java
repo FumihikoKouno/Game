@@ -56,7 +56,7 @@ public class MonsterPartsZone {
 			for(int j = 0; j < 2; j++){
 				g.drawRect(x+j*Card.WIDTH,y+i*Card.HEIGHT,Card.WIDTH,Card.HEIGHT);
 				if(parts[i*2+j] == null) continue;
-				parts[i*2+j].draw(g,x+j*Card.WIDTH,y+i*Card.HEIGHT,true);
+				parts[i*2+j].draw(g,x+j*Card.WIDTH,y+i*Card.HEIGHT);
 			}
 		}
 	}

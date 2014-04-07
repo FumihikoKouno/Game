@@ -13,12 +13,14 @@ public class Player {
 		this.field = field;
 		for(int i = 0; i < 5; i++){
 			hand[i] = field.drawCard();
+			hand[i].setOpen(true);
 		}
 	}
 	public void drawCard(Card card){
 		for(int i = 0; i < hand.length; i++){
 			if(hand[i]==null){
 				hand[i] = card;
+				hand[i].setOpen(true);
 				return;
 			}
 		}
@@ -43,7 +45,7 @@ public class Player {
 	public void draw(Graphics g, int x, int y){
 		for(int i = 0; i < hand.length; i++){
 			if(hand[i]!=null){
-				hand[i].draw(g,x+Card.WIDTH*i,y,true);
+				hand[i].draw(g,x+Card.WIDTH*i,y);
 			}
 		}
 	}

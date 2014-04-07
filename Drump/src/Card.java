@@ -15,10 +15,15 @@ public class Card {
 	
 	Mark mark;
 	int number;
+	public boolean open;
 	
 	public Card(Mark mark, int number){
 		this.mark = mark;
 		this.number = number;
+	}
+	
+	public void setOpen(boolean o){
+		open = o;
 	}
 	
 	public Mark getMark(){
@@ -29,8 +34,8 @@ public class Card {
 		return number+1;
 	}
 	
-	public void draw(Graphics g, int x, int y, boolean show){
-		if(show){
+	public void draw(Graphics g, int x, int y){
+		if(open){
 			int dy = 0;
 			switch(mark){
 			case SPADES:
@@ -54,8 +59,7 @@ public class Card {
 					number*WIDTH+WIDTH, dy+HEIGHT,
 					null);
 		}else{
-			g.drawImage(Data.images.reverseImage,
-					x, y, x+WIDTH, y+HEIGHT, null);
+			g.drawImage(Data.images.reverseImage, x, y, null);
 		}
 	}
 }

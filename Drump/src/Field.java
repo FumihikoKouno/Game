@@ -1,42 +1,51 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 
 public class Field extends JPanel implements MouseListener{
 	public static final int WIDTH = 400;
-	public static final int HEIGHT = 300;
+	public static final int HEIGHT = 400;
 	
-	public static final int PLAYER_X0 = 200;
-	public static final int PLAYER_Y0 = 200;
-	public static final int PLAYER_X1 = 200;
-	public static final int PLAYER_Y1 = 200;
-	public static final int FORCE_ZONE_X0 = 100;
-	public static final int FORCE_ZONE_Y0 = 150;
-	public static final int FORCE_ZONE_X1 = 100;
-	public static final int FORCE_ZONE_Y1 = 150;
-	public static final int MONSTER_PARTS_ZONE_X0 = 10;
-	public static final int MONSTER_PARTS_ZONE_Y0 = 10;
+	public static final int PLAYER_X0 = 50;
+	public static final int PLAYER_Y0 = 300;
+	public static final int PLAYER_X1 = 50;
+	public static final int PLAYER_Y1 = 10;
+	public static final int FORCE_ZONE_X0 = 40;
+	public static final int FORCE_ZONE_Y0 = 210;
+	public static final int FORCE_ZONE_X1 = 80;
+	public static final int FORCE_ZONE_Y1 = 60;
+	public static final int MONSTER_PARTS_ZONE_X0 = 200;
+	public static final int MONSTER_PARTS_ZONE_Y0 = 160;
 	public static final int MONSTER_PARTS_ZONE_X1 = 10;
-	public static final int MONSTER_PARTS_ZONE_Y1 = 10;
-	public static final int DECK_X = 300;
-	public static final int DECK_Y = 20;
-	public static final int GRAVE_X = 150;
-	public static final int GRAVE_Y = 20;
+	public static final int MONSTER_PARTS_ZONE_Y1 = 60;
+	public static final int DECK_X = 150;
+	public static final int DECK_Y = 110;
+	public static final int GRAVE_X = 90;
+	public static final int GRAVE_Y = 110;
 	
+	public int selected;
 	
 	public enum Mode{
+		DEFAULT,
 		ATTACK,
+		FORCE_CHARGE,
 		BLOCK,
 		SUMMON,
 		RECYCLE,
+		EXTRA_JACK,
 	};
 	
-	private Mode mode;
+	private Mode mode = Mode.DEFAULT;
 	private Deck deck;
 	private Player[] players = new Player[2];
 	private ForceZone[] forceZones = new ForceZone[2];
@@ -75,26 +84,145 @@ public class Field extends JPanel implements MouseListener{
 		deck.draw(g,DECK_X,DECK_Y);
 		monsterPartsZones[0].draw(g,MONSTER_PARTS_ZONE_X0,MONSTER_PARTS_ZONE_Y0);
 		forceZones[0].draw(g,FORCE_ZONE_X0,FORCE_ZONE_Y0);
+		forceZones[0].drawSum(g,FORCE_ZONE_X0,FORCE_ZONE_Y0);
 		players[0].draw(g,PLAYER_X0,PLAYER_Y0);
 		grave.draw(g,GRAVE_X,GRAVE_Y);
+		monsterPartsZones[1].draw(g,MONSTER_PARTS_ZONE_X1,MONSTER_PARTS_ZONE_Y1);
+		forceZones[1].draw(g,FORCE_ZONE_X1,FORCE_ZONE_Y1);
+		players[1].draw(g,PLAYER_X1,PLAYER_Y1);	
+		switch(mode){
+		case DEFAULT:
+			break;
+		case ATTACK:
+			break;
+		case BLOCK:
+			break;
+		case EXTRA_JACK:
+			break;
+		case FORCE_CHARGE:
+			forceZones[0].lightUp(g,FORCE_ZONE_X0,FORCE_ZONE_Y0,players[0].getCard(selected));
+			break;
+		case RECYCLE:
+			grave.drawRecycleCards(g);
+			break;
+		case SUMMON:
+			break;
+		default:
+			break;
+		}
+	}
+		
+	public void clickPlayerCard(MouseEvent e, int num){
+		if(players[0].getCard(num) == null) return;
+		selected = num;
+		JPopupMenu popup = new JPopupMenu();
+		JMenuItem attack = new JMenuItem("Attack");
+		JMenuItem charge = new JMenuItem("Force Charge");
+		attack.addActionListener(new ActionListener() {			
+			public void actionPerformed(ActionEvent arg0) {
+				mode = Mode.ATTACK;
+			}
+		});		
+		charge.addActionListener(new ActionListener() {			
+			public void actionPerformed(ActionEvent arg0) {
+				mode = Mode.FORCE_CHARGE;
+			}
+		});
+		popup.add(attack);
+		popup.add(charge);
+		
+		if(players[0].getCard(num).getNumber() >= 10){
+			JMenu recycle = new JMenu("Recycle");
+			JMenuItem getPartsByRecycle = new JMenuItem("Get Parts from Grave");
+			JMenuItem drawCardByRecycle = new JMenuItem("Draw Card");
+			recycle.add(getPartsByRecycle);
+			recycle.add(drawCardByRecycle);
+			getPartsByRecycle.addActionListener(new ActionListener() {			
+				public void actionPerformed(ActionEvent arg0) {
+					mode = Mode.RECYCLE;
+				}
+			});
+			drawCardByRecycle.addActionListener(new ActionListener() {			
+				public void actionPerformed(ActionEvent arg0) {
+					mode = Mode.RECYCLE;
+				}
+			});
+			popup.add(recycle);
+		}
+		
+
+		JMenuItem goGrave = new JMenuItem("Go Grave(Debug)");
+		JMenuItem drawCard = new JMenuItem("Draw Card(Debug)");
+
+		goGrave.addActionListener(new ActionListener() {			
+			public void actionPerformed(ActionEvent arg0) {
+				grave.addCard(players[0].getCard(selected));
+				players[0].removeCard(selected);
+			}
+		});
+		drawCard.addActionListener(new ActionListener() {			
+			public void actionPerformed(ActionEvent arg0) {
+				players[0].drawCard(deck.getTopCard());
+			}
+		});
+		popup.add(goGrave);
+		popup.add(drawCard);
+		popup.show(e.getComponent(),e.getX(),e.getY());
+		/*
+		forceZones[id].set(0,selected);
+		players[id].removeCard(num);
+		players[id].drawCard(deck.getTopCard());		
+		*/
 	}
 	
 	public void mouseClicked(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		// player0
-		Card selected;
-		if(y>=PLAYER_Y0 && y<PLAYER_Y0+Card.HEIGHT){
-			for(int i = 0; i < 6; i++){
-				if(x>=PLAYER_X0+i*Card.WIDTH && x<PLAYER_X0+(i+1)*Card.WIDTH){
-					selected = players[0].getCard(i);
-					if(selected == null) return;
-					forceZones[0].set(0,selected);
-					players[0].removeCard(i);
-					players[0].drawCard(deck.getTopCard());
+		switch(mode){
+		case DEFAULT:
+		case BLOCK:
+			// player0
+			if(y>=PLAYER_Y0 && y<PLAYER_Y0+Card.HEIGHT && x>=PLAYER_X0 && x<PLAYER_X0+6*Card.WIDTH){
+				for(int i = 0; i < 6; i++){
+					if(x>=PLAYER_X0+i*Card.WIDTH && x<PLAYER_X0+(i+1)*Card.WIDTH){
+						clickPlayerCard(e,i);
+						return;
+					}
 				}
 			}
+			break;
+		case ATTACK:
+			if(y>FORCE_ZONE_Y1 && y<FORCE_ZONE_Y1+Card.HEIGHT && x>=FORCE_ZONE_X1 && x<FORCE_ZONE_X1+4*Card.WIDTH){
+				for(int i = 0; i < 6; i++){
+					if(x>=FORCE_ZONE_X1+i*Card.WIDTH && x<FORCE_ZONE_X1+(i+1)*Card.WIDTH){
+						forceZones[1].attacked(i,players[0].getCard(selected));
+						players[0].removeCard(selected);
+						return;
+					}
+				}
+			}
+			break;
+		case EXTRA_JACK:
+			break;
+		case FORCE_CHARGE:
+			if(y>FORCE_ZONE_Y0 && x>=FORCE_ZONE_X0 && x<FORCE_ZONE_X0+4*Card.WIDTH){
+				for(int i = 0; i < 6; i++){
+					if(x>=FORCE_ZONE_X0+i*Card.WIDTH && x<FORCE_ZONE_X0+(i+1)*Card.WIDTH && y<(int)(FORCE_ZONE_Y0+Card.HEIGHT*(1+0.5*forceZones[0].getCardNumber(i)))){
+						if(forceZones[0].set(i,players[0].getCard(selected))){
+							players[0].removeCard(selected);
+						}
+						mode = Mode.DEFAULT;
+						return;
+					}
+				}
+			}
+			break;
+		case RECYCLE:
+			break;
+		case SUMMON:
+			break;
 		}
+		mode = Mode.DEFAULT;
 	}
 	public void mouseEntered(MouseEvent e) {
 	}

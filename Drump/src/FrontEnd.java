@@ -12,6 +12,7 @@ public class FrontEnd extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 		pack();
+//		field.repaint();
 		gameLoop();
 	}
 	public void update(){
