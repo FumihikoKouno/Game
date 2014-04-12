@@ -1,3 +1,6 @@
+import game.common.Data;
+import game.zones.Field;
+
 import javax.swing.JFrame;
 
 
