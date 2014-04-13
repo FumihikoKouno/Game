@@ -76,4 +76,67 @@ public class ForceZone {
 			}
 		}
 	}
+	
+	public void setByString(String str){
+		System.out.println("ForceZone.setByString");
+		String[] cardsStr = str.split(",");
+		for(int i = 0; i < cardsStr.length; i++){
+			String[] cardInfo = cardsStr[i].split(":");
+			forces[i].clear();
+			if(cardInfo[0].equals("")) continue;
+			for(int j = 0; j < cardInfo.length; j++){
+				String[] cardDetail = cardInfo[j].split("-");
+				Card tmp = new Card(Card.Mark.CLUBS,0);
+				if(cardDetail[0].equals("CLUBS")){
+					tmp.setMark(Card.Mark.CLUBS);
+				}
+				if(cardDetail[0].equals("DIAMONDS")){
+					tmp.setMark(Card.Mark.DIAMONDS);
+				}
+				if(cardDetail[0].equals("HEARTS")){
+					tmp.setMark(Card.Mark.HEARTS);
+				}
+				if(cardDetail[0].equals("SPADES")){
+					tmp.setMark(Card.Mark.SPADES);
+				}
+				tmp.setNumber(Integer.parseInt(cardDetail[1]));
+				if(cardDetail[2].equals("Open")){
+					tmp.setOpen(true);
+				}else{
+					tmp.setOpen(false);
+				}
+				forces[i].add(tmp);
+			}
+		}
+	}
+	
+	public String toString(){
+		String ret = "";
+		for(int i = 0; i < forces.length; i++){
+			for(int j = 0; j < forces[i].size(); j++){
+				switch(forces[i].get(j).getMark()){
+				case CLUBS:
+					ret += "CLUBS-";
+					break;
+				case DIAMONDS:
+					ret += "DIAMONDS-";
+					break;
+				case HEARTS:
+					ret += "HEARTS-";
+					break;
+				case SPADES:
+					ret += "SPADES-";
+					break;
+				default:
+					break;
+				}
+				ret += forces[i].get(j).getNumber() + "-";
+				ret += (forces[i].get(j).getOpen() ? "Open" : "Close");
+				if(j < forces[i].size()-1) ret += ":";
+			}
+			if(i < forces.length-1) ret += ",";
+		}
+		return ret;
+	}
+	
 }

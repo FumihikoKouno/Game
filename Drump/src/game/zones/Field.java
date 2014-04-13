@@ -15,6 +15,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
+import communication.SocketHandler;
+
 public class Field extends JPanel implements MouseListener{
 	public static final int WIDTH = 400;
 	public static final int HEIGHT = 400;
@@ -48,6 +50,7 @@ public class Field extends JPanel implements MouseListener{
 		EXTRA_JACK,
 	};
 	
+	private SocketHandler sh;
 	private Mode mode = Mode.DEFAULT;
 	private Deck deck;
 	private Player[] players = new Player[2];
@@ -55,20 +58,56 @@ public class Field extends JPanel implements MouseListener{
 	private MonsterPartsZone[] monsterPartsZones = new MonsterPartsZone[2];
 	private Grave grave;
 	
-	public Field(){
-		init();
+	private boolean myTurn;
+	
+	public Field(SocketHandler sh){
+		init(sh);
 	}
-	public void init(){
+	public void init(SocketHandler sh){
 		setPreferredSize(new Dimension(WIDTH,HEIGHT));
+		this.sh = sh;
 		grave = new Grave();
 		addMouseListener(this);
 		deck = new Deck();
 		for(int i = 0; i < 2; i++){
-			players[i] = new Player(i,this);
+			players[i] = new Player(this);
 			forceZones[i] = new ForceZone(this);
 			monsterPartsZones[i] = new MonsterPartsZone(this);
 		}
+		if(sh.getMode() == SocketHandler.Mode.SERVER){
+			serverInit();
+		}else{
+			cliantInit();
+		}
 	}
+	
+	public void serverInit(){
+		myTurn = true;
+		players[0].init();
+		sh.send(deck.toString());
+		sh.send(players[0].toString());
+		deck.setByString(sh.receive());
+		players[1].setByString(sh.receive());
+		players[0].setOpen(true);
+	}
+	
+	public void cliantInit(){
+		myTurn = false;
+		deck.setByString(sh.receive());
+		players[1].setByString(sh.receive());
+		players[0].init();
+		sh.send(deck.toString());
+		sh.send(players[0].toString());
+		players[0].setOpen(true);
+	}
+	
+	public void update(){
+		if(myTurn){
+		}else{
+			waiting();
+		}
+	}
+	
 	public void removeCard(Card card){
 		grave.addCard(card);
 	}
@@ -178,7 +217,42 @@ public class Field extends JPanel implements MouseListener{
 		*/
 	}
 	
+	public void waiting(){
+		while(true){
+			String receive = sh.receive();
+			if(receive.equals("Player")){
+				players[1].setByString(sh.receive());
+			}
+			if(receive.equals("Deck")){
+				deck.setByString(sh.receive());
+			}
+			if(receive.equals("Grave")){
+				grave.setByString(sh.receive());
+			}
+			if(receive.equals("ForceZone")){
+				forceZones[1].setByString(sh.receive());
+			}
+			if(receive.equals("MonsterPartsZone")){
+				monsterPartsZones[1].setByString(sh.receive());
+			}
+			if(receive.equals("Attacked")){
+			}
+			if(receive.equals("Blocked")){
+			}
+			if(receive.equals("TurnEnd")){
+				myTurn = true;
+				return;
+			}
+			stateChange();
+		}
+	}
+	
+	public void stateChange(){
+		repaint();
+	}
+	
 	public void mouseClicked(MouseEvent e) {
+		if(!myTurn) return;
 		int x = e.getX();
 		int y = e.getY();
 		switch(mode){
@@ -189,6 +263,7 @@ public class Field extends JPanel implements MouseListener{
 				for(int i = 0; i < 6; i++){
 					if(x>=PLAYER_X0+i*Card.WIDTH && x<PLAYER_X0+(i+1)*Card.WIDTH){
 						clickPlayerCard(e,i);
+						stateChange();
 						return;
 					}
 				}
@@ -200,6 +275,7 @@ public class Field extends JPanel implements MouseListener{
 					if(x>=FORCE_ZONE_X1+i*Card.WIDTH && x<FORCE_ZONE_X1+(i+1)*Card.WIDTH){
 						forceZones[1].attacked(i,players[0].getCard(selected));
 						players[0].removeCard(selected);
+						stateChange();
 						return;
 					}
 				}
@@ -213,8 +289,13 @@ public class Field extends JPanel implements MouseListener{
 					if(x>=FORCE_ZONE_X0+i*Card.WIDTH && x<FORCE_ZONE_X0+(i+1)*Card.WIDTH && y<(int)(FORCE_ZONE_Y0+Card.HEIGHT*(1+0.5*forceZones[0].getCardNumber(i)))){
 						if(forceZones[0].set(i,players[0].getCard(selected))){
 							players[0].removeCard(selected);
+							sh.send("Player");
+							sh.send(players[0].toString());
+							sh.send("ForceZone");
+							sh.send(forceZones[0].toString());
 						}
 						mode = Mode.DEFAULT;
+						stateChange();
 						return;
 					}
 				}

@@ -23,6 +23,14 @@ public class Card {
 		this.number = number;
 	}
 	
+	public void setMark(Mark m){
+		this.mark = m;
+	}
+	
+	public void setNumber(int num){
+		this.number = num-1;
+	}
+	
 	public void setOpen(boolean o){
 		open = o;
 	}
@@ -33,6 +41,10 @@ public class Card {
 	
 	public int getNumber(){
 		return number+1;
+	}
+	
+	public boolean getOpen(){
+		return open;
 	}
 	
 	public void draw(Graphics g, int x, int y){

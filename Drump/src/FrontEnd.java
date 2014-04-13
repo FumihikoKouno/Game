@@ -1,26 +1,42 @@
 import game.common.Data;
 import game.zones.Field;
+import communication.CommunicationSettingPanel;
+import communication.SocketHandler;
 
 import javax.swing.JFrame;
 
 
 public class FrontEnd extends JFrame {
 	public Field field;
+	public CommunicationSettingPanel csp;
 	public FrontEnd(){
 		init();
 	}
 	public void init(){
-		field = new Field();
-		add(field);
+		setTitle("Drump");
+		csp = new CommunicationSettingPanel();
+		add(csp);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 		pack();
-//		field.repaint();
 		gameLoop();
 	}
+	
 	public void update(){
-		field.repaint();
+		if(field == null){
+			SocketHandler tmp = csp.getSocketHandler();
+			if(tmp != null){
+				field = new Field(tmp);
+				remove(csp);
+				add(field);
+				pack();
+			}
+		}else{
+			field.update();
+//			field.repaint();
+		}
 	}
+	
 	public void gameLoop(){
 		long SPF = 1000/Data.FPS;
 		long time;

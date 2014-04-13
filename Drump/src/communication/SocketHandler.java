@@ -18,6 +18,7 @@ import java.net.Socket;
 public class SocketHandler {
 	public ServerSocket ss;
 	public Socket sock;
+	public Mode mode;
 	
 	public BufferedReader reader;
 	public PrintWriter writer;
@@ -30,6 +31,7 @@ public class SocketHandler {
 	};
 	
 	public SocketHandler(Mode mode, String hostName){
+		this.mode = mode;
 		try{
 			switch(mode){
 			case SERVER:
@@ -46,6 +48,25 @@ public class SocketHandler {
 			writer = new PrintWriter(sock.getOutputStream(),true);
 		}catch(IOException e){
 		}
+	}
+	
+	public Mode getMode(){
+		return mode;
+	}
+	
+	public String receive(){
+		String ret = "";
+		try{
+			ret = reader.readLine();
+			System.out.println("Receive : "+ ret);
+		}catch(IOException e){
+			System.out.println("Data Receive Error");
+		}
+		return ret;
+	}
+	
+	public void send(String str) {
+		writer.println(str);
 	}
 
 }

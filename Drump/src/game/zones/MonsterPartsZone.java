@@ -27,7 +27,7 @@ public class MonsterPartsZone {
 		int ret = 0;
 		int[] count = new int[4];
 		for(int i = 0; i < parts.length; i++){
-			if(parts[i].getNumber()<0) return 0;
+			if(parts[i] == null) return 0;
 			count[parts[i].getNumber()-10]++;
 		}
 		for(int i = 0; i < count.length; i++){
@@ -64,6 +64,57 @@ public class MonsterPartsZone {
 				parts[i*2+j].draw(g,x+j*Card.WIDTH,y+i*Card.HEIGHT);
 			}
 		}
+	}
+	
+	public void setByString(String str){
+		String[] cardsStr = str.split(",");
+		for(int i = 0; i < parts.length; i++) parts[i] = null;
+		for(int i = 0; i < cardsStr.length; i++){
+			String[] cardInfo = cardsStr[i].split(":");
+			int idx = Integer.parseInt(cardInfo[0]);
+			parts[idx] = new Card(Card.Mark.CLUBS,0);
+			if(cardInfo[1].equals("CLUBS")){
+				parts[idx].setMark(Card.Mark.CLUBS);
+			}
+			if(cardInfo[1].equals("DIAMONDS")){
+				parts[idx].setMark(Card.Mark.DIAMONDS);
+			}
+			if(cardInfo[1].equals("HEARTS")){
+				parts[idx].setMark(Card.Mark.HEARTS);
+			}
+			if(cardInfo[1].equals("SPADES")){
+				parts[idx].setMark(Card.Mark.SPADES);
+			}
+			parts[idx].setNumber(Integer.parseInt(cardInfo[2]));
+		}
+	}
+	
+	public String toString(){
+		String ret = "";
+		for(int i = 0; i < 4; i++){
+			if(parts[i]!=null){
+				if(!ret.equals("")) ret += ",";
+				ret += i+":";
+				switch(parts[i].getMark()){
+				case CLUBS:
+					ret += "CLUBS";
+					break;
+				case DIAMONDS:
+					ret += "DIAMONDS";
+					break;
+				case HEARTS:
+					ret += "HEARTS";
+					break;
+				case SPADES:
+					ret += "SPADES";
+					break;
+				default:
+					break;
+				}
+				ret += parts[i].getNumber();
+			}
+		}
+		return ret;
 	}
 	
 }
