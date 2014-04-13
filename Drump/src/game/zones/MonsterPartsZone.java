@@ -37,6 +37,7 @@ public class MonsterPartsZone {
 	}
 	
 	public boolean set(Card card){
+		card.setOpen(true);
 		switch(card.getMark()){
 		case SPADES:
 			parts[0] = card;
@@ -86,6 +87,7 @@ public class MonsterPartsZone {
 				parts[idx].setMark(Card.Mark.SPADES);
 			}
 			parts[idx].setNumber(Integer.parseInt(cardInfo[2]));
+			parts[idx].setOpen(true);
 		}
 	}
 	
@@ -97,16 +99,16 @@ public class MonsterPartsZone {
 				ret += i+":";
 				switch(parts[i].getMark()){
 				case CLUBS:
-					ret += "CLUBS";
+					ret += "CLUBS:";
 					break;
 				case DIAMONDS:
-					ret += "DIAMONDS";
+					ret += "DIAMONDS:";
 					break;
 				case HEARTS:
-					ret += "HEARTS";
+					ret += "HEARTS:";
 					break;
 				case SPADES:
-					ret += "SPADES";
+					ret += "SPADES:";
 					break;
 				default:
 					break;

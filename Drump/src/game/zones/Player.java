@@ -1,6 +1,7 @@
 package game.zones;
 import game.common.Card;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 
@@ -25,11 +26,18 @@ public class Player {
 			}
 		}
 	}
+	
+	public int getHandNumber(){
+		for(int i = 0; i < 6; i++){
+			if(hand[i]==null) return i;
+		}
+		return 6;
+	}
 	public Card getCard(int i){
 		return hand[i];
 	}
-	public void removeCard(int i){
-		hand[i] = null;
+	
+	public void pack(){
 		for(int j = 0; j < hand.length; j++){
 			if(hand[j]==null){
 				for(int k = j+1; k < hand.length; k++){
@@ -42,6 +50,19 @@ public class Player {
 			}
 		}
 	}
+	public void removeCard(int i){
+		hand[i] = null;
+	}
+	
+	public void lightUpJack(Graphics g, int x, int y){
+		g.setColor(new Color(255,0,0,64));
+		for(int i = 0; i < hand.length; i++){
+			if(hand[i] != null){
+				if(hand[i].getNumber() == 11) g.fillRect(x+Card.WIDTH*i,y,Card.WIDTH,Card.HEIGHT);
+			}
+		}
+	}
+	
 	public void draw(Graphics g, int x, int y){
 		for(int i = 0; i < hand.length; i++){
 			if(hand[i]!=null){

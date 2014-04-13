@@ -18,10 +18,6 @@ public class Deck {
 			cards[i+13] = new Card(Card.Mark.CLUBS,i);
 			cards[i+13*2] = new Card(Card.Mark.HEARTS,i);
 			cards[i+13*3] = new Card(Card.Mark.DIAMONDS,i);
-			cards[i].setOpen(true);
-			cards[i+13].setOpen(true);
-			cards[i+13*2].setOpen(true);
-			cards[i+13*3].setOpen(true);
 		}
 		shuffle();
 	}
@@ -49,12 +45,9 @@ public class Deck {
 	}
 	public void draw(Graphics g, int x, int y){
 		for(int i = 0; i < cards.length-idx; i++){
-			cards[i].draw(g,x,y+52-i);
-			/*
 			g.drawImage(Data.images.reverseImage,
 					x,y+52-i,Card.WIDTH,Card.HEIGHT,
 					null);
-					*/
 		}
 	}
 	

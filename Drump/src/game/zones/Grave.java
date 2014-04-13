@@ -12,6 +12,7 @@ public class Grave {
 	public Grave(){}
 	
 	public void addCard(Card card){
+		card.setOpen(true);
 		cards.add(card);
 	}
 	
@@ -62,6 +63,7 @@ public class Grave {
 				tmp.setMark(Card.Mark.SPADES);
 			}
 			tmp.setNumber(Integer.parseInt(cardInfo[1]));
+			tmp.setOpen(true);
 			cards.add(tmp);
 		}
 	}
