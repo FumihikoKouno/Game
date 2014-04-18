@@ -15,6 +15,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextArea;
 
 import communication.SocketHandler;
 
@@ -23,21 +24,23 @@ public class Field extends JPanel implements MouseListener{
 	public static final int HEIGHT = 400;
 	
 	public static final int PLAYER_X0 = 50;
-	public static final int PLAYER_Y0 = 300;
+	public static final int PLAYER_Y0 = 350;
 	public static final int PLAYER_X1 = 50;
 	public static final int PLAYER_Y1 = 10;
 	public static final int FORCE_ZONE_X0 = 40;
-	public static final int FORCE_ZONE_Y0 = 210;
+	public static final int FORCE_ZONE_Y0 = 250;
 	public static final int FORCE_ZONE_X1 = 80;
 	public static final int FORCE_ZONE_Y1 = 60;
 	public static final int MONSTER_PARTS_ZONE_X0 = 200;
-	public static final int MONSTER_PARTS_ZONE_Y0 = 160;
+	public static final int MONSTER_PARTS_ZONE_Y0 = 200;
 	public static final int MONSTER_PARTS_ZONE_X1 = 10;
 	public static final int MONSTER_PARTS_ZONE_Y1 = 60;
 	public static final int DECK_X = 150;
 	public static final int DECK_Y = 110;
 	public static final int GRAVE_X = 90;
 	public static final int GRAVE_Y = 110;
+	public static final int GRAVE_PARTS_X = WIDTH-(Card.WIDTH<<2);
+	public static final int GRAVE_PARTS_Y = 0;
 	
 	public int selected;
 	
@@ -45,6 +48,7 @@ public class Field extends JPanel implements MouseListener{
 	public boolean summoned;
 	public boolean extraJacked;
 	public int recycleCount;
+	public int attackNumber;
 	
 	public enum Mode{
 		DEFAULT,
@@ -57,6 +61,7 @@ public class Field extends JPanel implements MouseListener{
 		DROP_BY_TURN_END,
 	};
 	
+	private JTextArea textArea;
 	private SocketHandler sh;
 	private Mode mode = Mode.DEFAULT;
 	private Deck deck;
@@ -86,6 +91,10 @@ public class Field extends JPanel implements MouseListener{
 		}else{
 			cliantInit();
 		}
+	}
+	
+	public void setTextArea(JTextArea t){
+		textArea = t;
 	}
 	
 	public void serverInit(){
@@ -139,23 +148,32 @@ public class Field extends JPanel implements MouseListener{
 		monsterPartsZones[1].draw(g,MONSTER_PARTS_ZONE_X1,MONSTER_PARTS_ZONE_Y1);
 		forceZones[1].draw(g,FORCE_ZONE_X1,FORCE_ZONE_Y1);
 		players[1].draw(g,PLAYER_X1,PLAYER_Y1);	
+		grave.drawRecycleCards(g,GRAVE_PARTS_X, GRAVE_PARTS_Y);
 		switch(mode){
 		case DEFAULT:
+			if(myTurn) textArea.setText("Your Turn");
+			else textArea.setText("Enemy Turn");
 			break;
 		case ATTACK:
+			textArea.setText("Select attack target");
+			forceZones[1].lightUpTarget(g,FORCE_ZONE_X1,FORCE_ZONE_Y1);
 			break;
 		case BLOCK:
+			textArea.setText("Select card using for block");
+			players[0].lightUpBlockableCards(g,PLAYER_X0,PLAYER_Y0,attackNumber);
 			break;
 		case EXTRA_JACK:
+			textArea.setText("Select Jack");
 			players[0].lightUpJack(g,PLAYER_X0,PLAYER_Y0);
 			break;
 		case FORCE_CHARGE:
+			textArea.setText("Select force zone");
 			forceZones[0].lightUp(g,FORCE_ZONE_X0,FORCE_ZONE_Y0,players[0].getCard(selected));
 			break;
 		case RECYCLE:
-			grave.drawRecycleCards(g);
 			break;
 		case SUMMON:
+			textArea.setText("Select force");
 			forceZones[0].lightUpForce(g,FORCE_ZONE_X0,FORCE_ZONE_Y0,players[0].getCard(selected).getNumber());
 			break;
 		default:
@@ -224,6 +242,10 @@ public class Field extends JPanel implements MouseListener{
 						players[0].drawCard(drawCard());
 						players[0].pack();
 						recycleCount++;
+						sh.send("Grave");
+						sh.send(grave.toString());
+						sh.send("Deck");
+						sh.send(deck.toString());
 						stateChange();
 					}
 				});
@@ -286,11 +308,19 @@ public class Field extends JPanel implements MouseListener{
 				monsterPartsZones[1].setByString(sh.receive());
 			}
 			if(receive.equals("Attacked")){
+				String[] str = sh.receive().split(",");
+				Card attackCard = new Card(str[1]);
+				attackNumber = attackCard.getNumber();
+				forceZones[0].attacked(Integer.parseInt(str[0]),attackCard);
+				sh.send("ForceZone");
+				sh.send(forceZones[0].toString());
+				mode = Mode.BLOCK;
 			}
 			if(receive.equals("Blocked")){
 			}
 			if(receive.equals("TurnEnd")){
 				myTurn = true;
+				mode = Mode.DEFAULT;
 				players[0].drawCard(drawCard());
 				sh.send("Player");
 				sh.send(players[0].toString());
@@ -307,6 +337,7 @@ public class Field extends JPanel implements MouseListener{
 		if(players[0].getHandNumber()>5){
 			mode = Mode.DROP_BY_TURN_END;
 		}else{
+			mode = Mode.DEFAULT;
 			attacked = false;
 			summoned = false;
 			extraJacked = false;
@@ -328,6 +359,16 @@ public class Field extends JPanel implements MouseListener{
 		int y = e.getY();
 		switch(mode){
 		case DEFAULT:
+			if(y>=PLAYER_Y0 && y<PLAYER_Y0+Card.HEIGHT && x>=PLAYER_X0 && x<PLAYER_X0+6*Card.WIDTH){
+				for(int i = 0; i < 6; i++){
+					if(x>=PLAYER_X0+i*Card.WIDTH && x<PLAYER_X0+(i+1)*Card.WIDTH){
+						clickPlayerCard(e,i);
+						stateChange();
+						return;
+					}
+				}
+			}
+			break;
 		case BLOCK:
 			if(y>=PLAYER_Y0 && y<PLAYER_Y0+Card.HEIGHT && x>=PLAYER_X0 && x<PLAYER_X0+6*Card.WIDTH){
 				for(int i = 0; i < 6; i++){
@@ -343,9 +384,12 @@ public class Field extends JPanel implements MouseListener{
 			if(y>FORCE_ZONE_Y1 && y<FORCE_ZONE_Y1+Card.HEIGHT && x>=FORCE_ZONE_X1 && x<FORCE_ZONE_X1+4*Card.WIDTH){
 				for(int i = 0; i < 6; i++){
 					if(x>=FORCE_ZONE_X1+i*Card.WIDTH && x<FORCE_ZONE_X1+(i+1)*Card.WIDTH){
-						forceZones[1].attacked(i,players[0].getCard(selected));
+						sh.send("Attacked");
+						sh.send(i+","+players[0].getCard(selected));
 						players[0].removeCard(selected);
 						players[0].pack();
+						myTurn = false;
+						mode = Mode.DEFAULT;
 						stateChange();
 						return;
 					}

@@ -63,6 +63,15 @@ public class Player {
 		}
 	}
 	
+	public void lightUpBlockableCards(Graphics g, int x, int y, int num){
+		g.setColor(new Color(255,0,0,64));
+		for(int i = 0; i < hand.length; i++){
+			if(hand[i] != null){
+				if(hand[i].getNumber()>num || hand[i].getNumber() == 1) g.fillRect(x+Card.WIDTH*i,y,Card.WIDTH,Card.HEIGHT);
+			}
+		}
+	}
+	
 	public void draw(Graphics g, int x, int y){
 		for(int i = 0; i < hand.length; i++){
 			if(hand[i]!=null){
@@ -79,21 +88,7 @@ public class Player {
 		}
 		if(str.equals("")) return;
 		for(int i = 0; i < cardsStr.length; i++){
-			hand[i] = new Card(Card.Mark.CLUBS,0);
-			String[] cardInfo = cardsStr[i].split(":");
-			if(cardInfo[0].equals("CLUBS")){
-				hand[i].setMark(Card.Mark.CLUBS);
-			}
-			if(cardInfo[0].equals("DIAMONDS")){
-				hand[i].setMark(Card.Mark.DIAMONDS);
-			}
-			if(cardInfo[0].equals("HEARTS")){
-				hand[i].setMark(Card.Mark.HEARTS);
-			}
-			if(cardInfo[0].equals("SPADES")){
-				hand[i].setMark(Card.Mark.SPADES);
-			}
-			hand[i].setNumber(Integer.parseInt(cardInfo[1]));
+			hand[i] = new Card(cardsStr[i]);
 		}
 	}
 	
@@ -102,23 +97,7 @@ public class Player {
 		for(int i = 0; i < hand.length; i++){
 			if(hand[i] == null) break;
 			if(i > 0) ret += ",";
-			switch(hand[i].getMark()){
-			case CLUBS:
-				ret += "CLUBS:";
-				break;
-			case DIAMONDS:
-				ret += "DIAMONDS:";
-				break;
-			case HEARTS:
-				ret += "HEARTS:";
-				break;
-			case SPADES:
-				ret += "SPADES:";
-				break;
-			default:
-				break;
-			}
-			ret += hand[i].getNumber();
+			ret += hand[i];
 		}
 		return ret;
 	}

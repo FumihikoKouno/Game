@@ -26,15 +26,15 @@ public class Grave {
 		return ret;
 	}
 	
-	public void drawRecycleCards(Graphics g){
+	public void drawRecycleCards(Graphics g, int x, int y){
 		ArrayList<Card> parts = getPartsCards();
 		int row = 0;
 		for(int i = 0, idx = 0; i < parts.size(); i++,idx++){
-			if((idx+1)*Card.WIDTH > Field.WIDTH){
+			if(x+(idx+1)*Card.WIDTH > Field.WIDTH){
 				idx = 0;
 				row++;
 			}
-			parts.get(i).draw(g,idx*Card.WIDTH,row*Card.HEIGHT);
+			parts.get(i).draw(g,x+idx*Card.WIDTH,y+row*Card.HEIGHT);
 		}
 	}
 	
@@ -48,21 +48,7 @@ public class Grave {
 		cards.clear();
 		String[] cardsStr = str.split(",");
 		for(int i = 0; i < cardsStr.length; i++){
-			String[] cardInfo = cardsStr[i].split(":");
-			Card tmp = new Card(Card.Mark.CLUBS,0);
-			if(cardInfo[0].equals("CLUBS")){
-				tmp.setMark(Card.Mark.CLUBS);
-			}
-			if(cardInfo[0].equals("DIAMONDS")){
-				tmp.setMark(Card.Mark.DIAMONDS);
-			}
-			if(cardInfo[0].equals("HEARTS")){
-				tmp.setMark(Card.Mark.HEARTS);
-			}
-			if(cardInfo[0].equals("SPADES")){
-				tmp.setMark(Card.Mark.SPADES);
-			}
-			tmp.setNumber(Integer.parseInt(cardInfo[1]));
+			Card tmp = new Card(cardsStr[i]);
 			tmp.setOpen(true);
 			cards.add(tmp);
 		}
@@ -71,23 +57,7 @@ public class Grave {
 	public String toString(){
 		String ret = "";
 		for(int i = 0; i < cards.size(); i++){
-			switch(cards.get(i).getMark()){
-			case CLUBS:
-				ret += "CLUBS:";
-				break;
-			case DIAMONDS:
-				ret += "DIAMONDS:";
-				break;
-			case HEARTS:
-				ret += "HEARTS:";
-				break;
-			case SPADES:
-				ret += "SPADES:";
-				break;
-			default:
-				break;
-			}
-			ret += cards.get(i).getNumber();
+			ret += cards.get(i);
 			if(i < cards.size()-1) ret += ",";
 		}
 		return ret;

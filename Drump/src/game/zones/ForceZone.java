@@ -10,6 +10,7 @@ public class ForceZone {
 	private class CardArray extends ArrayList<Card>{}
 	private CardArray[] forces = new CardArray[4];
 	private Field field;
+	private CardArray attacked = new CardArray();
 	
 	private boolean[] charged = new boolean[4];
 	
@@ -43,6 +44,14 @@ public class ForceZone {
 	}
 	
 	public boolean attacked(int num, Card card){
+		if(getSum(num)+card.getNumber() > 13){
+			
+		}else{
+			set(num,card);
+			for(int i = 0; i < forces[num].size(); i++){
+				forces[num].get(i).setOpen(true);
+			}
+		}
 		return true;
 	}
 	
@@ -81,6 +90,13 @@ public class ForceZone {
 			if(tmp == num) return true;
 		}
 		return false;
+	}
+
+	public void lightUpTarget(Graphics g, int x, int y){
+		g.setColor(new Color(255,0,0,64));
+		for(int i = 0; i < forces.length; i++){
+			if(forces[i].size()>0) g.fillRect(x+i*Card.WIDTH,y,Card.WIDTH,(forces[i].size()+1)*Card.HEIGHT/2);
+		}
 	}
 	
 	public void lightUpForce(Graphics g, int x, int y, int num){
@@ -140,31 +156,14 @@ public class ForceZone {
 	public void setByString(String str){
 		System.out.println("ForceZone.setByString");
 		String[] cardsStr = str.split(",");
-		if(cardsStr.length==0){
-			for(int i = 0; i < 4; i++) clear(i);
-		}
+		for(int i = 0; i < 4; i++) clear(i);
 		for(int i = 0; i < cardsStr.length; i++){
-			System.out.println("in loop");
-			String[] cardInfo = cardsStr[i].split(":");
-			forces[i].clear();
+			String[] cardInfo = cardsStr[i].split("/");
 			if(cardsStr[i].equals("")) continue;
 			for(int j = 0; j < cardInfo.length; j++){
 				String[] cardDetail = cardInfo[j].split("-");
-				Card tmp = new Card(Card.Mark.CLUBS,0);
-				if(cardDetail[0].equals("CLUBS")){
-					tmp.setMark(Card.Mark.CLUBS);
-				}
-				if(cardDetail[0].equals("DIAMONDS")){
-					tmp.setMark(Card.Mark.DIAMONDS);
-				}
-				if(cardDetail[0].equals("HEARTS")){
-					tmp.setMark(Card.Mark.HEARTS);
-				}
-				if(cardDetail[0].equals("SPADES")){
-					tmp.setMark(Card.Mark.SPADES);
-				}
-				tmp.setNumber(Integer.parseInt(cardDetail[1]));
-				if(cardDetail[2].equals("Open")){
+				Card tmp = new Card(cardDetail[0]);
+				if(cardDetail[1].equals("Open")){
 					tmp.setOpen(true);
 				}else{
 					tmp.setOpen(false);
@@ -178,25 +177,10 @@ public class ForceZone {
 		String ret = "";
 		for(int i = 0; i < forces.length; i++){
 			for(int j = 0; j < forces[i].size(); j++){
-				switch(forces[i].get(j).getMark()){
-				case CLUBS:
-					ret += "CLUBS-";
-					break;
-				case DIAMONDS:
-					ret += "DIAMONDS-";
-					break;
-				case HEARTS:
-					ret += "HEARTS-";
-					break;
-				case SPADES:
-					ret += "SPADES-";
-					break;
-				default:
-					break;
-				}
-				ret += forces[i].get(j).getNumber() + "-";
+				ret += forces[i].get(j);
+				ret += "-";
 				ret += (forces[i].get(j).getOpen() ? "Open" : "Close");
-				if(j < forces[i].size()-1) ret += ":";
+				if(j < forces[i].size()-1) ret += "/";
 			}
 			if(i < forces.length-1) ret += ",";
 		}

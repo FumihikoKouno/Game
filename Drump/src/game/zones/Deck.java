@@ -56,43 +56,14 @@ public class Deck {
 		String[] cardsStr = str.split(",");
 		idx = cards.length-cardsStr.length;
 		for(int i = 0; i < cardsStr.length; i++){
-			String[] cardInfo = cardsStr[i].split(":");
-			if(cardInfo[0].equals("CLUBS")){
-				cards[idx+i].setMark(Card.Mark.CLUBS);
-			}
-			if(cardInfo[0].equals("DIAMONDS")){
-				cards[idx+i].setMark(Card.Mark.DIAMONDS);
-			}
-			if(cardInfo[0].equals("HEARTS")){
-				cards[idx+i].setMark(Card.Mark.HEARTS);
-			}
-			if(cardInfo[0].equals("SPADES")){
-				cards[idx+i].setMark(Card.Mark.SPADES);
-			}
-			cards[idx+i].setNumber(Integer.parseInt(cardInfo[1]));
+			cards[idx+i] = new Card(cardsStr[i]);
 		}
 	}
 	
 	public String toString(){
 		String ret = "";
 		for(int i = idx; i < cards.length; i++){
-			switch(cards[i].getMark()){
-			case CLUBS:
-				ret += "CLUBS:";
-				break;
-			case DIAMONDS:
-				ret += "DIAMONDS:";
-				break;
-			case HEARTS:
-				ret += "HEARTS:";
-				break;
-			case SPADES:
-				ret += "SPADES:";
-				break;
-			default:
-				break;
-			}
-			ret += cards[i].getNumber();
+			ret += cards[i];
 			if(i < cards.length-1) ret += ",";
 		}
 		return ret;

@@ -18,6 +18,28 @@ public class Card {
 	int number;
 	public boolean open;
 	
+	public Card(){
+		mark = Mark.SPADES;
+		number = 0;
+	}
+	
+	public Card(String str){
+		String[] cardInfo = str.split(":");
+		if(cardInfo[0].equals("SPADES")){
+			setMark(Mark.SPADES);
+		}
+		if(cardInfo[0].equals("DIAMONDS")){
+			setMark(Mark.DIAMONDS);
+		}
+		if(cardInfo[0].equals("HEARTS")){
+			setMark(Mark.HEARTS);
+		}
+		if(cardInfo[0].equals("CLUBS")){
+			setMark(Mark.CLUBS);
+		}
+		setNumber(Integer.parseInt(cardInfo[1]));
+	}
+	
 	public Card(Mark mark, int number){
 		this.mark = mark;
 		this.number = number;
@@ -75,4 +97,25 @@ public class Card {
 			g.drawImage(Data.images.reverseImage, x, y, null);
 		}
 	}
+	
+	public String toString(){
+		String ret = "";
+		switch(mark){
+		case CLUBS:
+			ret += "CLUBS:";
+			break;
+		case DIAMONDS:
+			ret += "DIAMONDS:";
+			break;
+		case HEARTS:
+			ret += "HEARTS:";
+			break;
+		case SPADES:
+			ret += "SPADES:";
+			break;
+		}
+		ret += getNumber();
+		return ret;
+	}
+	
 }
